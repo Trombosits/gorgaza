@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Booking - GOR GAZA</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
@@ -13,13 +14,13 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
       rel="stylesheet"
     />
-    <link href="style.css" rel="stylesheet" />
+    <link href="{{ asset('css/style.css') }}" rel="stylesheet" />
   </head>
 
   <body>
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
       <div class="container">
-        <a class="navbar-brand" href="landing_page.html">GOR GAZA</a>
+        <a class="navbar-brand" href="/landing_page">GOR GAZA</a>
 
         <button
           class="navbar-toggler"
@@ -33,23 +34,23 @@
         <div class="collapse navbar-collapse" id="menu">
           <ul class="navbar-nav ms-auto me-3">
             <li class="nav-item">
-              <a class="nav-link" href="landing_page.html#hero">Booking</a>
+              <a class="nav-link" href="/#hero">Booking</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="landing_page.html#fasilitas"
+              <a class="nav-link" href="/#fasilitas"
                 >Fasilitas</a
               >
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="landing_page.html#jadwal">Jadwal</a>
+              <a class="nav-link" href="/#jadwal">Jadwal</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="landing_page.html#lokasi">Lokasi</a>
+              <a class="nav-link" href="/#lokasi">Lokasi</a>
             </li>
           </ul>
 
           <div class="nav-auth">
-            <a class="btn btn-book" href="login.html">Login / Daftar</a>
+            <a class="btn btn-book" href="/login">Login / Daftar</a>
           </div>
         </div>
       </div>
@@ -104,7 +105,7 @@
       <i class="fab fa-whatsapp"></i>
     </a>
 
-    <script src="script.js"></script>
+    <script src="{{ asset('js/script.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>

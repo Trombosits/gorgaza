@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>SportHub - Booking Lapangan & Billiard</title>
 
@@ -14,7 +15,7 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
       rel="stylesheet"
     />
-    <link href="style.css" rel="stylesheet" />
+    <link href="{{ asset('css/style.css') }}" rel="stylesheet" />
   </head>
   <body>
     <!-- Navbar -->
@@ -48,7 +49,7 @@
           </ul>
 
           <div class="nav-auth">
-            <a class="btn btn-book" href="login.html">Login / Daftar</a>
+            <a class="btn btn-book" href="/login">Login / Daftar</a>
           </div>
         </div>
       </div>
@@ -70,7 +71,7 @@
             </p>
 
             <div class="mt-4">
-              <a href="booking.html" class="btn btn-warning btn-lg me-2">
+              <a href="/booking" class="btn btn-warning btn-lg me-2">
                 <i class="fas fa-calendar-check"></i>
                 Booking Sekarang
               </a>
@@ -355,7 +356,7 @@
       <i class="fab fa-whatsapp"></i>
     </a>
 
-    <script src="script.js"></script>
+    <script src="{{ asset('js/script.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>
