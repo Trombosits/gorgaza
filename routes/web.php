@@ -1,39 +1,55 @@
 <?php
 
-use Illuminate\Support\Facades\Route; // Pastikan ini ada di paling atas
-use App\Http\Controllers\BookingController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\FacilityController;
+use App\Http\Controllers\Admin\ReservationController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BookingController;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('frontend.landing_page'); 
+    return view('Frontend.landing_page');
+});
+
+Route::get('/landing_page', function () {
+    return redirect('/');
 });
 
 Route::get('/register', function () {
-    return view('frontend.register'); 
+    return view('Frontend.register');
 });
 
 Route::get('/login', function () {
-    return view('frontend.login'); 
+    return view('Frontend.login');
 });
 
 Route::get('/booking', function () {
-    return view('frontend.booking'); 
+    return view('Frontend.booking');
 });
 
 Route::get('/booking-schedule', function () {
-    return view('frontend.booking_schedule'); 
+    return view('Frontend.booking_schedule');
 });
 
 Route::get('/booking-confirm', function () {
-    return view('frontend.booking_confirm'); 
+    return view('Frontend.booking_confirm');
 });
 
-// Route untuk mengambil jadwal yang sudah di-booking
 Route::get('/api/schedules', [BookingController::class, 'getSchedules']);
-
-// Route untuk menerima data dari JavaScript
 Route::post('/api/bookings', [BookingController::class, 'store']);
-
-// Route untuk Autentikasi
 Route::post('/api/register', [AuthController::class, 'register']);
 Route::post('/api/login', [AuthController::class, 'login']);
+Route::post('/logout', [AuthController::class, 'logout']);
+
+Route::prefix('admin')->middleware('admin')->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+
+    Route::resource('/facilities', FacilityController::class)
+        ->names('admin.facilities')
+        ->except(['show']);
+
+    Route::get('/reservations', [ReservationController::class, 'index'])->name('admin.reservations.index');
+    Route::get('/reservations/{reservation}', [ReservationController::class, 'show'])->name('admin.reservations.show');
+    Route::patch('/reservations/{reservation}/status', [ReservationController::class, 'updateStatus'])->name('admin.reservations.updateStatus');
+    Route::delete('/reservations/{reservation}', [ReservationController::class, 'destroy'])->name('admin.reservations.destroy');
+});

@@ -426,7 +426,7 @@ if (registerForm && window.location.pathname.includes("login")) {
         if (data.success) {
             setLoggedUser(data.user); 
             alert("Selamat datang kembali, " + data.user.name);
-            window.location.href = "/"; 
+            window.location.href = data.redirect || "/"; 
         }
     })
     .catch(async (err) => {

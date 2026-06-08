@@ -6,17 +6,22 @@ use Illuminate\Database\Eloquent\Model;
 
 class User extends Model
 {
-    public $timestamps = false;
-    
     protected $fillable = [
-        'nama', 
-        'no_hp', 
-        'email', 
+        'name',
+        'nama',
+        'no_hp',
+        'email',
         'password',
-        'created_at'
+        'role',
     ];
 
     protected $hidden = [
         'password',
+        'remember_token',
     ];
+
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class);
+    }
 }
