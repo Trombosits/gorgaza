@@ -77,18 +77,7 @@
             </div>
           </div>
           <div class="col-lg-5 d-none d-lg-block">
-            <div class="hero-card glass-card">
-              <div class="d-flex align-items-center gap-3 mb-3">
-                <div class="hero-card-icon"><i class="fa-solid fa-table-tennis-paddle-ball"></i></div>
-                <div>
-                  <h5 class="mb-0">Booking Praktis</h5>
-                  <small>Pilih fasilitas dan jam kosong</small>
                 </div>
-              </div>
-              <div class="mini-schedule">
-                <div><span>Badminton</span><b class="text-success">Tersedia</b></div>
-                <div><span>Billiard</span><b class="text-warning">Cek slot</b></div>
-                <div><span>Konfirmasi</span><b class="text-info">Online</b></div>
               </div>
             </div>
           </div>
@@ -108,22 +97,21 @@
           <div class="col-lg-6">
             <h2>Lapangan Badminton</h2>
             <p>
-              Lapangan badminton GOR GAZA menggunakan lantai berkualitas dengan pencahayaan terang dan nyaman untuk latihan maupun pertandingan.
+              Lapangan badminton GOR GAZA menggunakan lantai berkualitas dengan pencahayaan terang dan nyaman.
             </p>
             <ul class="facility-list">
               <li><i class="fa-solid fa-circle-check"></i> Lapangan standar pertandingan</li>
               <li><i class="fa-solid fa-circle-check"></i> Pencahayaan LED terang</li>
-              <li><i class="fa-solid fa-circle-check"></i> Area duduk penonton</li>
               <li><i class="fa-solid fa-circle-check"></i> Ruang tunggu pemain</li>
             </ul>
           </div>
 
           <div class="col-lg-6">
             <div class="gallery-grid">
-              <img src="https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?q=80&w=1200" alt="Lapangan badminton" />
-              <img src="https://images.unsplash.com/photo-1613918431703-aa508f1c5f5c?q=80&w=1200" alt="Badminton indoor" />
-              <img src="https://images.unsplash.com/photo-1599394475093-95c6b8df52f0?q=80&w=1200" alt="Permainan badminton" />
-              <img src="https://images.unsplash.com/photo-1546519638-68e109498ffc?q=80&w=1200" alt="Olahraga indoor" />
+              <img src="/images/bulutangkis-2.jpeg" alt="Lapangan badminton" />
+              <img src="/images/bulutangkis-3.jpeg" alt="Badminton indoor" />
+              <img src="/images/bulutangkis-4.jpeg" alt="Permainan badminton" />
+              <img src="/images/bulutangkis-5.jpeg" alt="Olahraga indoor" />
             </div>
           </div>
         </div>
@@ -148,10 +136,10 @@
 
           <div class="col-lg-6 order-lg-1">
             <div class="gallery-grid">
-              <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=1200" alt="Billiard premium" />
-              <img src="https://images.unsplash.com/photo-1620039800242-f4b4f4ebf1d0?q=80&w=1200" alt="Meja billiard" />
-              <img src="https://images.unsplash.com/photo-1560243563-062bfc001d68?q=80&w=1200" alt="Billiard room" />
-              <img src="https://images.unsplash.com/photo-1541534401786-2077eed87a72?q=80&w=1200" alt="Billiard lounge" />
+              <img src="/images/billiard-1.jpeg" alt="Billiard premium" />
+              <img src="/images/billiard-2.jpeg" alt="Meja billiard" />
+              <img src="/images/billiard-3.jpeg" alt="Billiard room" />
+              <img src="/images/billiard-4.jpeg" alt="Billiard lounge" />
             </div>
           </div>
         </div>
@@ -162,12 +150,12 @@
       <div class="container">
         <div class="row align-items-center g-5">
           <div class="col-lg-6">
-            <h2>Cafe & Lounge</h2>
+            <h2>Fasilitas</h2>
             <p>
-              Setelah berolahraga, nikmati pilihan makanan dan minuman favorit dengan suasana santai dan nyaman.
+              Selain fasilitas olahraga, kami juga menyediakan berbagai fasilitas lainnya untuk kenyamanan Anda.
             </p>
             <div class="menu-list">
-              <div class="menu-item"><span>Americano</span><span>Rp18.000</span></div>
+              <div class="menu-item"><span>Mushola</span></div>
               <div class="menu-item"><span>Cappuccino</span><span>Rp22.000</span></div>
               <div class="menu-item"><span>French Fries</span><span>Rp20.000</span></div>
               <div class="menu-item"><span>Nasi Goreng Spesial</span><span>Rp28.000</span></div>
@@ -177,10 +165,10 @@
 
           <div class="col-lg-6">
             <div class="gallery-grid">
-              <img src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?q=80&w=1200" alt="Cafe" />
-              <img src="https://images.unsplash.com/photo-1521017432531-fbd92d768814?q=80&w=1200" alt="Cafe interior" />
-              <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=1200" alt="Coffee" />
-              <img src="https://images.unsplash.com/photo-1528605248644-14dd04022da1?q=80&w=1200" alt="Lounge" />
+              <img src="/images/Mushola-1.jpeg" alt="Cafe" />
+              <img src="/images/Kursi.jpeg" alt="Cafe interior" />
+              <img src="/images/Toko.jpeg" alt="Coffee" />
+              <img src="/images/Toilet.jpeg" alt="Lounge" />
             </div>
           </div>
         </div>
@@ -213,7 +201,7 @@
                 </div>
                 <div id="calendarDays" class="calendar-days"></div>
               </div>
-              <div class="booking-note"><b>Ketentuan booking:</b><br />Mohon lengkapi data sebelum konfirmasi dan batasi reservasi maksimal 2 jam per sesi.</div>
+              <div class="booking-note"><b>Ketentuan booking:</b><br />Mohon lengkapi data sebelum konfirmasi.</div>
             </div>
           </div>
 
