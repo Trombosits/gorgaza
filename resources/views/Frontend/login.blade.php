@@ -31,8 +31,14 @@
             <li class="nav-item"><a class="nav-link" href="/#jadwal">Jadwal</a></li>
             <li class="nav-item"><a class="nav-link" href="/#lokasi">Lokasi</a></li>
           </ul>
-          <div class="nav-auth">
-            <a class="btn btn-book" href="/register">Daftar</a>
+          <div class="nav-auth d-flex gap-2">
+            @if(session('auth_user.role') === 'admin')
+              <a class="btn btn-outline-light rounded-pill px-3" href="/admin/dashboard">Admin</a>
+            @elseif(session('auth_user'))
+              <a class="btn btn-outline-light rounded-pill px-3" href="/booking">Booking</a>
+            @else
+              <a class="btn btn-book" href="/login">Login / Daftar</a>
+            @endif
           </div>
         </div>
       </div>

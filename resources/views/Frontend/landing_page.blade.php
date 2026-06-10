@@ -32,14 +32,26 @@
           </ul>
 
           <div class="nav-auth d-flex gap-2">
-            @if(session('auth_user.role') === 'admin')
-              <a class="btn btn-outline-light rounded-pill px-3" href="/admin/dashboard">Admin</a>
-            @elseif(session('auth_user'))
-              <a class="btn btn-outline-light rounded-pill px-3" href="/booking">Booking</a>
-            @else
-              <a class="btn btn-book" href="/login">Login / Daftar</a>
-            @endif
-          </div>
+  @if(session('auth_user.role') === 'admin')
+    <a class="btn btn-outline-light rounded-pill px-3" href="/admin/dashboard">Admin</a>
+    
+    <form action="/logout" method="POST" class="d-inline">
+      @csrf
+      <button type="submit" class="btn btn-danger rounded-pill px-3">Logout</button>
+    </form>
+
+  @elseif(session('auth_user'))
+    <a class="btn btn-outline-light rounded-pill px-3" href="/booking">Booking</a>
+    
+    <form action="/logout" method="POST" class="d-inline">
+      @csrf
+      <button type="submit" class="btn btn-danger rounded-pill px-3">Logout</button>
+    </form>
+
+  @else
+    <a class="btn btn-book" href="/login">Login / Daftar</a>
+  @endif
+</div>
         </div>
       </div>
     </nav>
@@ -63,12 +75,7 @@
             </div>
             <div class="hero-stats mt-5">
               <div>
-                <strong>Realtime</strong>
-                <span>Status jadwal</span>
-              </div>
-              <div>
-                <strong>2+</strong>
-                <span>Jenis fasilitas</span>
+                <strong>Berbagai Macam jenis Fasilitas</strong>
               </div>
               <div>
                 <strong>08-22</strong>
@@ -156,10 +163,10 @@
             </p>
             <div class="menu-list">
               <div class="menu-item"><span>Mushola</span></div>
-              <div class="menu-item"><span>Cappuccino</span><span>Rp22.000</span></div>
-              <div class="menu-item"><span>French Fries</span><span>Rp20.000</span></div>
-              <div class="menu-item"><span>Nasi Goreng Spesial</span><span>Rp28.000</span></div>
-              <div class="menu-item"><span>Chicken Wings</span><span>Rp30.000</span></div>
+              <div class="menu-item"><span>Toko</span></div>
+              <div class="menu-item"><span>Toilet</span></div>
+              <div class="menu-item"><span>Lounge</span></div>
+              <div class="menu-item"><span>Parkiran</span></div>
             </div>
           </div>
 
@@ -169,6 +176,8 @@
               <img src="/images/Kursi.jpeg" alt="Cafe interior" />
               <img src="/images/Toko.jpeg" alt="Coffee" />
               <img src="/images/Toilet.jpeg" alt="Lounge" />
+              <img src="/images/Parkiran.jpeg" alt="Parkiran" />
+              <img src="/images/ParkiranAll.jpeg" alt="Lounge" />
             </div>
           </div>
         </div>

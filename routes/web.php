@@ -7,6 +7,9 @@ use App\Http\Controllers\Admin\ReservationController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookingController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PembayaranController;
+
+Route::get('/pembayaran/{transaction_id}', [PembayaranController::class, 'index']);
 
 Route::get('/', function () {
     return view('Frontend.landing_page');
