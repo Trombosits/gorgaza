@@ -3,128 +3,106 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
     <title>Login - GOR GAZA</title>
 
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-      rel="stylesheet"
-    />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <link href="{{ asset('css/style.css') }}" rel="stylesheet" />
   </head>
 
-  <body>
-    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+  <body class="auth-page">
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top app-navbar">
       <div class="container">
-        <a class="navbar-brand" href="/landing_page">GOR GAZA</a>
+        <a class="navbar-brand brand-mark" href="/">
+          <span class="brand-icon">GG</span>
+          <span>GOR GAZA</span>
+        </a>
 
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#menu"
-        >
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu" aria-controls="menu" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
 
         <div class="collapse navbar-collapse" id="menu">
           <ul class="navbar-nav ms-auto me-3">
-            <li class="nav-item">
-              <a class="nav-link" href="/#hero">Booking</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/#fasilitas"
-                >Fasilitas</a
-              >
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/#jadwal">Jadwal</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/#lokasi">Lokasi</a>
-            </li>
+            <li class="nav-item"><a class="nav-link" href="/#hero">Beranda</a></li>
+            <li class="nav-item"><a class="nav-link" href="/#fasilitas">Fasilitas</a></li>
+            <li class="nav-item"><a class="nav-link" href="/#jadwal">Jadwal</a></li>
+            <li class="nav-item"><a class="nav-link" href="/#lokasi">Lokasi</a></li>
           </ul>
-
           <div class="nav-auth">
-            <a class="btn btn-book" href="/login">Login / Daftar</a>
+            <a class="btn btn-book" href="/register">Daftar</a>
           </div>
         </div>
       </div>
     </nav>
 
-    <section
-      class="auth-section"
-      style="margin-top: 100px; margin-bottom: 100px"
-    >
-      <div class="container">
-        <div class="row justify-content-center">
-          <div class="col-lg-6">
-            <div class="auth-card">
-              <h2>Masuk ke GOR GAZA</h2>
-              <p>
-                Gunakan akun Anda untuk melakukan booking lapangan dan billiard.
-              </p>
+    <main class="auth-shell">
+      <div class="auth-bg-shape auth-bg-shape-1"></div>
+      <div class="auth-bg-shape auth-bg-shape-2"></div>
+      <div class="container position-relative">
+        <div class="row align-items-center justify-content-center g-5">
+          <div class="col-lg-5 d-none d-lg-block">
+            <div class="auth-side-card glass-card">
+              <div class="hero-badge mb-3"><i class="fa-solid fa-shield-halved"></i> Akun aman untuk booking</div>
+              <h1>Masuk dan lanjutkan booking kamu.</h1>
+              <p>Cek jadwal, pilih sesi, dan pantau konfirmasi booking dengan akun GOR GAZA.</p>
+              <div class="mini-schedule mt-4">
+                <div><span>Booking online</span><b class="text-success">Aktif</b></div>
+                <div><span>Jadwal realtime</span><b class="text-warning">Siap</b></div>
+                <div><span>Admin panel</span><b class="text-info">Tersedia</b></div>
+              </div>
+            </div>
+          </div>
 
-              <form id="loginForm">
+          <div class="col-lg-5 col-md-8">
+            <div class="auth-card modern-auth-card">
+              <div class="text-center mb-4">
+                <div class="auth-icon mx-auto mb-3"><i class="fa-solid fa-right-to-bracket"></i></div>
+                <h2>Masuk ke GOR GAZA</h2>
+                <p>Gunakan akun Anda untuk melakukan booking lapangan dan billiard.</p>
+              </div>
+
+              <div id="authAlert" class="auth-alert d-none"></div>
+
+              @if(session('success'))
+                <div class="alert alert-success rounded-4 border-0">{{ session('success') }}</div>
+              @endif
+
+              <form id="loginForm" novalidate>
                 <div class="mb-3">
-                  <label class="form-label">Email</label>
-                  <input
-                    id="loginEmail"
-                    type="email"
-                    class="form-control"
-                    placeholder="Masukkan email"
-                    required
-                  />
+                  <label class="form-label" for="loginEmail">Email</label>
+                  <div class="input-icon-wrap">
+                    <i class="fa-solid fa-envelope"></i>
+                    <input id="loginEmail" type="email" class="form-control" placeholder="nama@email.com" autocomplete="email" required />
+                  </div>
                 </div>
 
                 <div class="mb-3">
-                  <label class="form-label">Password</label>
-                  <input
-                    id="loginPassword"
-                    type="password"
-                    class="form-control"
-                    placeholder="Masukkan password"
-                    required
-                  />
+                  <label class="form-label" for="loginPassword">Password</label>
+                  <div class="input-icon-wrap">
+                    <i class="fa-solid fa-lock"></i>
+                    <input id="loginPassword" type="password" class="form-control" placeholder="Masukkan password" autocomplete="current-password" required />
+                    <button class="password-toggle" type="button" data-target="loginPassword" aria-label="Tampilkan password"><i class="fa-regular fa-eye"></i></button>
+                  </div>
                 </div>
 
-                <div
-                  class="d-flex justify-content-between align-items-center mb-4 auth-footer"
-                >
+                <div class="d-flex justify-content-between align-items-center mb-4 auth-footer">
                   <span>Belum punya akun?</span>
-                  <a href="/register" class="text-decoration-none"
-                    >Daftar sekarang</a
-                  >
+                  <a href="/register" class="text-decoration-none">Daftar sekarang</a>
                 </div>
 
-                <button type="submit" class="btn btn-book w-100">
-                  <i class="fas fa-sign-in-alt me-2"></i>
-                  Masuk
+                <button type="submit" class="btn btn-book w-100 auth-submit">
+                  <span class="btn-text"><i class="fas fa-sign-in-alt me-2"></i>Masuk</span>
+                  <span class="btn-loading d-none"><span class="spinner-border spinner-border-sm me-2"></span>Memproses...</span>
                 </button>
               </form>
             </div>
           </div>
         </div>
       </div>
-    </section>
-
-    <footer>
-      <div class="container text-center">
-        <p>© 2026 GOR GAZA. All Rights Reserved.</p>
-      </div>
-    </footer>
-
-    <a
-      href="https://wa.me/6281234567890"
-      class="whatsapp-float"
-      target="_blank"
-    >
-      <i class="fab fa-whatsapp"></i>
-    </a>
+    </main>
 
     <script src="{{ asset('js/script.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
