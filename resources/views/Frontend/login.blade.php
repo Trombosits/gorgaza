@@ -45,14 +45,8 @@
         <div class="row align-items-center justify-content-center g-5">
           <div class="col-lg-5 d-none d-lg-block">
             <div class="auth-side-card glass-card">
-              <div class="hero-badge mb-3"><i class="fa-solid fa-shield-halved"></i> Akun aman untuk booking</div>
               <h1>Masuk dan lanjutkan booking kamu.</h1>
               <p>Cek jadwal, pilih sesi, dan pantau konfirmasi booking dengan akun GOR GAZA.</p>
-              <div class="mini-schedule mt-4">
-                <div><span>Booking online</span><b class="text-success">Aktif</b></div>
-                <div><span>Jadwal realtime</span><b class="text-warning">Siap</b></div>
-                <div><span>Admin panel</span><b class="text-info">Tersedia</b></div>
-              </div>
             </div>
           </div>
 

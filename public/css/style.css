@@ -117,7 +117,7 @@ body.auth-page {
   display: flex;
   align-items: center;
   position: relative;
-  background: url("https://images.unsplash.com/photo-1517649763962-0c623066013b?q=80&w=2070") center/cover no-repeat;
+  background: url("../images/Bulutangkis-9.jpeg") center/cover no-repeat;
   color: white;
   padding: 140px 0 90px;
 }
@@ -313,7 +313,7 @@ body.auth-page {
 .cta {
   background:
     linear-gradient(rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.9)),
-    url("https://images.unsplash.com/photo-1546519638-68e109498ffc?q=80&w=2070");
+    url("../images/bulutangkis-9.jpg") center/cover no-repeat;
   background-size: cover;
   color: white;
   padding: 100px 0;

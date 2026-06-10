@@ -48,11 +48,6 @@
               <div class="hero-badge mb-3"><i class="fa-solid fa-user-plus"></i> Mulai booking online</div>
               <h1>Buat akun untuk akses booking lebih cepat.</h1>
               <p>Data kamu dipakai untuk konfirmasi reservasi dan mempermudah proses pemesanan berikutnya.</p>
-              <div class="mini-schedule mt-4">
-                <div><span>Daftar akun</span><b class="text-success">1 menit</b></div>
-                <div><span>Pilih jadwal</span><b class="text-warning">Realtime</b></div>
-                <div><span>Konfirmasi</span><b class="text-info">Online</b></div>
-              </div>
             </div>
           </div>
 
