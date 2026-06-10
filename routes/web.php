@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\FacilityController;
+use App\Http\Controllers\Admin\FinanceReportController;
 use App\Http\Controllers\Admin\ReservationController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookingController;
@@ -50,6 +51,9 @@ Route::prefix('admin')->middleware('admin')->group(function () {
 
     Route::get('/reservations', [ReservationController::class, 'index'])->name('admin.reservations.index');
     Route::get('/reservations/{reservation}', [ReservationController::class, 'show'])->name('admin.reservations.show');
+
+    Route::get('/reports/finance', [FinanceReportController::class, 'index'])->name('admin.reports.finance');
+    Route::get('/reports/finance/export', [FinanceReportController::class, 'export'])->name('admin.reports.finance.export');
     Route::patch('/reservations/{reservation}/status', [ReservationController::class, 'updateStatus'])->name('admin.reservations.updateStatus');
     Route::delete('/reservations/{reservation}', [ReservationController::class, 'destroy'])->name('admin.reservations.destroy');
 });

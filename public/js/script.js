@@ -10,7 +10,8 @@ let selectedFacility = "Badminton";
 let currentDate = new Date();
 let selectedDate = new Date();
 
-// Utility: save and load logged user
+const getCsrfToken = () => document.querySelector('meta[name="csrf-token"]')?.getAttribute("content") || "";
+
 function setLoggedUser(user) {
   localStorage.setItem("loggedUser", JSON.stringify(user));
 }
@@ -21,6 +22,46 @@ function getLoggedUser() {
   } catch (e) {
     return null;
   }
+}
+
+function showAuthMessage(message, type = "info") {
+  const alertBox = document.getElementById("authAlert");
+  if (!alertBox) {
+    alert(message);
+    return;
+  }
+
+  alertBox.className = `auth-alert ${type}`;
+  alertBox.textContent = message;
+  alertBox.classList.remove("d-none");
+}
+
+function setButtonLoading(button, isLoading) {
+  if (!button) return;
+
+  const text = button.querySelector(".btn-text");
+  const loading = button.querySelector(".btn-loading");
+
+  button.disabled = isLoading;
+  if (text) text.classList.toggle("d-none", isLoading);
+  if (loading) loading.classList.toggle("d-none", !isLoading);
+}
+
+async function parseJsonResponse(response) {
+  let data = {};
+
+  try {
+    data = await response.json();
+  } catch (error) {
+    data = {};
+  }
+
+  if (!response.ok) {
+    const message = data.message || data.errors?.email?.[0] || data.errors?.password?.[0] || "Terjadi kesalahan pada server.";
+    throw new Error(message);
+  }
+
+  return data;
 }
 
 const times = [
@@ -48,60 +89,53 @@ function formatDate(date) {
   });
 }
 
-// ==========================================
-// 1. ASYNC FUNCTION RENDER SCHEDULE
-// ==========================================
+function formatDateForApi(date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
 async function renderSchedule(date) {
   if (!selectedDateLabel || !scheduleBody) return;
 
   const isLandingPage = !IS_BOOKING_PAGE;
+  const columnCount = isLandingPage ? 2 : 3;
   selectedDateLabel.textContent = `${selectedFacility} | ${formatDate(date)}`;
-
-  // Tampilkan loading state
-  scheduleBody.innerHTML = '<tr><td colspan="3" class="text-center">Memuat jadwal dari database...</td></tr>';
+  scheduleBody.innerHTML = `<tr><td colspan="${columnCount}" class="text-center py-4">Memuat jadwal dari database...</td></tr>`;
 
   try {
-    // Format tanggal ke YYYY-MM-DD untuk parameter API
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    const formattedDateStr = `${year}-${month}-${day}`;
-
-    // Tentukan ID Fasilitas (1 untuk Badminton, 2 untuk Billiard - sesuai gor_gaza.sql)
+    const formattedDateStr = formatDateForApi(date);
     const facilityId = selectedFacility === "Badminton" ? 1 : 2;
+    const response = await fetch(`/api/schedules?tanggal=${formattedDateStr}&facility_id=${facilityId}`, {
+      headers: { Accept: "application/json" },
+    });
+    const data = await parseJsonResponse(response);
+    const bookedTimes = data.booked_times || [];
 
-    // Panggil API Laravel
-    const response = await fetch(`/api/schedules?tanggal=${formattedDateStr}&facility_id=${facilityId}`);
-    const data = await response.json();
-    const bookedTimes = data.booked_times || []; 
-
-    // Render ulang tabel
     scheduleBody.innerHTML = "";
 
-    // Ambil draft dari sessionStorage untuk melihat jam apa saja yang sedang dipilih user (Multi-select)
     const draft = JSON.parse(sessionStorage.getItem("bookingDraft") || "{}");
     const selectedTimes = draft.times || [];
 
     times.forEach((time) => {
       const isBooked = bookedTimes.includes(time);
       const statusText = isBooked ? "Sudah dibooking" : "Kosong";
-      const statusClass = isBooked ? "text-danger" : "text-success";
+      const statusClass = isBooked ? "text-danger fw-bold" : "text-success fw-bold";
 
       const row = document.createElement("tr");
       row.dataset.time = time;
       row.dataset.booked = isBooked ? "1" : "0";
 
       if (isLandingPage) {
-        // Tampilan Landing Page (Hanya status)
         row.innerHTML = `
           <td>${time}</td>
           <td class="${statusClass}">${statusText}</td>
         `;
       } else {
-        // Tampilan Halaman Booking (Dengan Tombol)
         const buttonHtml = isBooked
           ? '<span class="badge bg-secondary">Penuh</span>'
-          : `<button class="btn btn-sm btn-warning selectTimeBtn" data-time="${time}">Pilih</button>`;
+          : `<button class="btn btn-sm btn-warning selectTimeBtn" type="button" data-time="${time}">Pilih</button>`;
 
         row.innerHTML = `
           <td>${time}</td>
@@ -109,7 +143,6 @@ async function renderSchedule(date) {
           <td>${buttonHtml}</td>
         `;
 
-        // Highlight jika sedang dipilih user di draft
         if (!isBooked && selectedTimes.includes(time)) {
           row.classList.add("selected");
           const selectBtn = row.querySelector(".selectTimeBtn");
@@ -120,42 +153,41 @@ async function renderSchedule(date) {
           }
         }
 
-        // Event klik untuk memilih jam (Multi-select support)
         if (!isBooked) {
           const selectBtn = row.querySelector(".selectTimeBtn");
-          selectBtn.addEventListener("click", (e) => {
-            e.stopPropagation();
+          if (selectBtn) {
+            selectBtn.addEventListener("click", (e) => {
+              e.stopPropagation();
 
-            const currentTimes = selectedTimes.includes(time)
-              ? selectedTimes.filter((t) => t !== time) // Hapus jika sudah ada
-              : [...selectedTimes, time]; // Tambah jika belum ada
+              const activeDraft = JSON.parse(sessionStorage.getItem("bookingDraft") || "{}");
+              const activeTimes = activeDraft.times || [];
+              const currentTimes = activeTimes.includes(time)
+                ? activeTimes.filter((t) => t !== time)
+                : [...activeTimes, time];
 
-            // Update sessionStorage draft
-            const draftUpdate = JSON.parse(sessionStorage.getItem("bookingDraft") || "{}");
-            draftUpdate.type = selectedFacility;
-            draftUpdate.facility_id = facilityId; 
-            draftUpdate.date = formattedDateStr; 
-            draftUpdate.times = currentTimes;
-            sessionStorage.setItem("bookingDraft", JSON.stringify(draftUpdate));
+              activeDraft.type = selectedFacility;
+              activeDraft.facility_id = facilityId;
+              activeDraft.date = formattedDateStr;
+              activeDraft.times = currentTimes;
+              sessionStorage.setItem("bookingDraft", JSON.stringify(activeDraft));
 
-            renderSchedule(date); // Refresh tampilan baris
-          });
+              renderSchedule(date);
+            });
+          }
         }
       }
 
       scheduleBody.appendChild(row);
     });
-
   } catch (error) {
     console.error("Gagal mengambil jadwal:", error);
-    scheduleBody.innerHTML = '<tr><td colspan="3" class="text-center text-danger">Gagal memuat jadwal dari server. Pastikan server berjalan.</td></tr>';
+    scheduleBody.innerHTML = `<tr><td colspan="${columnCount}" class="text-center text-danger py-4">Gagal memuat jadwal. Pastikan server Laravel dan database sudah berjalan.</td></tr>`;
   }
 }
 
-// ==========================================
-// 2. RENDER CALENDAR
-// ==========================================
 function renderCalendar(date) {
+  if (!monthYear || !calendarDays) return;
+
   const year = date.getFullYear();
   const month = date.getMonth();
   const isLandingPage = !IS_BOOKING_PAGE;
@@ -204,7 +236,9 @@ function renderCalendar(date) {
   }
 }
 
-if (prevMonth && nextMonth) {
+function initCalendar() {
+  if (!prevMonth || !nextMonth || !monthYear || !calendarDays) return;
+
   prevMonth.addEventListener("click", () => {
     currentDate.setMonth(currentDate.getMonth() - 1);
     renderCalendar(currentDate);
@@ -219,43 +253,42 @@ if (prevMonth && nextMonth) {
   renderSchedule(selectedDate);
 }
 
-// ==========================================
-// 3. EVENT LISTENERS UTAMA & KONFIRMASI
-// ==========================================
-document.addEventListener("DOMContentLoaded", () => {
-  // Pilihan Fasilitas Badminton / Billiard
+function initFacilitySwitcher() {
   const showBadminton = document.getElementById("showBadminton");
   const showBilliard = document.getElementById("showBilliard");
 
-  if (showBadminton && showBilliard) {
-    showBadminton.addEventListener("click", () => {
-      selectedFacility = "Badminton";
-      showBadminton.classList.add("btn-warning", "active-facility");
-      showBadminton.classList.remove("btn-outline-warning");
-      showBilliard.classList.remove("btn-warning", "active-facility");
-      showBilliard.classList.add("btn-outline-warning");
-      renderSchedule(selectedDate);
-    });
+  if (!showBadminton || !showBilliard) return;
 
-    showBilliard.addEventListener("click", () => {
-      selectedFacility = "Billiard";
-      showBilliard.classList.add("btn-warning", "active-facility");
-      showBilliard.classList.remove("btn-outline-warning");
-      showBadminton.classList.remove("btn-warning", "active-facility");
-      showBadminton.classList.add("btn-outline-warning");
-      renderSchedule(selectedDate);
-    });
-  }
+  showBadminton.addEventListener("click", () => {
+    selectedFacility = "Badminton";
+    showBadminton.classList.add("btn-warning", "active-facility");
+    showBadminton.classList.remove("btn-outline-warning");
+    showBilliard.classList.remove("btn-warning", "active-facility");
+    showBilliard.classList.add("btn-outline-warning");
+    renderSchedule(selectedDate);
+  });
 
-  // Booking page: choose type di awal
+  showBilliard.addEventListener("click", () => {
+    selectedFacility = "Billiard";
+    showBilliard.classList.add("btn-warning", "active-facility");
+    showBilliard.classList.remove("btn-outline-warning");
+    showBadminton.classList.remove("btn-warning", "active-facility");
+    showBadminton.classList.add("btn-outline-warning");
+    renderSchedule(selectedDate);
+  });
+}
+
+function initBookingFlow() {
   const chooseBadminton = document.getElementById("chooseBadminton");
   const chooseBilliard = document.getElementById("chooseBilliard");
+
   if (chooseBadminton) {
     chooseBadminton.addEventListener("click", () => {
       sessionStorage.setItem("bookingDraft", JSON.stringify({ type: "Badminton", facility_id: 1 }));
       window.location.href = "/booking-schedule";
     });
   }
+
   if (chooseBilliard) {
     chooseBilliard.addEventListener("click", () => {
       sessionStorage.setItem("bookingDraft", JSON.stringify({ type: "Billiard", facility_id: 2 }));
@@ -263,7 +296,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Lanjut dari jadwal ke halaman konfirmasi
   const continueBtn = document.getElementById("continueToConfirm");
   if (continueBtn) {
     continueBtn.addEventListener("click", () => {
@@ -275,163 +307,226 @@ document.addEventListener("DOMContentLoaded", () => {
       window.location.href = "/booking-confirm";
     });
   }
+}
 
-  // Konfirmasi Booking Page Render Summary
+function initBookingSummary() {
   const bookingSummary = document.getElementById("bookingSummary");
-  if (bookingSummary) {
-    const draft = JSON.parse(sessionStorage.getItem("bookingDraft") || "{}");
-    const times = draft.times || [];
+  if (!bookingSummary) return;
 
-    bookingSummary.innerHTML = "";
-    bookingSummary.innerHTML += `<li class="list-group-item">Tipe: ${draft.type || "-"}</li>`;
-    bookingSummary.innerHTML += `<li class="list-group-item">Tanggal: ${draft.date ? new Date(draft.date).toLocaleDateString("id-ID") : "-"}</li>`;
-    
-    if (times.length > 0) {
-      const timesHtml = times.map(t => `<span class="badge bg-warning text-dark me-2 mb-2">${t}</span>`).join("");
-      bookingSummary.innerHTML += `<li class="list-group-item"><strong>Jam (${times.length} sesi):</strong><br/><div class="mt-2">${timesHtml}</div></li>`;
-    } else {
-      bookingSummary.innerHTML += `<li class="list-group-item">Jam: -</li>`;
-    }
+  const draft = JSON.parse(sessionStorage.getItem("bookingDraft") || "{}");
+  const selectedDraftTimes = draft.times || [];
 
-    const user = getLoggedUser();
-    const userSummary = document.getElementById("userSummary");
-    userSummary.innerHTML = "";
-    if (user) {
-      userSummary.innerHTML += `<li class="list-group-item">Nama: ${user.name}</li>`;
-      userSummary.innerHTML += `<li class="list-group-item">Email: ${user.email}</li>`;
-      userSummary.innerHTML += `<li class="list-group-item">Nomor Telepon: ${user.phone || "-"}</li>`;
-    } else {
-      userSummary.innerHTML += `<li class="list-group-item text-danger">Pengguna belum login! Silakan login terlebih dahulu.</li>`;
-    }
+  bookingSummary.innerHTML = "";
+  bookingSummary.innerHTML += `<li class="list-group-item">Tipe: ${draft.type || "-"}</li>`;
+  bookingSummary.innerHTML += `<li class="list-group-item">Tanggal: ${draft.date ? new Date(draft.date).toLocaleDateString("id-ID") : "-"}</li>`;
+
+  if (selectedDraftTimes.length > 0) {
+    const timesHtml = selectedDraftTimes.map((t) => `<span class="badge bg-warning text-dark me-2 mb-2">${t}</span>`).join("");
+    bookingSummary.innerHTML += `<li class="list-group-item"><strong>Jam (${selectedDraftTimes.length} sesi):</strong><br/><div class="mt-2">${timesHtml}</div></li>`;
+  } else {
+    bookingSummary.innerHTML += `<li class="list-group-item">Jam: -</li>`;
   }
 
-  // Tombol Submit Konfirmasi Akhir
+  const user = getLoggedUser();
+  const userSummary = document.getElementById("userSummary");
+  if (!userSummary) return;
+
+  userSummary.innerHTML = "";
+  if (user) {
+    userSummary.innerHTML += `<li class="list-group-item">Nama: ${user.name}</li>`;
+    userSummary.innerHTML += `<li class="list-group-item">Email: ${user.email}</li>`;
+    userSummary.innerHTML += `<li class="list-group-item">Nomor Telepon: ${user.phone || "-"}</li>`;
+  } else {
+    userSummary.innerHTML += `<li class="list-group-item text-danger">Pengguna belum login! Silakan login terlebih dahulu.</li>`;
+  }
+}
+
+function initConfirmBooking() {
   const confirmBtn = document.getElementById("confirmBooking");
-  if (confirmBtn) {
-    confirmBtn.addEventListener("click", () => {
-      const draft = JSON.parse(sessionStorage.getItem("bookingDraft") || "{}");
-      const user = getLoggedUser();
+  if (!confirmBtn) return;
 
-      if (!user) {
-          alert("Anda harus login untuk melakukan booking!");
-          return window.location.href = "/login";
-      }
+  confirmBtn.addEventListener("click", () => {
+    const draft = JSON.parse(sessionStorage.getItem("bookingDraft") || "{}");
+    const user = getLoggedUser();
 
-      // Ubah format Array ["08:00 - 09:00", "09:00 - 10:00"] menjadi waktu_mulai dan waktu_selesai untuk Laravel
-      draft.times.sort(); 
-      const jamMulai = draft.times[0].split(" - ")[0]; // Ambil "08:00"
-      const jamSelesai = draft.times[draft.times.length - 1].split(" - ")[1]; // Ambil "10:00"
-
-      const payloadDraft = {
-          facility_id: draft.facility_id,
-          waktu_mulai: `${draft.date} ${jamMulai}:00`,
-          waktu_selesai: `${draft.date} ${jamSelesai}:00`
-      };
-
-      const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
-
-      fetch('/api/bookings', {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json',
-              'X-CSRF-TOKEN': csrfToken,
-              'Accept': 'application/json'
-          },
-          body: JSON.stringify({ draft: payloadDraft, user: user })
-      })
-      .then(response => response.json())
-      .then(data => {
-          if(data.success) {
-            document.getElementById("confirmMessage").innerHTML =
-            '<div class="alert alert-success">Booking berhasil disimpan ke database! Cek WhatsApp untuk konfirmasi.</div>';
-            sessionStorage.removeItem("bookingDraft");
-          } else {
-            alert("Gagal menyimpan: " + data.message);
-          }
-      })
-      .catch(error => {
-          console.error('Error:', error);
-          alert('Terjadi kesalahan saat menyimpan booking.');
-      });
-    });
-  }
-});
-
-// ==========================================
-// 4. FETCH API LOGIN & REGISTER (LARAVEL)
-// ==========================================
-const getCsrfToken = () => document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
-
-// Handle Register
-const registerForm = document.querySelector("form"); 
-if (registerForm && window.location.pathname.includes("register")) {
-  registerForm.addEventListener("submit", (e) => {
-    e.preventDefault();
-
-    const name = document.getElementById("regName").value;
-    const phone = document.getElementById("regPhone").value;
-    const email = document.getElementById("regEmail").value;
-    const password = document.getElementById("regPassword").value;
-    const passwordConfirm = document.getElementById("regPasswordConfirm").value;
-
-    if (password !== passwordConfirm) {
-      alert("Konfirmasi password tidak cocok!");
+    if (!user) {
+      alert("Anda harus login untuk melakukan booking!");
+      window.location.href = "/login";
       return;
     }
 
-    fetch('/api/register', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': getCsrfToken(),
-            'Accept': 'application/json'
-        },
-        body: JSON.stringify({ nama: name, no_hp: phone, email: email, password: password })
+    if (!draft.date || !draft.times || draft.times.length === 0) {
+      alert("Data booking belum lengkap. Silakan pilih tanggal dan jam terlebih dahulu.");
+      window.location.href = "/booking-schedule";
+      return;
+    }
+
+    draft.times.sort();
+    const jamMulai = draft.times[0].split(" - ")[0];
+    const jamSelesai = draft.times[draft.times.length - 1].split(" - ")[1];
+
+    const payloadDraft = {
+      facility_id: draft.facility_id,
+      waktu_mulai: `${draft.date} ${jamMulai}:00`,
+      waktu_selesai: `${draft.date} ${jamSelesai}:00`,
+    };
+
+    setButtonLoading(confirmBtn, true);
+
+    fetch("/api/bookings", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-TOKEN": getCsrfToken(),
+        Accept: "application/json",
+      },
+      body: JSON.stringify({ draft: payloadDraft, user: user }),
     })
-    .then(res => res.json())
-    .then(data => {
+      .then(parseJsonResponse)
+      .then((data) => {
         if (data.success) {
-            alert(data.message);
-            window.location.href = "/login"; 
+          const confirmMessage = document.getElementById("confirmMessage");
+          if (confirmMessage) {
+            confirmMessage.innerHTML = '<div class="alert alert-success">Booking berhasil disimpan ke database! Cek WhatsApp untuk konfirmasi.</div>';
+          } else {
+            alert("Booking berhasil disimpan ke database!");
+          }
+          sessionStorage.removeItem("bookingDraft");
         } else {
-            alert(data.message || "Registrasi Gagal");
+          alert("Gagal menyimpan: " + (data.message || "Terjadi kesalahan."));
         }
-    })
-    .catch(err => console.error("Error:", err));
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        alert(error.message || "Terjadi kesalahan saat menyimpan booking.");
+      })
+      .finally(() => setButtonLoading(confirmBtn, false));
   });
 }
 
-// Handle Login
-if (registerForm && window.location.pathname.includes("login")) {
-  registerForm.addEventListener("submit", (e) => {
-    e.preventDefault();
+function initPasswordToggle() {
+  document.querySelectorAll(".password-toggle").forEach((button) => {
+    button.addEventListener("click", () => {
+      const targetId = button.dataset.target;
+      const target = document.getElementById(targetId);
+      if (!target) return;
 
-    const email = document.getElementById("loginEmail").value;
-    const password = document.getElementById("loginPassword").value;
-
-    fetch('/api/login', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': getCsrfToken(),
-            'Accept': 'application/json'
-        },
-        body: JSON.stringify({ email: email, password: password })
-    })
-    .then(res => {
-        if (!res.ok) throw res;
-        return res.json();
-    })
-    .then(data => {
-        if (data.success) {
-            setLoggedUser(data.user); 
-            alert("Selamat datang kembali, " + data.user.name);
-            window.location.href = data.redirect || "/"; 
-        }
-    })
-    .catch(async (err) => {
-        const errorData = await err.json();
-        alert(errorData.message || "Email atau password salah.");
+      const show = target.type === "password";
+      target.type = show ? "text" : "password";
+      button.innerHTML = show ? '<i class="fa-regular fa-eye-slash"></i>' : '<i class="fa-regular fa-eye"></i>';
     });
   });
 }
+
+function initRegisterForm() {
+  const registerForm = document.getElementById("registerForm");
+  if (!registerForm) return;
+
+  registerForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const submitBtn = registerForm.querySelector("button[type='submit']");
+    const name = document.getElementById("regName")?.value.trim();
+    const phone = document.getElementById("regPhone")?.value.trim();
+    const email = document.getElementById("regEmail")?.value.trim();
+    const password = document.getElementById("regPassword")?.value;
+    const passwordConfirm = document.getElementById("regPasswordConfirm")?.value;
+
+    if (!name || !phone || !email || !password || !passwordConfirm) {
+      showAuthMessage("Semua field wajib diisi.", "error");
+      return;
+    }
+
+    if (password.length < 6) {
+      showAuthMessage("Password minimal 6 karakter.", "error");
+      return;
+    }
+
+    if (password !== passwordConfirm) {
+      showAuthMessage("Konfirmasi password tidak cocok!", "error");
+      return;
+    }
+
+    setButtonLoading(submitBtn, true);
+
+    try {
+      const response = await fetch("/api/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRF-TOKEN": getCsrfToken(),
+          Accept: "application/json",
+        },
+        body: JSON.stringify({ nama: name, no_hp: phone, email: email, password: password }),
+      });
+
+      const data = await parseJsonResponse(response);
+      showAuthMessage(data.message || "Registrasi berhasil! Silakan login.", "success");
+      setTimeout(() => {
+        window.location.href = "/login";
+      }, 900);
+    } catch (error) {
+      console.error("Register error:", error);
+      showAuthMessage(error.message || "Registrasi gagal.", "error");
+    } finally {
+      setButtonLoading(submitBtn, false);
+    }
+  });
+}
+
+function initLoginForm() {
+  const loginForm = document.getElementById("loginForm");
+  if (!loginForm) return;
+
+  loginForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const submitBtn = loginForm.querySelector("button[type='submit']");
+    const email = document.getElementById("loginEmail")?.value.trim();
+    const password = document.getElementById("loginPassword")?.value;
+
+    if (!email || !password) {
+      showAuthMessage("Email dan password wajib diisi.", "error");
+      return;
+    }
+
+    setButtonLoading(submitBtn, true);
+
+    try {
+      const response = await fetch("/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRF-TOKEN": getCsrfToken(),
+          Accept: "application/json",
+        },
+        body: JSON.stringify({ email: email, password: password }),
+      });
+
+      const data = await parseJsonResponse(response);
+      if (data.success) {
+        setLoggedUser(data.user);
+        showAuthMessage(`Selamat datang kembali, ${data.user.name}. Mengalihkan halaman...`, "success");
+        setTimeout(() => {
+          window.location.href = data.redirect || "/";
+        }, 650);
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      showAuthMessage(error.message || "Email atau password salah.", "error");
+    } finally {
+      setButtonLoading(submitBtn, false);
+    }
+  });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  initCalendar();
+  initFacilitySwitcher();
+  initBookingFlow();
+  initBookingSummary();
+  initConfirmBooking();
+  initPasswordToggle();
+  initRegisterForm();
+  initLoginForm();
+});
