@@ -49,9 +49,27 @@
             </li>
           </ul>
 
-          <div class="nav-auth">
-            <a class="btn btn-book" href="/login">Login / Daftar</a>
-          </div>
+<div class="nav-auth d-flex gap-2">
+  @if(session('auth_user.role') === 'admin')
+    <a class="btn btn-outline-light rounded-pill px-3" href="/admin/dashboard">Admin</a>
+    
+    <form action="/logout" method="POST" class="d-inline">
+      @csrf
+      <button type="submit" class="btn btn-danger rounded-pill px-3">Logout</button>
+    </form>
+
+  @elseif(session('auth_user'))
+    <a class="btn btn-outline-light rounded-pill px-3" href="/booking">Booking</a>
+    
+    <form action="/logout" method="POST" class="d-inline">
+      @csrf
+      <button type="submit" class="btn btn-danger rounded-pill px-3">Logout</button>
+    </form>
+
+  @else
+    <a class="btn btn-book" href="/login">Login / Daftar</a>
+  @endif
+</div>
         </div>
       </div>
     </nav>

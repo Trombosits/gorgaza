@@ -239,6 +239,29 @@ function renderCalendar(date) {
 function initCalendar() {
   if (!prevMonth || !nextMonth || !monthYear || !calendarDays) return;
 
+  // 🌟 PERBAIKAN DI SINI: Ambil draft dari sessionStorage jika ada
+  const draft = JSON.parse(sessionStorage.getItem("bookingDraft") || "{}");
+  if (draft.type) {
+    selectedFacility = draft.type; // Set variabel global sesuai fasilitas terpilih (Badminton / Billiard)
+    
+    // Opsional: Sinkronkan status aktif tombol switcher (jika tombol switcher ada di halaman tersebut)
+    const showBadminton = document.getElementById("showBadminton");
+    const showBilliard = document.getElementById("showBilliard");
+    if (showBadminton && showBilliard) {
+      if (selectedFacility === "Billiard") {
+        showBilliard.classList.add("btn-warning", "active-facility");
+        showBilliard.classList.remove("btn-outline-warning");
+        showBadminton.classList.remove("btn-warning", "active-facility");
+        showBadminton.classList.add("btn-outline-warning");
+      } else {
+        showBadminton.classList.add("btn-warning", "active-facility");
+        showBadminton.classList.remove("btn-outline-warning");
+        showBilliard.classList.remove("btn-warning", "active-facility");
+        showBilliard.classList.add("btn-outline-warning");
+      }
+    }
+  }
+
   prevMonth.addEventListener("click", () => {
     currentDate.setMonth(currentDate.getMonth() - 1);
     renderCalendar(currentDate);
@@ -387,11 +410,17 @@ function initConfirmBooking() {
         if (data.success) {
           const confirmMessage = document.getElementById("confirmMessage");
           if (confirmMessage) {
-            confirmMessage.innerHTML = '<div class="alert alert-success">Booking berhasil disimpan ke database! Cek WhatsApp untuk konfirmasi.</div>';
-          } else {
-            alert("Booking berhasil disimpan ke database!");
+            confirmMessage.innerHTML = '<div class="alert alert-success"><i class="fas fa-spinner fa-spin me-2"></i> Booking berhasil! Mengalihkan ke halaman pembayaran...</div>';
           }
+
+          // 🌟 HAPUS DRAFT AGAR TIDAK DOUBLE BOOKING
           sessionStorage.removeItem("bookingDraft");
+
+          // 🌟 ALUR BARU: Pindah ke halaman pembayaran dengan membawa ID Transaksi
+          setTimeout(() => {
+            window.location.href = `/pembayaran/${data.transaction_id}`;
+          }, 1500); // Memberikan jeda 1.5 detik agar user sempat membaca pesan sukses
+          
         } else {
           alert("Gagal menyimpan: " + (data.message || "Terjadi kesalahan."));
         }
