@@ -76,7 +76,7 @@
                     <div class="col-md-6">
                         <div class="p-3 rounded-4 border h-100">
                             <div class="fw-bold mb-3">Status Booking</div>
-                            @foreach(['Booking','Confirmed','Completed','Cancelled'] as $status)
+                            @foreach(['Booking','Completed','Cancelled'] as $status)
                                 @php($total = $statusSummary[$status] ?? 0)
                                 <div class="d-flex justify-content-between align-items-center mb-2">
                                     <span class="badge-soft badge-{{ strtolower($status) }}">{{ $status }}</span>

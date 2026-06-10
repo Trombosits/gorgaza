@@ -148,8 +148,22 @@ async function renderSchedule(date) {
     const draft = JSON.parse(sessionStorage.getItem("bookingDraft") || "{}");
     const selectedTimes = draft.times || [];
 
+    const isTimeBooked = (time) => {
+      return bookedTimes.some((booked) => {
+        if (typeof booked === "string") {
+          return booked === time;
+        }
+
+        if (booked && booked.start && booked.end) {
+          return `${booked.start} - ${booked.end}` === time;
+        }
+
+        return false;
+      });
+    };
+
     times.forEach((time) => {
-      const isBooked = bookedTimes.includes(time);
+      const isBooked = isTimeBooked(time);
       const statusText = isBooked ? "Sudah dibooking" : "Kosong";
       const statusClass = isBooked ? "text-danger fw-bold" : "text-success fw-bold";
 
