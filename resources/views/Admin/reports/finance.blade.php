@@ -6,15 +6,15 @@
 <div class="card content-card mb-4">
     <div class="card-body p-4">
         <form class="row g-3 align-items-end" method="GET" action="{{ route('admin.reports.finance') }}">
-            <div class="col-md-3">
+            <div class="col-md-6 col-lg-2">
                 <label class="form-label fw-bold">Dari Tanggal</label>
                 <input type="date" name="start_date" value="{{ $startDate }}" class="form-control">
             </div>
-            <div class="col-md-3">
+            <div class="col-md-6 col-lg-2">
                 <label class="form-label fw-bold">Sampai Tanggal</label>
                 <input type="date" name="end_date" value="{{ $endDate }}" class="form-control">
             </div>
-            <div class="col-md-3">
+            <div class="col-md-6 col-lg-3">
                 <label class="form-label fw-bold">Status Pembayaran</label>
                 <select name="status_pembayaran" class="form-select">
                     <option value="">Semua Status</option>
@@ -23,9 +23,20 @@
                     @endforeach
                 </select>
             </div>
-            <div class="col-md-3 d-flex gap-2">
-                <button class="btn btn-gaza rounded-4 flex-fill"><i class="fa-solid fa-filter me-2"></i>Filter</button>
-                <a href="{{ route('admin.reports.finance') }}" class="btn btn-soft rounded-4">Reset</a>
+            <div class="col-md-6 col-lg-3">
+                <label class="form-label fw-bold">Metode</label>
+                <select name="metode_pembayaran" class="form-select">
+                    <option value="">Semua Metode</option>
+                    @foreach(['QRIS / GoPay','Cash / Bayar di Tempat','Pay On Place'] as $item)
+                        <option value="{{ $item }}" {{ ($method ?? '') === $item ? 'selected' : '' }}>{{ $item }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-md-6 col-lg-1 d-flex gap-2">
+                <button class="btn btn-gaza rounded-4 w-100" title="Filter"><i class="fa-solid fa-filter"></i></button>
+            </div>
+            <div class="col-md-6 col-lg-1 d-flex gap-2">
+                <a href="{{ route('admin.reports.finance') }}" class="btn btn-soft rounded-4 w-100">Reset</a>
             </div>
         </form>
     </div>
@@ -67,7 +78,7 @@
 </div>
 
 <div class="row g-3 mb-4">
-    <div class="col-lg-5">
+    <div class="col-lg-4">
         <div class="card content-card h-100">
             <div class="card-body p-4">
                 <h5 class="section-title">Rekap Status Pembayaran</h5>
@@ -91,7 +102,31 @@
             </div>
         </div>
     </div>
-    <div class="col-lg-7">
+    <div class="col-lg-4">
+        <div class="card content-card h-100">
+            <div class="card-body p-4">
+                <h5 class="section-title">Rekap Metode Pembayaran</h5>
+                <div class="section-subtitle mb-3">Perbandingan QRIS/GoPay dan cash.</div>
+                <div class="table-responsive">
+                    <table class="table align-middle mb-0">
+                        <thead><tr><th>Metode</th><th>Transaksi</th><th>Nominal</th></tr></thead>
+                        <tbody>
+                            @forelse($paymentMethodSummary as $row)
+                                <tr>
+                                    <td><span class="badge-soft badge-booking">{{ $row->metode_pembayaran ?? 'Pay On Place' }}</span></td>
+                                    <td class="fw-bold">{{ $row->total }}</td>
+                                    <td class="fw-bold">Rp {{ number_format($row->nominal, 0, ',', '.') }}</td>
+                                </tr>
+                            @empty
+                                <tr><td colspan="3" class="text-center text-muted py-4">Belum ada data.</td></tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
         <div class="card content-card h-100">
             <div class="card-body p-4">
                 <h5 class="section-title">Pendapatan per Fasilitas</h5>
@@ -156,7 +191,7 @@
         </div>
         <div class="table-responsive">
             <table class="table align-middle mb-0">
-                <thead><tr><th>ID</th><th>Tanggal</th><th>Customer</th><th>Booking</th><th>Status</th><th>Total</th></tr></thead>
+                <thead><tr><th>ID</th><th>Tanggal</th><th>Customer</th><th>Booking</th><th>Metode</th><th>Status</th><th>Total</th></tr></thead>
                 <tbody>
                     @forelse($transactions as $transaction)
                         <tr>
@@ -173,11 +208,12 @@
                                     <span class="text-muted">-</span>
                                 @endforelse
                             </td>
+                            <td><span class="badge-soft badge-booking">{{ $transaction->metode_pembayaran ?? 'Pay On Place' }}</span></td>
                             <td><span class="badge-soft {{ $transaction->status_pembayaran === 'Paid' ? 'badge-completed' : ($transaction->status_pembayaran === 'Pending' ? 'badge-booking' : 'badge-cancelled') }}">{{ $transaction->status_pembayaran }}</span></td>
                             <td class="fw-bold">Rp {{ number_format($transaction->total_tagihan, 0, ',', '.') }}</td>
                         </tr>
                     @empty
-                        <tr><td colspan="6"><div class="empty-state"><i class="fa-solid fa-file-invoice-dollar"></i><div>Belum ada transaksi pada filter ini.</div></div></td></tr>
+                        <tr><td colspan="7"><div class="empty-state"><i class="fa-solid fa-file-invoice-dollar"></i><div>Belum ada transaksi pada filter ini.</div></div></td></tr>
                     @endforelse
                 </tbody>
             </table>

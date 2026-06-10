@@ -57,6 +57,7 @@ class BookingController extends Controller
                 'user_id' => $user->id,
                 'total_tagihan' => $subtotal,
                 'status_pembayaran' => 'Pending',
+                'metode_pembayaran' => $draft['metode_pembayaran'] ?? 'Pay On Place',
                 'waktu_transaksi' => now(),
             ]);
 

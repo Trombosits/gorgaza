@@ -27,31 +27,29 @@
           <ul class="navbar-nav ms-auto me-3">
             <li class="nav-item"><a class="nav-link" href="#hero">Beranda</a></li>
             <li class="nav-item"><a class="nav-link" href="#fasilitas">Fasilitas</a></li>
+            <li class="nav-item"><a class="nav-link" href="#harga">Harga</a></li>
+            <li class="nav-item"><a class="nav-link" href="#menu-kafe">Menu Kafe</a></li>
             <li class="nav-item"><a class="nav-link" href="#jadwal">Jadwal</a></li>
             <li class="nav-item"><a class="nav-link" href="#lokasi">Lokasi</a></li>
           </ul>
 
           <div class="nav-auth d-flex gap-2">
-  @if(session('auth_user.role') === 'admin')
-    <a class="btn btn-outline-light rounded-pill px-3" href="/admin/dashboard">Admin</a>
-    
-    <form action="/logout" method="POST" class="d-inline">
-      @csrf
-      <button type="submit" class="btn btn-danger rounded-pill px-3">Logout</button>
-    </form>
-
-  @elseif(session('auth_user'))
-    <a class="btn btn-outline-light rounded-pill px-3" href="/booking">Booking</a>
-    
-    <form action="/logout" method="POST" class="d-inline">
-      @csrf
-      <button type="submit" class="btn btn-danger rounded-pill px-3">Logout</button>
-    </form>
-
-  @else
-    <a class="btn btn-book" href="/login">Login / Daftar</a>
-  @endif
-</div>
+            @if(session('auth_user.role') === 'admin')
+              <a class="btn btn-outline-light rounded-pill px-3" href="/admin/dashboard">Admin</a>
+              <form action="/logout" method="POST" class="d-inline">
+                @csrf
+                <button type="submit" class="btn btn-danger rounded-pill px-3">Logout</button>
+              </form>
+            @elseif(session('auth_user'))
+              <a class="btn btn-outline-light rounded-pill px-3" href="/booking">Booking</a>
+              <form action="/logout" method="POST" class="d-inline">
+                @csrf
+                <button type="submit" class="btn btn-danger rounded-pill px-3">Logout</button>
+              </form>
+            @else
+              <a class="btn btn-book" href="/login">Login / Daftar</a>
+            @endif
+          </div>
         </div>
       </div>
     </nav>
@@ -60,7 +58,7 @@
       <div class="hero-overlay"></div>
       <div class="container position-relative">
         <div class="row align-items-center g-5">
-          <div class="col-lg-7">
+          <div class="col-lg-8">
             <h1>Booking <span>Lapangan</span> & <span>Billiard</span> Jadi Lebih Mudah</h1>
             <p>
               GOR GAZA menyediakan lapangan badminton, meja billiard premium, dan area santai dalam satu tempat. Cek jadwal, pilih sesi, lalu booking tanpa antre.
@@ -69,22 +67,18 @@
               <a href="/booking" class="btn btn-warning btn-lg hero-cta">
                 <i class="fas fa-calendar-check me-2"></i>Booking Sekarang
               </a>
-              <a href="#jadwal" class="btn btn-outline-light btn-lg hero-cta-outline">
-                <i class="fa-solid fa-clock me-2"></i>Cek Jadwal
+              <a href="#harga" class="btn btn-outline-light btn-lg hero-cta-outline">
+                <i class="fa-solid fa-tags me-2"></i>Lihat Harga
               </a>
             </div>
             <div class="hero-stats mt-5">
               <div>
-                <strong>Berbagai Macam jenis Fasilitas</strong>
+                <strong>Badminton & Billiard</strong>
+                <span>Booking online</span>
               </div>
               <div>
                 <strong>08-22</strong>
                 <span>Jam operasional</span>
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-5 d-none d-lg-block">
-                </div>
               </div>
             </div>
           </div>
@@ -103,22 +97,19 @@
         <div class="row align-items-center g-5">
           <div class="col-lg-6">
             <h2>Lapangan Badminton</h2>
-            <p>
-              Lapangan badminton GOR GAZA menggunakan lantai berkualitas dengan pencahayaan terang dan nyaman.
-            </p>
+            <p>Lapangan badminton GOR GAZA menggunakan lantai berkualitas dengan pencahayaan terang dan nyaman.</p>
             <ul class="facility-list">
               <li><i class="fa-solid fa-circle-check"></i> Lapangan standar pertandingan</li>
               <li><i class="fa-solid fa-circle-check"></i> Pencahayaan LED terang</li>
-              <li><i class="fa-solid fa-circle-check"></i> Ruang tunggu pemain</li>
+              <li><i class="fa-solid fa-circle-check"></i> Tersedia sewa raket dan kok</li>
             </ul>
           </div>
-
           <div class="col-lg-6">
             <div class="gallery-grid">
-              <img src="/images/bulutangkis-2.jpeg" alt="Lapangan badminton" />
-              <img src="/images/bulutangkis-3.jpeg" alt="Badminton indoor" />
-              <img src="/images/bulutangkis-4.jpeg" alt="Permainan badminton" />
-              <img src="/images/bulutangkis-5.jpeg" alt="Olahraga indoor" />
+              <img src="/images/Bulutangkis-2.jpeg" alt="Lapangan badminton" />
+              <img src="/images/Bulutangkis-3.jpeg" alt="Badminton indoor" />
+              <img src="/images/Bulutangkis-4.jpeg" alt="Permainan badminton" />
+              <img src="/images/Bulutangkis-5.jpeg" alt="Olahraga indoor" />
             </div>
           </div>
         </div>
@@ -130,9 +121,7 @@
         <div class="row align-items-center g-5">
           <div class="col-lg-6 order-lg-2">
             <h2>Meja Billiard Premium</h2>
-            <p>
-              Nikmati pengalaman bermain billiard dengan meja profesional, pencahayaan eksklusif, dan suasana yang nyaman untuk santai bersama teman.
-            </p>
+            <p>Nikmati pengalaman bermain billiard dengan meja profesional, pencahayaan eksklusif, dan suasana yang nyaman untuk santai bersama teman.</p>
             <ul class="facility-list">
               <li><i class="fa-solid fa-circle-check"></i> Meja standar profesional</li>
               <li><i class="fa-solid fa-circle-check"></i> Cue stick berkualitas</li>
@@ -140,13 +129,12 @@
               <li><i class="fa-solid fa-circle-check"></i> Area santai dan lounge</li>
             </ul>
           </div>
-
           <div class="col-lg-6 order-lg-1">
             <div class="gallery-grid">
-              <img src="/images/billiard-1.jpeg" alt="Billiard premium" />
-              <img src="/images/billiard-2.jpeg" alt="Meja billiard" />
-              <img src="/images/billiard-3.jpeg" alt="Billiard room" />
-              <img src="/images/billiard-4.jpeg" alt="Billiard lounge" />
+              <img src="/images/Billiard-1.jpeg" alt="Billiard premium" />
+              <img src="/images/Billiard-2.jpeg" alt="Meja billiard" />
+              <img src="/images/Billiard-3.jpeg" alt="Billiard room" />
+              <img src="/images/Billiard-4.jpeg" alt="Billiard lounge" />
             </div>
           </div>
         </div>
@@ -157,10 +145,8 @@
       <div class="container">
         <div class="row align-items-center g-5">
           <div class="col-lg-6">
-            <h2>Fasilitas</h2>
-            <p>
-              Selain fasilitas olahraga, kami juga menyediakan berbagai fasilitas lainnya untuk kenyamanan Anda.
-            </p>
+            <h2>Fasilitas Pendukung</h2>
+            <p>Selain fasilitas olahraga, kami juga menyediakan berbagai fasilitas lainnya untuk kenyamanan Anda.</p>
             <div class="menu-list">
               <div class="menu-item"><span>Mushola</span></div>
               <div class="menu-item"><span>Toko</span></div>
@@ -169,17 +155,117 @@
               <div class="menu-item"><span>Parkiran</span></div>
             </div>
           </div>
-
           <div class="col-lg-6">
             <div class="gallery-grid">
-              <img src="/images/Mushola-1.jpeg" alt="Cafe" />
-              <img src="/images/Kursi.jpeg" alt="Cafe interior" />
-              <img src="/images/Toko.jpeg" alt="Coffee" />
-              <img src="/images/Toilet.jpeg" alt="Lounge" />
+              <img src="/images/Mushola-1.jpeg" alt="Mushola" />
+              <img src="/images/Kursi.jpeg" alt="Area duduk" />
+              <img src="/images/Toko.jpeg" alt="Toko" />
+              <img src="/images/Toilet.jpeg" alt="Toilet" />
               <img src="/images/Parkiran.jpeg" alt="Parkiran" />
-              <img src="/images/ParkiranAll.jpeg" alt="Lounge" />
+              <img src="/images/ParkiranAll.jpeg" alt="Area parkir" />
             </div>
           </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="harga" class="price-section py-5">
+      <div class="container">
+        <div class="section-title">
+          <span class="section-kicker">Informasi Harga</span>
+          <h2>Tarif sewa dan item tambahan</h2>
+          <p>Harga berikut ditampilkan sebagai informasi untuk pengunjung. Item raket dan kok dapat dikonfirmasi langsung di lokasi.</p>
+        </div>
+        <div class="row g-4">
+          <div class="col-md-6 col-xl-3">
+            <div class="price-card h-100">
+              <div class="price-icon"><i class="fa-solid fa-table-tennis-paddle-ball"></i></div>
+              <h4>Sewa Lapang GOR</h4>
+              <div class="price-value">Rp25.000<span>/jam</span></div>
+              <p>Untuk booking lapangan badminton sesuai jadwal yang tersedia.</p>
+            </div>
+          </div>
+          <div class="col-md-6 col-xl-3">
+            <div class="price-card h-100">
+              <div class="price-icon"><i class="fa-solid fa-circle-dot"></i></div>
+              <h4>Sewa Meja Billiard</h4>
+              <div class="price-value">Rp30.000<span>/jam</span></div>
+              <p>Untuk booking meja billiard sesuai jadwal yang tersedia.</p>
+            </div>
+          </div>
+          <div class="col-md-6 col-xl-3">
+            <div class="price-card h-100 muted">
+              <div class="price-icon"><i class="fa-solid fa-baseball-bat-ball"></i></div>
+              <h4>Sewa Raket</h4>
+              <div class="price-value">Rp10.000</div>
+              <p>Tambahan opsional, dibayar dan dikonfirmasi langsung di lokasi.</p>
+            </div>
+          </div>
+          <div class="col-md-6 col-xl-3">
+            <div class="price-card h-100 muted">
+              <div class="price-icon"><i class="fa-solid fa-feather"></i></div>
+              <h4>Kok Badminton</h4>
+              <div class="price-value">Rp10.000<span>/buah</span></div>
+              <p>Pembelian kok dapat dilakukan langsung di lokasi GOR GAZA.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="menu-kafe" class="cafe-menu-section py-5">
+      <div class="container">
+        <div class="section-title">
+          <span class="section-kicker">Menu Kafe</span>
+          <h2>Pilihan makanan dan minuman</h2>
+          <p>Menu kafe ditampilkan sebagai informasi. Untuk saat ini pemesanan menu belum tersedia melalui sistem booking online.</p>
+        </div>
+        <div class="row g-4">
+          <div class="col-lg-4">
+            <div class="menu-card h-100">
+              <h4><i class="fa-solid fa-bowl-food me-2"></i>Main Course</h4>
+              <div class="menu-note">Dadar / ceplok / orek telor</div>
+              <div class="menu-row"><span>Original</span><strong>Rp8.000</strong></div>
+              <div class="menu-row"><span>Cumi</span><strong>Rp13.000</strong></div>
+              <div class="menu-row"><span>Tongkol</span><strong>Rp13.000</strong></div>
+              <div class="menu-row"><span>Teri</span><strong>Rp13.000</strong></div>
+              <div class="menu-row"><span>Paru</span><strong>Rp13.000</strong></div>
+              <div class="menu-row"><span>Daging</span><strong>Rp13.000</strong></div>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="menu-card h-100">
+              <h4><i class="fa-solid fa-utensils me-2"></i>Mie & Extra</h4>
+              <div class="menu-row"><span>Mie goreng polos</span><strong>Konfirmasi</strong></div>
+              <div class="menu-row"><span>Mie goreng telor</span><strong>Konfirmasi</strong></div>
+              <div class="menu-row"><span>Mie kuah polos</span><strong>Konfirmasi</strong></div>
+              <div class="menu-row"><span>Mie kuah telor</span><strong>Konfirmasi</strong></div>
+              <div class="menu-row"><span>Nasi</span><strong>Rp5.000</strong></div>
+              <div class="menu-row"><span>Nasi setengah</span><strong>Rp3.000</strong></div>
+              <div class="menu-row"><span>Telor dadar/ceplok/orek</span><strong>Rp5.000</strong></div>
+              <div class="menu-row"><span>Oseng sambal</span><strong>Rp5.000</strong></div>
+              <div class="menu-row"><span>Tahu / Tempe</span><strong>Rp2.000</strong></div>
+              <div class="menu-row"><span>Sambal bawang / Kerupuk</span><strong>Rp2.000</strong></div>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="menu-card h-100">
+              <h4><i class="fa-solid fa-mug-saucer me-2"></i>Minuman & Snack</h4>
+              <div class="menu-row"><span>Air mineral</span><strong>Rp3.000</strong></div>
+              <div class="menu-row"><span>Isoplus / Floridina / Teh Pucuk</span><strong>Rp4.000</strong></div>
+              <div class="menu-row"><span>Teh manis</span><strong>Rp4.000</strong></div>
+              <div class="menu-row"><span>Lemon tea / Lemongrass tea</span><strong>Rp6.000</strong></div>
+              <div class="menu-row"><span>Teh tarik / Jahe</span><strong>Rp6.000</strong></div>
+              <div class="menu-row"><span>Jus jeruk/strawberry/mangga</span><strong>Rp8.000</strong></div>
+              <div class="menu-row"><span>Jus alpukat</span><strong>Rp10.000</strong></div>
+              <div class="menu-row"><span>Kopi hot/cold</span><strong>Konfirmasi</strong></div>
+              <div class="menu-row"><span>Sosis kentang</span><strong>Konfirmasi</strong></div>
+            </div>
+          </div>
+        </div>
+        <div class="alert cafe-alert mt-4 mb-0">
+          <i class="fa-solid fa-circle-info me-2"></i>
+          Cafe sudah bisa diinformasikan di website, tetapi belum masuk ke sistem booking online.
         </div>
       </div>
     </section>
@@ -255,7 +341,7 @@
       </div>
     </footer>
 
-    <a href="https://wa.me/6281234567890" class="whatsapp-float" target="_blank" rel="noopener" aria-label="Hubungi WhatsApp GOR GAZA">
+    <a href="https://wa.me/6282215309779" class="whatsapp-float" target="_blank" rel="noopener" aria-label="Hubungi WhatsApp GOR GAZA">
       <i class="fab fa-whatsapp"></i>
     </a>
 

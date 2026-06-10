@@ -906,3 +906,230 @@ footer p {
     flex-direction: column;
   }
 }
+
+/* === GOR GAZA pricing, cafe menu, and payment polish === */
+.hero-side-card {
+  background: rgba(15, 23, 42, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 28px;
+  padding: 30px;
+  color: #fff;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(18px);
+}
+
+.hero-side-icon {
+  width: 58px;
+  height: 58px;
+  display: grid;
+  place-items: center;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #facc15, #f59e0b);
+  color: #111827;
+  font-size: 24px;
+  margin-bottom: 18px;
+}
+
+.hero-side-card h3 {
+  font-weight: 900;
+  margin-bottom: 8px;
+}
+
+.hero-side-card p {
+  color: rgba(255, 255, 255, 0.72);
+  margin-bottom: 20px;
+}
+
+.hero-side-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.hero-side-row strong {
+  color: #facc15;
+}
+
+.price-section,
+.cafe-menu-section {
+  background: #f8fafc;
+}
+
+.price-card,
+.menu-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 26px;
+  padding: 26px;
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.08);
+}
+
+.price-card.muted {
+  background: linear-gradient(180deg, #ffffff, #fffbeb);
+}
+
+.price-icon {
+  width: 52px;
+  height: 52px;
+  display: grid;
+  place-items: center;
+  border-radius: 18px;
+  background: #fef3c7;
+  color: #92400e;
+  font-size: 22px;
+  margin-bottom: 16px;
+}
+
+.price-card h4,
+.menu-card h4 {
+  color: #111827;
+  font-weight: 900;
+  margin-bottom: 12px;
+}
+
+.price-value {
+  color: #f59e0b;
+  font-size: 28px;
+  font-weight: 900;
+  margin-bottom: 10px;
+}
+
+.price-value span {
+  color: #64748b;
+  font-size: 14px;
+  font-weight: 700;
+  margin-left: 4px;
+}
+
+.price-card p,
+.menu-note {
+  color: #64748b;
+  margin-bottom: 0;
+}
+
+.menu-note {
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+
+.menu-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 11px 0;
+  border-bottom: 1px dashed #e5e7eb;
+  color: #334155;
+}
+
+.menu-row:last-child {
+  border-bottom: 0;
+}
+
+.menu-row strong {
+  color: #111827;
+  white-space: nowrap;
+}
+
+.cafe-alert {
+  border: 1px solid #fde68a;
+  background: #fffbeb;
+  color: #92400e;
+  border-radius: 18px;
+}
+
+.payment-choice-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.payment-choice {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.06);
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.payment-choice.active,
+.payment-choice:hover {
+  border-color: #facc15;
+  background: rgba(250, 204, 21, 0.12);
+}
+
+.payment-choice-title {
+  font-weight: 900;
+  color: #111827;
+  margin-bottom: 6px;
+}
+
+.payment-choice p {
+  color: #64748b;
+  margin: 0;
+  font-size: 14px;
+}
+
+.payment-page {
+  min-height: 100vh;
+  background: radial-gradient(circle at top left, rgba(245, 158, 11, 0.16), transparent 32%), #eef2f7;
+}
+
+.payment-panel {
+  background: #ffffff;
+  border-radius: 30px;
+}
+
+.payment-header-icon {
+  width: 68px;
+  height: 68px;
+  border-radius: 22px;
+  display: inline-grid;
+  place-items: center;
+  background: linear-gradient(135deg, #facc15, #f59e0b);
+  color: #111827;
+  font-size: 28px;
+}
+
+.payment-summary-card,
+.qris-payment-box,
+.cash-payment-box {
+  background: #0f172a;
+  color: #ffffff;
+  border-radius: 24px;
+  padding: 22px;
+}
+
+.qris-payment-box {
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+}
+
+.cash-payment-box {
+  background: linear-gradient(135deg, #111827, #374151);
+}
+
+.qris-image {
+  width: 100%;
+  max-width: 300px;
+  border-radius: 24px;
+  background: #fff;
+  padding: 10px;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.22);
+}
+
+@media (max-width: 768px) {
+  .payment-choice-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .price-value {
+    font-size: 24px;
+  }
+}

@@ -47,6 +47,36 @@ function setButtonLoading(button, isLoading) {
   if (loading) loading.classList.toggle("d-none", !isLoading);
 }
 
+function getSelectedPaymentMethod() {
+  return document.querySelector("input[name='metode_pembayaran']:checked")?.value || "QRIS / GoPay";
+}
+
+function initPaymentMethodChoice() {
+  const options = document.querySelectorAll(".payment-method-option");
+  if (!options.length) return;
+
+  const syncActiveChoice = () => {
+    document.querySelectorAll(".payment-choice").forEach((label) => label.classList.remove("active"));
+    const checked = document.querySelector("input[name='metode_pembayaran']:checked");
+    checked?.closest(".payment-choice")?.classList.add("active");
+  };
+
+  options.forEach((option) => {
+    option.addEventListener("change", () => {
+      const draft = JSON.parse(sessionStorage.getItem("bookingDraft") || "{}");
+      draft.metode_pembayaran = getSelectedPaymentMethod();
+      sessionStorage.setItem("bookingDraft", JSON.stringify(draft));
+      syncActiveChoice();
+    });
+  });
+
+  const draft = JSON.parse(sessionStorage.getItem("bookingDraft") || "{}");
+  const savedMethod = draft.metode_pembayaran || "QRIS / GoPay";
+  const savedOption = [...options].find((option) => option.value === savedMethod);
+  if (savedOption) savedOption.checked = true;
+  syncActiveChoice();
+}
+
 async function parseJsonResponse(response) {
   let data = {};
 
@@ -350,6 +380,9 @@ function initBookingSummary() {
     bookingSummary.innerHTML += `<li class="list-group-item">Jam: -</li>`;
   }
 
+  const selectedPaymentMethod = draft.metode_pembayaran || getSelectedPaymentMethod();
+  bookingSummary.innerHTML += `<li class="list-group-item">Metode Pembayaran: <strong>${selectedPaymentMethod}</strong></li>`;
+
   const user = getLoggedUser();
   const userSummary = document.getElementById("userSummary");
   if (!userSummary) return;
@@ -392,6 +425,7 @@ function initConfirmBooking() {
       facility_id: draft.facility_id,
       waktu_mulai: `${draft.date} ${jamMulai}:00`,
       waktu_selesai: `${draft.date} ${jamSelesai}:00`,
+      metode_pembayaran: getSelectedPaymentMethod(),
     };
 
     setButtonLoading(confirmBtn, true);
@@ -410,7 +444,7 @@ function initConfirmBooking() {
         if (data.success) {
           const confirmMessage = document.getElementById("confirmMessage");
           if (confirmMessage) {
-            confirmMessage.innerHTML = '<div class="alert alert-success"><i class="fas fa-spinner fa-spin me-2"></i> Booking berhasil! Mengalihkan ke halaman pembayaran...</div>';
+            confirmMessage.innerHTML = '<div class="alert alert-success"><i class="fas fa-check-circle me-2"></i> Booking berhasil! Mengalihkan ke halaman pembayaran...</div>';
           }
 
           // 🌟 HAPUS DRAFT AGAR TIDAK DOUBLE BOOKING
@@ -554,6 +588,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initFacilitySwitcher();
   initBookingFlow();
   initBookingSummary();
+  initPaymentMethodChoice();
   initConfirmBooking();
   initPasswordToggle();
   initRegisterForm();

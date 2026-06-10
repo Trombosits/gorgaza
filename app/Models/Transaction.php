@@ -10,6 +10,7 @@ class Transaction extends Model
         'user_id',
         'total_tagihan',
         'status_pembayaran',
+        'metode_pembayaran',
         'waktu_transaksi',
     ];
 
