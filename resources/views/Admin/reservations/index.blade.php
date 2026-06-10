@@ -14,7 +14,7 @@
                 <label class="form-label fw-bold">Status Booking</label>
                 <select name="status" class="form-select">
                     <option value="">Semua Status</option>
-                    @foreach(['Booking','Confirmed','Cancelled','Completed'] as $status)
+                    @foreach(['Booking','Cancelled','Completed'] as $status)
                         <option value="{{ $status }}" {{ request('status') === $status ? 'selected' : '' }}>{{ $status }}</option>
                     @endforeach
                 </select>
@@ -37,7 +37,7 @@
         </div>
         <div class="table-responsive">
             <table class="table align-middle mb-0">
-                <thead><tr><th>ID</th><th>Customer</th><th>Fasilitas</th><th>Waktu</th><th>Status</th><th>Pembayaran</th><th>Total</th><th width="190">Aksi</th></tr></thead>
+                <thead><tr><th>ID</th><th>Customer</th><th>Fasilitas</th><th>Waktu</th><th>Status</th><th>Metode</th><th>Pembayaran</th><th>Total</th><th width="190">Aksi</th></tr></thead>
                 <tbody>
                 @forelse($reservations as $reservation)
                     @php($payment = $reservation->transaction->status_pembayaran ?? '-')
@@ -50,6 +50,7 @@
                         <td>{{ $reservation->facility->nama_fasilitas ?? '-' }}</td>
                         <td>{{ $reservation->waktu_mulai->format('d M Y H:i') }} - {{ $reservation->waktu_selesai->format('H:i') }}</td>
                         <td><span class="badge-soft badge-{{ strtolower($reservation->status_main) }}">{{ $reservation->status_main }}</span></td>
+                        <td><span class="badge-soft badge-booking">{{ $reservation->transaction->metode_pembayaran ?? 'Pay On Place' }}</span></td>
                         <td><span class="badge-soft {{ $payment === 'Paid' ? 'badge-completed' : ($payment === 'Pending' ? 'badge-booking' : 'badge-cancelled') }}">{{ $payment }}</span></td>
                         <td class="fw-bold">Rp {{ number_format($reservation->subtotal, 0, ',', '.') }}</td>
                         <td>
@@ -61,7 +62,7 @@
                         </td>
                     </tr>
                 @empty
-                    <tr><td colspan="8"><div class="empty-state"><i class="fa-regular fa-calendar-xmark"></i><div>Belum ada booking.</div></div></td></tr>
+                    <tr><td colspan="9"><div class="empty-state"><i class="fa-regular fa-calendar-xmark"></i><div>Belum ada booking.</div></div></td></tr>
                 @endforelse
                 </tbody>
             </table>

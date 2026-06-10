@@ -22,7 +22,12 @@
                             <div class="fw-bold">{{ $facility->nama_fasilitas }}</div>
                             <small class="text-muted">{{ $facility->deskripsi ?: 'Tanpa deskripsi' }}</small>
                         </td>
-                        <td>{{ $facility->jenis }}</td>
+                        <td>
+                            {{ $facility->jenis }}
+                            @if($facility->jenis === 'Cafe')
+                                <div><small class="text-muted">Belum tampil di customer</small></div>
+                            @endif
+                        </td>
                         <td class="fw-bold">Rp {{ number_format($facility->harga_per_jam, 0, ',', '.') }}</td>
                         <td>
                             @if($facility->is_active)

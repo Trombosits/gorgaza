@@ -24,6 +24,7 @@
                         <tr><th>Waktu</th><td>{{ $reservation->waktu_mulai->format('d M Y H:i') }} - {{ $reservation->waktu_selesai->format('H:i') }}</td></tr>
                         <tr><th>Subtotal</th><td class="fw-bold">Rp {{ number_format($reservation->subtotal, 0, ',', '.') }}</td></tr>
                         <tr><th>Status Booking</th><td><span class="badge-soft badge-{{ strtolower($reservation->status_main) }}">{{ $reservation->status_main }}</span></td></tr>
+                        <tr><th>Metode Pembayaran</th><td><span class="badge-soft badge-booking">{{ $reservation->transaction->metode_pembayaran ?? 'Pay On Place' }}</span></td></tr>
                         <tr><th>Status Pembayaran</th><td><span class="badge-soft {{ $reservation->transaction->status_pembayaran === 'Paid' ? 'badge-completed' : ($reservation->transaction->status_pembayaran === 'Pending' ? 'badge-booking' : 'badge-cancelled') }}">{{ $reservation->transaction->status_pembayaran }}</span></td></tr>
                     </table>
                 </div>
@@ -40,10 +41,22 @@
                     <div class="mb-3">
                         <label class="form-label fw-bold">Status Booking</label>
                         <select name="status_main" class="form-select">
-                            @foreach(['Booking','Confirmed','Cancelled','Completed'] as $status)
+                            @foreach(['Booking','Cancelled','Completed'] as $status)
                                 <option value="{{ $status }}" {{ $reservation->status_main === $status ? 'selected' : '' }}>{{ $status }}</option>
                             @endforeach
                         </select>
+                    </div>
+                    <div class="alert alert-warning rounded-4">
+                        <i class="fa-solid fa-money-bill-wave me-2"></i>
+                        Metode pembayaran: <strong>{{ $reservation->transaction->metode_pembayaran ?? 'Pay On Place' }}</strong>.
+                        @php
+                            $metodePembayaran = strtolower($reservation->transaction->metode_pembayaran ?? 'pay on place');
+                        @endphp
+                        @if(str_contains($metodePembayaran, 'qris') || str_contains($metodePembayaran, 'gopay'))
+                            Jika pembayaran online sudah masuk, ubah status pembayaran menjadi <strong>Paid</strong>.
+                        @else
+                            Jika customer sudah bayar cash setelah bermain, ubah status pembayaran menjadi <strong>Paid</strong>.
+                        @endif
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-bold">Status Pembayaran</label>

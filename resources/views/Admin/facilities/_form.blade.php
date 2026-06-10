@@ -1,7 +1,7 @@
 <div class="row g-3">
     <div class="col-md-6">
         <label class="form-label fw-bold">Nama Fasilitas</label>
-        <input type="text" name="nama_fasilitas" class="form-control" value="{{ old('nama_fasilitas', $facility->nama_fasilitas ?? '') }}" placeholder="Contoh: Lapangan Badminton 1" required>
+        <input type="text" name="nama_fasilitas" class="form-control" value="{{ old('nama_fasilitas', $facility->nama_fasilitas ?? '') }}" placeholder="Contoh: Lapangan Badminton, Biliard, Cafe" required>
     </div>
     <div class="col-md-6">
         <label class="form-label fw-bold">Jenis</label>
@@ -9,7 +9,9 @@
             @php($jenis = old('jenis', $facility->jenis ?? ''))
             <option value="Badminton" {{ $jenis === 'Badminton' ? 'selected' : '' }}>Badminton</option>
             <option value="Billiard" {{ $jenis === 'Billiard' ? 'selected' : '' }}>Billiard</option>
+            <option value="Cafe" {{ $jenis === 'Cafe' ? 'selected' : '' }}>Cafe</option>
         </select>
+        <small class="text-muted">Catatan: Cafe bisa disimpan di admin, tetapi belum ditampilkan di landing page dan booking customer.</small>
     </div>
     <div class="col-md-6">
         <label class="form-label fw-bold">Harga per Jam</label>

@@ -8,7 +8,12 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
     <link href="{{ asset('css/style.css') }}" rel="stylesheet" />
 </head>
-<body>
+<body class="payment-page">
+    @php
+        $metode = $transaction->metode_pembayaran ?? 'Pay On Place';
+        $isOnline = str_contains(strtolower($metode), 'qris') || str_contains(strtolower($metode), 'gopay') || str_contains(strtolower($metode), 'online');
+        $whatsappText = rawurlencode('Halo Admin GOR GAZA, saya ingin konfirmasi booking dengan ID Transaksi #' . $transaction->id . ' sebesar Rp ' . number_format($transaction->total_tagihan, 0, ',', '.') . ' menggunakan metode ' . $metode . '.');
+    @endphp
 
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark mb-5">
         <div class="container">
@@ -16,58 +21,73 @@
         </div>
     </nav>
 
-    <div class="container" style="margin-top: 100px; max-width: 700px;">
-        <div class="card shadow-sm border-0 bg-dark text-white p-4">
-            <div class="card-body text-center">
-                <i class="fas fa-wallet text-warning fa-3x mb-3"></i>
-                <h3 class="card-title fw-bold">Halaman Pembayaran</h3>
-                <p class="text-muted text-light">Selesaikan pembayaran Anda untuk mengunci jadwal lapangan.</p>
-                <hr class="border-secondary">
+    <div class="container" style="margin-top: 100px; max-width: 860px;">
+        <div class="payment-panel shadow-sm border-0 p-4 p-lg-5">
+            <div class="text-center mb-4">
+                <div class="payment-header-icon"><i class="fas fa-wallet"></i></div>
+                <h3 class="fw-bold mt-3 mb-2">Halaman Pembayaran</h3>
+                <p class="text-muted mb-0">Selesaikan pembayaran sesuai metode yang dipilih untuk proses konfirmasi booking.</p>
+            </div>
 
-                <div class="text-start bg-secondary bg-opacity-25 p-3 rounded mb-4">
-                    <p class="mb-1"><strong>ID Transaksi:</strong> #{{ $transaction->id }}</p>
-                    <p class="mb-1"><strong>Nama Customer:</strong> {{ $transaction->user->nama ?? $transaction->user->name }}</p>
-                    <p class="mb-1"><strong>Status:</strong> <span class="badge bg-warning text-dark">{{ $transaction->status_pembayaran }}</span></p>
-                    
-                    <hr class="border-secondary">
-                    <h5 class="fw-bold text-warning mb-2">Detail Lapangan:</h5>
-                    @foreach($transaction->reservations as $reservation)
-                        <p class="mb-1">
-                            <i class="fas fa-table-tennis me-2"></i>{{ $reservation->facility->nama_fasilitas }} 
-                            ({{ \Carbon\Carbon::parse($reservation->waktu_mulai)->format('H:i') }} - {{ \Carbon\Carbon::parse($reservation->waktu_selesai)->format('H:i') }} WIB)
-                        </p>
-                    @endforeach
-                </div>
-
-                <div class="mb-4">
-                    <h6 class="text-uppercase text-muted tracking-wide mb-1">Total yang Harus Dibayar</h6>
-                    <h2 class="text-warning fw-bold">Rp {{ number_format($transaction->total_tagihan, 0, ',', '.') }}</h2>
-                </div>
-
-                <div class="bg-light text-dark rounded p-3 text-start mb-4">
-                    <h6 class="fw-bold mb-2 text-center"><i class="fas fa-university me-2"></i>Rekening Transfer Resmi GOR GAZA</h6>
-                    <div class="d-flex justify-content-between border-bottom py-2">
-                        <span><strong>Bank BCA:</strong></span>
-                        <span class="fw-bold text-primary">1234-567-890 <small class="text-muted">(a.n GOR GAZA)</small></span>
+            <div class="payment-summary-card mb-4">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <p class="mb-1"><strong>ID Transaksi:</strong> #{{ $transaction->id }}</p>
+                        <p class="mb-1"><strong>Nama Customer:</strong> {{ $transaction->user->nama ?? $transaction->user->name }}</p>
+                        <p class="mb-1"><strong>Status:</strong> <span class="badge bg-warning text-dark">{{ $transaction->status_pembayaran }}</span></p>
+                        <p class="mb-0"><strong>Metode:</strong> <span class="badge bg-info text-dark">{{ $metode }}</span></p>
                     </div>
-                    <div class="d-flex justify-content-between py-2">
-                        <span><strong>DANA / OVO:</strong></span>
-                        <span class="fw-bold text-success">0812-3456-7890 <small class="text-muted">(GOR GAZA)</small></span>
+                    <div class="col-md-6">
+                        <h6 class="fw-bold text-warning mb-2">Detail Booking</h6>
+                        @foreach($transaction->reservations as $reservation)
+                            <p class="mb-1">
+                                <i class="fas fa-calendar-check me-2"></i>{{ $reservation->facility->nama_fasilitas }}
+                                ({{ \Carbon\Carbon::parse($reservation->waktu_mulai)->format('H:i') }} - {{ \Carbon\Carbon::parse($reservation->waktu_selesai)->format('H:i') }} WIB)
+                            </p>
+                        @endforeach
                     </div>
                 </div>
+            </div>
 
-                <div class="d-grid gap-2">
-                    <a href="https://wa.me/6281234567890?text=Halo%20Admin%20GOR%20GAZA,%20saya%20ingin%20konfirmasi%20pembayaran%20booking%20dengan%20ID%20Transaksi%20%23{{ $transaction->id }}%20sebesar%20Rp%20{{ number_format($transaction->total_tagihan, 0, ',', '.') }}" 
-                       target="_blank" 
-                       class="btn btn-success btn-lg rounded-pill">
-                        <i class="fab fa-whatsapp me-2"></i>Kirim Bukti Transfer ke WhatsApp
-                    </a>
-                    <a href="/" class="btn btn-outline-light rounded-pill mt-2">Kembali ke Beranda</a>
+            <div class="text-center mb-4">
+                <h6 class="text-uppercase text-muted tracking-wide mb-1">Total yang Harus Dibayar</h6>
+                <h2 class="text-warning fw-bold">Rp {{ number_format($transaction->total_tagihan, 0, ',', '.') }}</h2>
+            </div>
+
+            @if($isOnline)
+                <div class="qris-payment-box mb-4">
+                    <div class="row g-4 align-items-center">
+                        <div class="col-lg-5 text-center">
+                            <img src="{{ asset('images/payment/qris-gorgaza.jpeg') }}" alt="QRIS GOR GAZA" class="qris-image">
+                        </div>
+                        <div class="col-lg-7">
+                            <h5 class="fw-bold mb-2"><i class="fa-solid fa-qrcode me-2"></i>Bayar Online QRIS / GoPay</h5>
+                            <p class="mb-3">Silakan scan QR di samping menggunakan aplikasi pembayaran yang mendukung QRIS/GoPay.</p>
+                            <div class="alert alert-warning mb-0">
+                                <i class="fas fa-circle-info me-2"></i>
+                                Setelah melakukan pembayaran, hubungi admin untuk konfirmasi. Admin akan mengubah status pembayaran menjadi <strong>Paid</strong> setelah dana diterima.
+                            </div>
+                        </div>
+                    </div>
                 </div>
+            @else
+                <div class="cash-payment-box mb-4">
+                    <h5 class="fw-bold mb-2"><i class="fas fa-store me-2"></i>Cash / Bayar di Tempat</h5>
+                    <p class="mb-2">Booking kamu sudah tercatat dengan status pembayaran <strong>Pending</strong>.</p>
+                    <div class="alert alert-warning mb-0">
+                        <i class="fas fa-circle-info me-2"></i>
+                        Untuk pembayaran cash, silakan bayar langsung ke admin/kasir setelah bermain. Admin akan mengubah status pembayaran menjadi <strong>Paid</strong> setelah pembayaran diterima.
+                    </div>
+                </div>
+            @endif
 
+            <div class="d-grid gap-2">
+                <a href="https://wa.me/6282215309779?text={{ $whatsappText }}" target="_blank" class="btn btn-success btn-lg rounded-pill">
+                    <i class="fab fa-whatsapp me-2"></i>Konfirmasi ke Admin via WhatsApp
+                </a>
+                <a href="/" class="btn btn-outline-dark rounded-pill mt-2">Kembali ke Beranda</a>
             </div>
         </div>
     </div>
-
 </body>
 </html>

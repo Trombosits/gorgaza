@@ -36,7 +36,7 @@ class DashboardController extends Controller
 
         return view('Admin.dashboard', [
             'totalUsers' => User::where('role', 'customer')->count(),
-            'totalFacilities' => Facility::count(),
+            'totalFacilities' => Facility::whereIn('jenis', ['Badminton', 'Billiard'])->count(),
             'totalReservations' => Reservation::count(),
             'totalRevenue' => $totalRevenue,
             'monthlyRevenue' => $monthlyRevenue,
