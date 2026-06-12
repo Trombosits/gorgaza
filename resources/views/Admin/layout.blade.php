@@ -42,6 +42,14 @@
             background: linear-gradient(135deg, #f59e0b, #fbbf24);
             color: #111827; font-weight: 900;
         }
+        .admin-brand-logo-img {
+            width: 48px;
+            height: 48px;
+            object-fit: contain;
+            display: block;
+            border-radius: 16px;
+            filter: drop-shadow(0 10px 20px rgba(245, 158, 11, .22));
+        }
         .sidebar-section { color: #94a3b8; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; margin: 24px 10px 10px; }
         .sidebar a.nav-link-admin {
             color: #cbd5e1;
@@ -112,6 +120,7 @@
         .badge-confirmed { background: #dbeafe; color: #1d4ed8; }
         .badge-completed { background: #dcfce7; color: #166534; }
         .badge-cancelled { background: #fee2e2; color: #991b1b; }
+        .badge-out-of-time { background: #e5e7eb; color: #374151; }
         .btn-gaza { background: linear-gradient(135deg, #f59e0b, #fbbf24); border: 0; color: #111827; font-weight: 800; }
         .btn-gaza:hover { color: #111827; filter: brightness(.96); }
         .btn-soft { border: 1px solid var(--gaza-border); background: #fff; color: #334155; font-weight: 700; }
@@ -134,7 +143,7 @@
         <aside class="col-md-3 col-lg-2 sidebar p-3">
             <div class="brand-box mb-3">
                 <div class="d-flex align-items-center gap-3">
-                    <div class="brand-logo">GG</div>
+                    <img src="{{ asset('images/logo-gorgaza.png') }}" alt="GOR GAZA" class="admin-brand-logo-img">
                     <div>
                         <div class="text-warning fw-black fw-bold">GOR GAZA</div>
                         <small class="text-light opacity-75">Admin Panel</small>

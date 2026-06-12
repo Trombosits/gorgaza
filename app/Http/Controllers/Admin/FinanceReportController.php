@@ -36,10 +36,28 @@ class FinanceReportController extends Controller
             ->groupBy('status_pembayaran')
             ->get();
 
-        $paymentMethodSummary = (clone $summaryQuery)
+        $paymentMethodRows = (clone $summaryQuery)
             ->select('metode_pembayaran', DB::raw('COUNT(*) as total'), DB::raw('SUM(total_tagihan) as nominal'))
             ->groupBy('metode_pembayaran')
             ->get();
+
+        $paymentMethodSummary = $paymentMethodRows
+            ->groupBy(fn ($row) => $this->normalizePaymentMethod($row->metode_pembayaran))
+            ->map(function ($rows, $methodName) {
+                return (object) [
+                    'metode_pembayaran' => $methodName,
+                    'total' => $rows->sum('total'),
+                    'nominal' => $rows->sum('nominal'),
+                ];
+            })
+            ->sortBy(function ($row) {
+                return match ($row->metode_pembayaran) {
+                    'QRIS' => 1,
+                    'Cash / Bayar di Tempat' => 2,
+                    default => 3,
+                };
+            })
+            ->values();
 
         $dailyRevenue = (clone $summaryQuery)
             ->where('status_pembayaran', 'Paid')
@@ -97,7 +115,7 @@ class FinanceReportController extends Controller
                     optional($transaction->waktu_transaksi)->format('Y-m-d H:i:s'),
                     $transaction->user->nama ?? $transaction->user->name ?? '-',
                     $transaction->user->email ?? '-',
-                    $transaction->metode_pembayaran ?? 'Pay On Place',
+                    preg_replace(['/QRIS\s*\/\s*Go\s*Pay/i', '/QRIS\/Go\s*Pay/i', '/Go\s*Pay/i'], 'QRIS', $transaction->metode_pembayaran ?? 'Pay On Place'),
                     $transaction->status_pembayaran,
                     $transaction->total_tagihan,
                     $transaction->reservations->count(),
@@ -114,6 +132,45 @@ class FinanceReportController extends Controller
             ->when($startDate, fn ($query) => $query->whereDate('waktu_transaksi', '>=', $startDate))
             ->when($endDate, fn ($query) => $query->whereDate('waktu_transaksi', '<=', $endDate))
             ->when($status, fn ($query) => $query->where('status_pembayaran', $status))
-            ->when($method, fn ($query) => $query->where('metode_pembayaran', $method));
+            ->when($method, function ($query) use ($method) {
+                if ($method === 'QRIS') {
+                    return $query->where(function ($q) {
+                        $q->whereRaw("LOWER(TRIM(COALESCE(metode_pembayaran, ''))) LIKE ?", ['%qris%'])
+                            ->orWhereRaw("LOWER(TRIM(COALESCE(metode_pembayaran, ''))) LIKE ?", ['%gopay%'])
+                            ->orWhereRaw("LOWER(TRIM(COALESCE(metode_pembayaran, ''))) LIKE ?", ['%go pay%']);
+                    });
+                }
+
+                if ($method === 'Cash / Bayar di Tempat') {
+                    return $query->where(function ($q) {
+                        $q->whereRaw("LOWER(TRIM(COALESCE(metode_pembayaran, ''))) LIKE ?", ['%cash%'])
+                            ->orWhereRaw("LOWER(TRIM(COALESCE(metode_pembayaran, ''))) LIKE ?", ['%bayar%tempat%'])
+                            ->orWhereRaw("LOWER(TRIM(COALESCE(metode_pembayaran, ''))) LIKE ?", ['%pay on place%'])
+                            ->orWhereRaw("TRIM(COALESCE(metode_pembayaran, '')) = ''");
+                    });
+                }
+
+                return $query->where('metode_pembayaran', $method);
+            });
+    }
+
+    private function normalizePaymentMethod(?string $method): string
+    {
+        $cleanMethod = strtolower(trim($method ?? ''));
+
+        if (str_contains($cleanMethod, 'qris') || str_contains($cleanMethod, 'gopay') || str_contains($cleanMethod, 'go pay')) {
+            return 'QRIS';
+        }
+
+        if (
+            $cleanMethod === '' ||
+            str_contains($cleanMethod, 'cash') ||
+            str_contains($cleanMethod, 'bayar') ||
+            str_contains($cleanMethod, 'pay on place')
+        ) {
+            return 'Cash / Bayar di Tempat';
+        }
+
+        return trim($method ?? 'Lainnya') ?: 'Lainnya';
     }
 }

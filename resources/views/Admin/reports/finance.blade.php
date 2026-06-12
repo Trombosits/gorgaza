@@ -27,7 +27,7 @@
                 <label class="form-label fw-bold">Metode</label>
                 <select name="metode_pembayaran" class="form-select">
                     <option value="">Semua Metode</option>
-                    @foreach(['QRIS / GoPay','Cash / Bayar di Tempat','Pay On Place'] as $item)
+                    @foreach(['QRIS','Cash / Bayar di Tempat','Pay On Place'] as $item)
                         <option value="{{ $item }}" {{ ($method ?? '') === $item ? 'selected' : '' }}>{{ $item }}</option>
                     @endforeach
                 </select>
@@ -106,14 +106,14 @@
         <div class="card content-card h-100">
             <div class="card-body p-4">
                 <h5 class="section-title">Rekap Metode Pembayaran</h5>
-                <div class="section-subtitle mb-3">Perbandingan QRIS/GoPay dan cash.</div>
+                <div class="section-subtitle mb-3">Perbandingan QRIS dan cash.</div>
                 <div class="table-responsive">
                     <table class="table align-middle mb-0">
                         <thead><tr><th>Metode</th><th>Transaksi</th><th>Nominal</th></tr></thead>
                         <tbody>
                             @forelse($paymentMethodSummary as $row)
                                 <tr>
-                                    <td><span class="badge-soft badge-booking">{{ $row->metode_pembayaran ?? 'Pay On Place' }}</span></td>
+                                    <td><span class="badge-soft badge-booking">{{ preg_replace(['/QRIS\s*\/\s*Go\s*Pay/i', '/QRIS\/Go\s*Pay/i', '/Go\s*Pay/i'], 'QRIS', $row->metode_pembayaran ?? 'Pay On Place') }}</span></td>
                                     <td class="fw-bold">{{ $row->total }}</td>
                                     <td class="fw-bold">Rp {{ number_format($row->nominal, 0, ',', '.') }}</td>
                                 </tr>

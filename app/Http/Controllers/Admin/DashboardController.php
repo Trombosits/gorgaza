@@ -7,6 +7,7 @@ use App\Models\Facility;
 use App\Models\Reservation;
 use App\Models\Transaction;
 use App\Models\User;
+use App\Services\ReservationStatusService;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -14,6 +15,8 @@ class DashboardController extends Controller
 {
     public function index()
     {
+        ReservationStatusService::markOutOfTime();
+
         $today = Carbon::today();
         $startOfMonth = Carbon::now()->startOfMonth();
         $endOfMonth = Carbon::now()->endOfMonth();

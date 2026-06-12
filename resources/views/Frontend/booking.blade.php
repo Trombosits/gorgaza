@@ -20,7 +20,10 @@
   <body>
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
       <div class="container">
-        <a class="navbar-brand" href="/landing_page">GOR GAZA</a>
+        <a class="navbar-brand brand-mark" href="/">
+          <img src="{{ asset('images/logo-gorgaza.png') }}" alt="GOR GAZA" class="navbar-logo-img">
+          <span>GOR GAZA</span>
+        </a>
 
         <button
           class="navbar-toggler"
@@ -31,23 +34,28 @@
           <span class="navbar-toggler-icon"></span>
         </button>
 
-        <div class="collapse navbar-collapse" id="menu">
-          <ul class="navbar-nav ms-auto me-3">
-            <li class="nav-item">
-              <a class="nav-link" href="/#hero">Booking</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/#fasilitas"
-                >Fasilitas</a
-              >
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/#jadwal">Jadwal</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/#lokasi">Lokasi</a>
-            </li>
-          </ul>
+  <div class="collapse navbar-collapse" id="menu">
+  <ul class="navbar-nav ms-auto me-3">
+    <li class="nav-item">
+      <a class="nav-link" href="{{ url('/') }}#hero">Beranda</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{{ url('/') }}#fasilitas">Fasilitas</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{{ url('/') }}#harga">Harga</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{{ url('/') }}#menu-kafe">Menu Kafe</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{{ url('/') }}#jadwal">Jadwal</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{{ url('/') }}#lokasi">Lokasi</a>
+    </li>
+  </ul>
+</div>
 
 <div class="nav-auth d-flex gap-2">
   @if(session('auth_user.role') === 'admin')
@@ -74,41 +82,47 @@
       </div>
     </nav>
 
-    <section
-      style="
-        min-height: calc(100vh - 70px);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      "
-    >
-      <div class="container text-center">
-        <div class="section-title">
-          <h2>Pilih Kategori Booking</h2>
-          <p>Pilih lapangan badminton atau meja billiard untuk melanjutkan.</p>
-        </div>
+    <section class="booking-category-section booking-polish-page">
+      <div class="container">
+        <div class="booking-category-shell">
+          <div class="booking-category-header text-center">
+            <span class="section-eyebrow"><i class="fa-solid fa-calendar-check me-2"></i>GOR GAZA Booking</span>
+            <h1 class="booking-category-title">Pilih Kategori Booking</h1>
+            <p class="booking-category-subtitle">
+              Pilih fasilitas yang ingin kamu gunakan. Setelah itu, lanjutkan ke pemilihan tanggal dan jam yang tersedia.
+            </p>
+          </div>
 
-        <div class="d-flex gap-4 justify-content-center flex-wrap mt-5">
-          <button
-            id="chooseBadminton"
-            class="btn btn-warning btn-lg"
-            style="padding: 30px 50px; font-size: 1.2rem; border-radius: 15px"
-          >
-            <i class="fas fa-badminton me-2"></i>
-            Lapangan Badminton
-          </button>
-          <button
-            id="chooseBilliard"
-            class="btn btn-dark btn-lg text-white"
-            style="padding: 30px 50px; font-size: 1.2rem; border-radius: 15px"
-          >
-            <i class="fas fa-table me-2"></i>
-            Meja Billiard
-          </button>
+          <div class="booking-category-grid">
+            <button id="chooseBadminton" class="booking-category-card booking-category-card--yellow" type="button">
+              <div class="booking-card-topline">
+                <div class="booking-category-icon"><i class="fa-solid fa-table-tennis-paddle-ball"></i></div>
+                <span class="booking-category-badge">Populer</span>
+              </div>
+              <h3>Lapangan Badminton</h3>
+              <p>Booking lapangan badminton indoor dengan jadwal yang tersedia secara real-time.</p>
+              <div class="booking-category-action">
+                <span>Pilih Badminton</span>
+                <i class="fa-solid fa-arrow-right"></i>
+              </div>
+            </button>
+
+            <button id="chooseBilliard" class="booking-category-card booking-category-card--dark" type="button">
+              <div class="booking-card-topline">
+                <div class="booking-category-icon"><i class="fa-solid fa-table-cells-large"></i></div>
+                <span class="booking-category-badge">Indoor</span>
+              </div>
+              <h3>Meja Billiard</h3>
+              <p>Pilih sesi billiard, tentukan jam bermain, lalu lanjutkan ke konfirmasi pembayaran.</p>
+              <div class="booking-category-action">
+                <span>Pilih Billiard</span>
+                <i class="fa-solid fa-arrow-right"></i>
+              </div>
+            </button>
+          </div>
         </div>
       </div>
     </section>
-
     <footer>
       <div class="container text-center">
         <p>© 2026 GOR GAZA. All Rights Reserved.</p>
@@ -116,7 +130,7 @@
     </footer>
 
     <a
-      href="https://wa.me/6281234567890"
+      href="https://wa.me/6282215309779"
       class="whatsapp-float"
       target="_blank"
     >

@@ -14,18 +14,35 @@
   <body>
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
       <div class="container">
-        <a class="navbar-brand" href="/">GOR GAZA</a>
+        <a class="navbar-brand brand-mark" href="/">
+          <img src="{{ asset('images/logo-gorgaza.png') }}" alt="GOR GAZA" class="navbar-logo-img">
+          <span>GOR GAZA</span>
+        </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu">
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="menu">
-          <ul class="navbar-nav ms-auto me-3">
-            <li class="nav-item"><a class="nav-link" href="/#hero">Booking</a></li>
-            <li class="nav-item"><a class="nav-link" href="/#fasilitas">Fasilitas</a></li>
-            <li class="nav-item"><a class="nav-link" href="/#harga">Harga</a></li>
-            <li class="nav-item"><a class="nav-link" href="/#jadwal">Jadwal</a></li>
-            <li class="nav-item"><a class="nav-link" href="/#lokasi">Lokasi</a></li>
-          </ul>
+  <ul class="navbar-nav ms-auto me-3">
+    <li class="nav-item">
+      <a class="nav-link" href="{{ url('/') }}#hero">Beranda</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{{ url('/') }}#fasilitas">Fasilitas</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{{ url('/') }}#harga">Harga</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{{ url('/') }}#menu-kafe">Menu Kafe</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{{ url('/') }}#jadwal">Jadwal</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{{ url('/') }}#lokasi">Lokasi</a>
+    </li>
+  </ul>
+</div>
           <div class="nav-auth d-flex gap-2">
             @if(session('auth_user.role') === 'admin')
               <a class="btn btn-outline-light rounded-pill px-3" href="/admin/dashboard">Admin</a>
@@ -41,50 +58,79 @@
       </div>
     </nav>
 
-    <section class="py-5" style="margin-top: 50px">
+    <section class="booking-confirm-section booking-polish-page">
       <div class="container">
-        <div class="section-title mb-5">
-          <h2>Konfirmasi Booking</h2>
-          <p>Periksa detail booking dan pilih metode pembayaran sebelum konfirmasi akhir.</p>
+        <div class="confirm-header text-center">
+          <span class="section-eyebrow"><i class="fa-solid fa-clipboard-check me-2"></i>Final Step</span>
+          <h1 class="confirm-title">Konfirmasi Booking</h1>
+          <p class="confirm-subtitle">Periksa detail booking, pilih metode pembayaran, lalu konfirmasi agar jadwal kamu tercatat di sistem.</p>
         </div>
 
         <div class="row justify-content-center">
-          <div class="col-lg-9">
-            <div class="feature-box">
-              <h4>Detail Booking</h4>
-              <ul id="bookingSummary" class="list-group mb-4"></ul>
-
-              <h4>Data Pengguna</h4>
-              <ul id="userSummary" class="list-group mb-4"></ul>
-
-              <h4>Metode Pembayaran</h4>
-              <div class="payment-choice-grid mb-4">
-                <label class="payment-choice active" for="paymentQris">
-                  <input class="form-check-input payment-method-option" type="radio" name="metode_pembayaran" id="paymentQris" value="QRIS / GoPay" checked>
+          <div class="col-xl-10">
+            <div class="confirm-panel">
+              <div class="confirm-section-card mb-4">
+                <div class="confirm-section-heading">
+                  <div class="confirm-heading-icon"><i class="fa-solid fa-calendar-days"></i></div>
                   <div>
-                    <div class="payment-choice-title"><i class="fa-solid fa-qrcode me-2"></i>Bayar Online QRIS/GoPay</div>
-                    <p>Bayar di awal dengan scan QR. Status pembayaran tetap Pending sampai admin mengonfirmasi.</p>
+                    <h4>Detail Booking</h4>
+                    <p>Pastikan kategori, tanggal, dan jam yang dipilih sudah benar.</p>
                   </div>
-                </label>
-                <label class="payment-choice" for="paymentCash">
-                  <input class="form-check-input payment-method-option" type="radio" name="metode_pembayaran" id="paymentCash" value="Cash / Bayar di Tempat">
-                  <div>
-                    <div class="payment-choice-title"><i class="fa-solid fa-money-bill-wave me-2"></i>Cash / Bayar di Tempat</div>
-                    <p>Bayar setelah bermain langsung ke admin/kasir GOR GAZA.</p>
-                  </div>
-                </label>
+                </div>
+                <ul id="bookingSummary" class="confirm-summary-list list-group"></ul>
               </div>
 
-              <div class="alert alert-warning rounded-4">
-                <i class="fa-solid fa-circle-info me-2"></i>
-                Untuk pembayaran online maupun cash, admin tetap akan mengubah status pembayaran menjadi <strong>Paid</strong> setelah pembayaran diterima.
+              <div class="confirm-section-card mb-4">
+                <div class="confirm-section-heading">
+                  <div class="confirm-heading-icon"><i class="fa-solid fa-user-check"></i></div>
+                  <div>
+                    <h4>Data Pengguna</h4>
+                    <p>Data customer diambil dari akun yang sedang login.</p>
+                  </div>
+                </div>
+                <ul id="userSummary" class="confirm-summary-list list-group"></ul>
               </div>
 
-              <div class="d-flex justify-content-between flex-wrap gap-2">
-                <a href="/booking-schedule" class="btn btn-outline-light">Kembali</a>
-                <button id="confirmBooking" class="btn btn-warning">
-                  <span class="btn-text"><i class="fa-solid fa-check me-2"></i>Konfirmasi Booking</span>
-                  <span class="btn-loading d-none">Memproses...</span>
+              <div class="confirm-section-card mb-4">
+                <div class="confirm-section-heading">
+                  <div class="confirm-heading-icon"><i class="fa-solid fa-credit-card"></i></div>
+                  <div>
+                    <h4>Metode Pembayaran</h4>
+                    <p>Metode yang dipilih akan otomatis masuk ke detail booking.</p>
+                  </div>
+                </div>
+
+                <div class="payment-choice-grid polished-payment-grid">
+                  <label class="payment-choice polished-payment-choice active" for="paymentQris">
+                    <input class="form-check-input payment-method-option" type="radio" name="metode_pembayaran" id="paymentQris" value="QRIS" checked>
+                    <div class="payment-choice-icon"><i class="fa-solid fa-qrcode"></i></div>
+                    <div>
+                      <div class="payment-choice-title">Bayar Online QRIS</div>
+                      <p>Scan QRIS resmi GOR GAZA. Status pembayaran tetap Pending sampai admin mengonfirmasi.</p>
+                    </div>
+                  </label>
+
+                  <label class="payment-choice polished-payment-choice" for="paymentCash">
+                    <input class="form-check-input payment-method-option" type="radio" name="metode_pembayaran" id="paymentCash" value="Cash / Bayar di Tempat">
+                    <div class="payment-choice-icon"><i class="fa-solid fa-money-bill-wave"></i></div>
+                    <div>
+                      <div class="payment-choice-title">Cash / Bayar di Tempat</div>
+                      <p>Bayar langsung di lokasi kepada admin/kasir GOR GAZA sesuai total tagihan.</p>
+                    </div>
+                  </label>
+                </div>
+              </div>
+
+              <div class="confirm-info-box mb-4">
+                <i class="fa-solid fa-circle-info"></i>
+                <span>Admin akan mengubah status pembayaran menjadi <strong>Paid</strong> setelah pembayaran diterima.</span>
+              </div>
+
+              <div class="confirm-action-row">
+                <a href="/booking-schedule" class="btn-back-booking"><i class="fa-solid fa-arrow-left me-2"></i>Kembali</a>
+                <button id="confirmBooking" class="btn-confirm-booking" type="button">
+                  <span class="btn-text"><i class="fa-solid fa-circle-check me-2"></i>Konfirmasi Booking</span>
+                  <span class="btn-loading d-none"><i class="fa-solid fa-spinner fa-spin me-2"></i>Memproses...</span>
                 </button>
               </div>
 
@@ -98,7 +144,6 @@
         </div>
       </div>
     </section>
-
     <footer>
       <div class="container text-center">
         <p>© 2026 GOR GAZA. All Rights Reserved.</p>

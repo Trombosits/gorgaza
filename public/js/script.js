@@ -597,6 +597,94 @@ function initLoginForm() {
   });
 }
 
+function initGorgazaScrollPopAnimation() {
+  const isLandingPage = document.body.classList.contains("frontend-page") || document.querySelector(".hero");
+  if (!isLandingPage) return;
+
+  const selectors = [
+    ".section-title",
+    ".section-kicker",
+    ".facility-detail .col-lg-6",
+    ".gallery-grid img",
+    ".feature-box",
+    ".stat-box",
+    ".price-section .col-md-6",
+    ".price-card",
+    ".menu-card",
+    ".cafe-coming-soon",
+    ".schedule-section .col-lg-5",
+    ".schedule-section .col-lg-7",
+    ".schedule-card",
+    ".map-iframe",
+    "footer p"
+  ];
+
+  const items = [];
+  selectors.forEach((selector) => {
+    document.querySelectorAll(selector).forEach((element) => {
+      if (
+        !items.includes(element) &&
+        !element.closest(".hero") &&
+        !element.closest(".navbar") &&
+        !element.closest(".modal")
+      ) {
+        items.push(element);
+      }
+    });
+  });
+
+  if (!items.length) return;
+
+  items.forEach((element, index) => {
+    element.classList.remove(
+      "reveal-on-scroll",
+      "is-visible",
+      "smooth-reveal",
+      "smooth-reveal-fast",
+      "reveal-show",
+      "scroll-pop",
+      "pop-show"
+    );
+
+    element.classList.add("gg-scroll-pop");
+    element.classList.remove("gg-pop-show");
+
+    const parent = element.parentElement;
+    const siblingItems = parent ? Array.from(parent.children).filter((child) => items.includes(child)) : [];
+    const siblingIndex = siblingItems.length ? siblingItems.indexOf(element) : index;
+    const delay = Math.min((siblingIndex % 4) * 120, 360);
+
+    element.style.setProperty("--gg-pop-delay", `${delay}ms`);
+  });
+
+  const showElement = (element) => {
+    element.classList.add("gg-pop-show");
+  };
+
+  const revealByPosition = () => {
+    const trigger = window.innerHeight - 90;
+
+    items.forEach((element) => {
+      if (element.classList.contains("gg-pop-show")) return;
+
+      const rect = element.getBoundingClientRect();
+      if (rect.top < trigger) {
+        showElement(element);
+      }
+    });
+  };
+
+  // Browser perlu 1 frame untuk menerapkan posisi awal sebelum animasi show.
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      revealByPosition();
+
+      window.addEventListener("scroll", revealByPosition, { passive: true });
+      window.addEventListener("resize", revealByPosition);
+    });
+  });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   initCalendar();
   initFacilitySwitcher();
@@ -607,4 +695,5 @@ document.addEventListener("DOMContentLoaded", () => {
   initPasswordToggle();
   initRegisterForm();
   initLoginForm();
+  initGorgazaScrollPopAnimation();
 });

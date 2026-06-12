@@ -14,7 +14,7 @@
                 <label class="form-label fw-bold">Status Booking</label>
                 <select name="status" class="form-select">
                     <option value="">Semua Status</option>
-                    @foreach(['Booking','Cancelled','Completed'] as $status)
+                    @foreach(['Booking','Confirmed','Cancelled','Completed','Out of Time'] as $status)
                         <option value="{{ $status }}" {{ request('status') === $status ? 'selected' : '' }}>{{ $status }}</option>
                     @endforeach
                 </select>
@@ -41,6 +41,7 @@
                 <tbody>
                 @forelse($reservations as $reservation)
                     @php($payment = $reservation->transaction->status_pembayaran ?? '-')
+                    @php($statusClass = strtolower(str_replace(' ', '-', $reservation->status_main)))
                     <tr>
                         <td class="fw-bold">#{{ $reservation->id }}</td>
                         <td>
@@ -49,7 +50,7 @@
                         </td>
                         <td>{{ $reservation->facility->nama_fasilitas ?? '-' }}</td>
                         <td>{{ $reservation->waktu_mulai->format('d M Y H:i') }} - {{ $reservation->waktu_selesai->format('H:i') }}</td>
-                        <td><span class="badge-soft badge-{{ strtolower($reservation->status_main) }}">{{ $reservation->status_main }}</span></td>
+                        <td><span class="badge-soft badge-{{ $statusClass }}">{{ $reservation->status_main }}</span></td>
                         <td><span class="badge-soft badge-booking">{{ $reservation->transaction->metode_pembayaran ?? 'Pay On Place' }}</span></td>
                         <td><span class="badge-soft {{ $payment === 'Paid' ? 'badge-completed' : ($payment === 'Pending' ? 'badge-booking' : 'badge-cancelled') }}">{{ $payment }}</span></td>
                         <td class="fw-bold">Rp {{ number_format($reservation->subtotal, 0, ',', '.') }}</td>

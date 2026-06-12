@@ -69,10 +69,14 @@ class AuthController extends Controller
 
         session()->put('auth_user', $authUser);
 
+        $redirect = $authUser['role'] === 'admin'
+            ? '/admin/dashboard'
+            : session()->pull('intended_url', '/');
+
         return response()->json([
             'success' => true,
             'message' => 'Login berhasil!',
-            'redirect' => $authUser['role'] === 'admin' ? '/admin/dashboard' : '/',
+            'redirect' => $redirect,
             'user' => $authUser,
         ]);
     }

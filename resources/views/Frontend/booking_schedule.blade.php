@@ -20,7 +20,10 @@
   <body>
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
       <div class="container">
-        <a class="navbar-brand" href="/landing_page">GOR GAZA</a>
+        <a class="navbar-brand brand-mark" href="/">
+          <img src="{{ asset('images/logo-gorgaza.png') }}" alt="GOR GAZA" class="navbar-logo-img">
+          <span>GOR GAZA</span>
+        </a>
 
         <button
           class="navbar-toggler"
@@ -32,22 +35,28 @@
         </button>
 
         <div class="collapse navbar-collapse" id="menu">
-          <ul class="navbar-nav ms-auto me-3">
-            <li class="nav-item">
-              <a class="nav-link" href="/#hero">Booking</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/#fasilitas"
-                >Fasilitas</a
-              >
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/#jadwal">Jadwal</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/#lokasi">Lokasi</a>
-            </li>
-          </ul>
+  <ul class="navbar-nav ms-auto me-3">
+    <li class="nav-item">
+      <a class="nav-link" href="{{ url('/') }}#hero">Beranda</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{{ url('/') }}#fasilitas">Fasilitas</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{{ url('/') }}#harga">Harga</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{{ url('/') }}#menu-kafe">Menu Kafe</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{{ url('/') }}#jadwal">Jadwal</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{{ url('/') }}#lokasi">Lokasi</a>
+    </li>
+  </ul>
+</div>
+
           <div class="nav-auth d-flex gap-2">
   @if(session('auth_user.role') === 'admin')
     <a class="btn btn-outline-light rounded-pill px-3" href="/admin/dashboard">Admin</a>
@@ -113,7 +122,6 @@
               <div class="booking-note">
                 Ketentuan booking: mohon lengkapi data sebelum konfirmasi. Anda
                 dapat memilih lebih dari satu jam pada tanggal yang sama.
-                Maksimal 2 jam per sesi booking.
               </div>
             </div>
           </div>
@@ -156,7 +164,7 @@
     </footer>
 
     <a
-      href="https://wa.me/6281234567890"
+      href="https://wa.me/6282215309779"
       class="whatsapp-float"
       target="_blank"
     >

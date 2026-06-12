@@ -6,6 +6,7 @@ use App\Models\Facility;
 use App\Models\Reservation;
 use App\Models\Transaction;
 use App\Models\User;
+use App\Services\ReservationStatusService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -14,27 +15,51 @@ class BookingController extends Controller
 {
     public function store(Request $request)
     {
+        if (!session()->has('auth_user')) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Silakan login terlebih dahulu untuk melakukan booking.',
+                'redirect' => '/login',
+            ], 401);
+        }
+
         $draft = $request->input('draft');
-        $userData = $request->input('user');
+        $authUser = session('auth_user');
+        $user = User::find($authUser['id'] ?? null);
+
+        if (!$user) {
+            session()->forget('auth_user');
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Sesi login tidak valid. Silakan login ulang.',
+                'redirect' => '/login',
+            ], 401);
+        }
+
+        if (!$draft) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data booking tidak ditemukan.',
+            ], 422);
+        }
 
         DB::beginTransaction();
 
         try {
-            $user = User::firstOrCreate(
-                ['email' => $userData['email']],
-                [
-                    'name' => $userData['name'],
-                    'nama' => $userData['name'],
-                    'no_hp' => $userData['phone'] ?? '0000000000',
-                    'password' => bcrypt('customer123'),
-                    'role' => 'customer',
-                ]
-            );
-
             $facility = Facility::findOrFail($draft['facility_id']);
 
             $waktuMulai = Carbon::parse($draft['waktu_mulai']);
             $waktuSelesai = Carbon::parse($draft['waktu_selesai']);
+
+            if (now()->greaterThan($waktuMulai->copy()->addMinute())) {
+                DB::rollBack();
+
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Slot waktu ini sudah melewati batas booking. Silakan pilih jam lain.',
+                ], 422);
+            }
 
             $isBentrok = Reservation::where('facility_id', $facility->id)
                 ->whereNotIn('status_main', ['Cancelled'])
@@ -44,6 +69,7 @@ class BookingController extends Controller
 
             if ($isBentrok) {
                 DB::rollBack();
+
                 return response()->json([
                     'success' => false,
                     'message' => 'Jam tersebut sudah dibooking. Silakan pilih slot lain.',
@@ -57,7 +83,7 @@ class BookingController extends Controller
                 'user_id' => $user->id,
                 'total_tagihan' => $subtotal,
                 'status_pembayaran' => 'Pending',
-                'metode_pembayaran' => $draft['metode_pembayaran'] ?? 'Pay On Place',
+                'metode_pembayaran' => preg_replace(['/QRIS\s*\/\s*Go\s*Pay/i', '/QRIS\/Go\s*Pay/i', '/Go\s*Pay/i'], 'QRIS', $draft['metode_pembayaran'] ?? 'Pay On Place'),
                 'waktu_transaksi' => now(),
             ]);
 
@@ -89,6 +115,8 @@ class BookingController extends Controller
 
     public function getSchedules(Request $request)
     {
+        ReservationStatusService::markOutOfTime();
+
         $facilityId = $request->query('facility_id') ?? $request->query('facilityId');
         $tanggal = $request->query('tanggal') ?? $request->query('date');
 

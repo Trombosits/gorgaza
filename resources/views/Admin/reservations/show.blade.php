@@ -23,9 +23,42 @@
                         <tr><th>Jenis</th><td>{{ $reservation->facility->jenis }}</td></tr>
                         <tr><th>Waktu</th><td>{{ $reservation->waktu_mulai->format('d M Y H:i') }} - {{ $reservation->waktu_selesai->format('H:i') }}</td></tr>
                         <tr><th>Subtotal</th><td class="fw-bold">Rp {{ number_format($reservation->subtotal, 0, ',', '.') }}</td></tr>
-                        <tr><th>Status Booking</th><td><span class="badge-soft badge-{{ strtolower($reservation->status_main) }}">{{ $reservation->status_main }}</span></td></tr>
-                        <tr><th>Metode Pembayaran</th><td><span class="badge-soft badge-booking">{{ $reservation->transaction->metode_pembayaran ?? 'Pay On Place' }}</span></td></tr>
-                        <tr><th>Status Pembayaran</th><td><span class="badge-soft {{ $reservation->transaction->status_pembayaran === 'Paid' ? 'badge-completed' : ($reservation->transaction->status_pembayaran === 'Pending' ? 'badge-booking' : 'badge-cancelled') }}">{{ $reservation->transaction->status_pembayaran }}</span></td></tr>
+                        @php
+    $statusClass = strtolower(str_replace(' ', '-', $reservation->status_main));
+    $paymentStatus = $reservation->transaction->status_pembayaran ?? 'Pending';
+    $paymentMethod = preg_replace(['/QRIS\s*\/\s*Go\s*Pay/i', '/QRIS\/Go\s*Pay/i', '/Go\s*Pay/i'], 'QRIS', $reservation->transaction->metode_pembayaran ?? 'Pay On Place');
+
+    $paymentClass = $paymentStatus === 'Paid'
+        ? 'badge-completed'
+        : ($paymentStatus === 'Pending' ? 'badge-booking' : 'badge-cancelled');
+@endphp
+
+<tr>
+    <th>Status Booking</th>
+    <td>
+        <span class="badge-soft badge-{{ $statusClass }}">
+            {{ $reservation->status_main }}
+        </span>
+    </td>
+</tr>
+
+<tr>
+    <th>Metode Pembayaran</th>
+    <td>
+        <span class="badge-soft badge-booking">
+            {{ $paymentMethod }}
+        </span>
+    </td>
+</tr>
+
+<tr>
+    <th>Status Pembayaran</th>
+    <td>
+        <span class="badge-soft {{ $paymentClass }}">
+            {{ $paymentStatus }}
+        </span>
+    </td>
+</tr>
                     </table>
                 </div>
             </div>
@@ -41,18 +74,18 @@
                     <div class="mb-3">
                         <label class="form-label fw-bold">Status Booking</label>
                         <select name="status_main" class="form-select">
-                            @foreach(['Booking','Cancelled','Completed'] as $status)
+                            @foreach(['Booking','Confirmed','Cancelled','Completed','Out of Time'] as $status)
                                 <option value="{{ $status }}" {{ $reservation->status_main === $status ? 'selected' : '' }}>{{ $status }}</option>
                             @endforeach
                         </select>
                     </div>
                     <div class="alert alert-warning rounded-4">
                         <i class="fa-solid fa-money-bill-wave me-2"></i>
-                        Metode pembayaran: <strong>{{ $reservation->transaction->metode_pembayaran ?? 'Pay On Place' }}</strong>.
+                        Metode pembayaran: <strong>{{ preg_replace(['/QRIS\s*\/\s*Go\s*Pay/i', '/QRIS\/Go\s*Pay/i', '/Go\s*Pay/i'], 'QRIS', $reservation->transaction->metode_pembayaran ?? 'Pay On Place') }}</strong>.
                         @php
                             $metodePembayaran = strtolower($reservation->transaction->metode_pembayaran ?? 'pay on place');
                         @endphp
-                        @if(str_contains($metodePembayaran, 'qris') || str_contains($metodePembayaran, 'gopay'))
+                        @if(str_contains($metodePembayaran, 'qris'))
                             Jika pembayaran online sudah masuk, ubah status pembayaran menjadi <strong>Paid</strong>.
                         @else
                             Jika customer sudah bayar cash setelah bermain, ubah status pembayaran menjadi <strong>Paid</strong>.
