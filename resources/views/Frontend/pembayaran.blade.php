@@ -22,6 +22,10 @@
           <img src="{{ asset('images/logo-gorgaza.png') }}" alt="GOR GAZA" class="navbar-logo-img">
           <span>GOR GAZA</span>
         </a>
+            <div class="d-flex gap-2">
+                <a class="btn btn-outline-light rounded-pill px-3" href="/booking-history">Riwayat</a>
+                <a class="btn btn-warning rounded-pill px-3 fw-bold" href="/booking">Booking</a>
+            </div>
         </div>
     </nav>
 
@@ -47,7 +51,7 @@
                         </div>
                         <div>
                             <p class="payment-label">Status</p>
-                            <span class="payment-badge pending">{{ $transaction->status_pembayaran }}</span>
+                            <span class="payment-badge {{ strtolower($transaction->status_pembayaran) === 'paid' ? 'paid' : 'pending' }}">{{ $transaction->status_pembayaran }}</span>
                         </div>
                         <div>
                             <p class="payment-label">Metode</p>
@@ -83,10 +87,17 @@
                                 <span class="payment-mini-label">Metode pembayaran</span>
                                 <h5><i class="fa-solid fa-qrcode me-2"></i>Bayar Online QRIS</h5>
                                 <p>Silakan scan QRIS resmi GOR GAZA menggunakan aplikasi pembayaran yang mendukung QRIS.</p>
-                                <div class="alert alert-warning mb-0 rounded-4">
+                                @if(strtolower($transaction->status_pembayaran) === 'paid')
+                                  <div class="alert alert-success mb-0 rounded-4">
+                                    <i class="fas fa-check-circle me-2"></i>
+                                    Pembayaran sudah dikonfirmasi admin dan status transaksi kamu sudah <strong>Paid</strong>.
+                                  </div>
+                                @else
+                                  <div class="alert alert-warning mb-0 rounded-4">
                                     <i class="fas fa-circle-info me-2"></i>
                                     Setelah melakukan pembayaran, hubungi admin untuk konfirmasi. Admin akan mengubah status pembayaran menjadi <strong>Paid</strong> setelah dana diterima.
-                                </div>
+                                  </div>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -97,10 +108,17 @@
                             <span class="payment-mini-label">Metode pembayaran</span>
                             <h5>Cash / Bayar di Tempat</h5>
                             <p>Booking kamu sudah tercatat dengan status pembayaran <strong>Pending</strong>. Silakan bayar langsung ke admin/kasir GOR GAZA sesuai total tagihan.</p>
-                            <div class="alert alert-warning mb-0 rounded-4">
+                            @if(strtolower($transaction->status_pembayaran) === 'paid')
+                              <div class="alert alert-success mb-0 rounded-4">
+                                <i class="fas fa-check-circle me-2"></i>
+                                Pembayaran cash sudah dikonfirmasi admin dan status transaksi kamu sudah <strong>Paid</strong>.
+                              </div>
+                            @else
+                              <div class="alert alert-warning mb-0 rounded-4">
                                 <i class="fas fa-circle-info me-2"></i>
                                 Admin akan mengubah status pembayaran menjadi <strong>Paid</strong> setelah pembayaran diterima.
-                            </div>
+                              </div>
+                            @endif
                         </div>
                     </div>
                 @endif
@@ -109,7 +127,7 @@
                     <a href="https://wa.me/6282215309779?text={{ $whatsappText }}" target="_blank" rel="noopener" class="btn-payment-whatsapp">
                         <i class="fab fa-whatsapp me-2"></i>Konfirmasi ke Admin via WhatsApp
                     </a>
-                    <a href="/" class="btn-payment-home"><i class="fa-solid fa-house me-2"></i>Kembali ke Beranda</a>
+                    <a href="/booking-history" class="btn-payment-home"><i class="fa-solid fa-clock-rotate-left me-2"></i>Riwayat Booking</a>
                 </div>
             </div>
         </div>

@@ -164,12 +164,27 @@ async function renderSchedule(date) {
 
     times.forEach((time) => {
       const isBooked = isTimeBooked(time);
-      const statusText = isBooked ? "Sudah dibooking" : "Kosong";
-      const statusClass = isBooked ? "text-danger fw-bold" : "text-success fw-bold";
+
+      const [startTime] = time.split(" - ");
+      const slotStart = new Date(`${formattedDateStr}T${startTime}:00`);
+      const outOfTimeLimit = new Date(slotStart.getTime() + 60 * 1000);
+      const isOutOfTime = new Date() > outOfTimeLimit;
+
+      let statusText = "Kosong";
+      let statusClass = "text-success fw-bold";
+
+      if (isBooked) {
+        statusText = "Sudah dibooking";
+        statusClass = "text-danger fw-bold";
+      } else if (isOutOfTime) {
+        statusText = "Out of Time";
+        statusClass = "text-warning fw-bold";
+      }
 
       const row = document.createElement("tr");
       row.dataset.time = time;
       row.dataset.booked = isBooked ? "1" : "0";
+      row.dataset.outOfTime = isOutOfTime ? "1" : "0";
 
       if (isLandingPage) {
         row.innerHTML = `
@@ -179,7 +194,9 @@ async function renderSchedule(date) {
       } else {
         const buttonHtml = isBooked
           ? '<span class="badge bg-secondary">Penuh</span>'
-          : `<button class="btn btn-sm btn-warning selectTimeBtn" type="button" data-time="${time}">Pilih</button>`;
+          : isOutOfTime
+            ? '<span class="badge bg-warning text-dark">Out of Time</span>'
+            : `<button class="btn btn-sm btn-warning selectTimeBtn" type="button" data-time="${time}">Pilih</button>`;
 
         row.innerHTML = `
           <td>${time}</td>
@@ -187,7 +204,7 @@ async function renderSchedule(date) {
           <td>${buttonHtml}</td>
         `;
 
-        if (!isBooked && selectedTimes.includes(time)) {
+        if (!isBooked && !isOutOfTime && selectedTimes.includes(time)) {
           row.classList.add("selected");
           const selectBtn = row.querySelector(".selectTimeBtn");
           if (selectBtn) {
@@ -197,7 +214,7 @@ async function renderSchedule(date) {
           }
         }
 
-        if (!isBooked) {
+        if (!isBooked && !isOutOfTime) {
           const selectBtn = row.querySelector(".selectTimeBtn");
           if (selectBtn) {
             selectBtn.addEventListener("click", (e) => {

@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\FinanceReportController;
 use App\Http\Controllers\Admin\ReservationController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookingController;
+use App\Http\Controllers\BookingHistoryController;
 use App\Http\Controllers\PembayaranController;
 use Illuminate\Support\Facades\Route;
 
@@ -46,6 +47,7 @@ Route::middleware('customer.auth')->group(function () {
         return view('Frontend.booking_confirm');
     })->name('booking.confirm');
 
+    Route::get('/booking-history', [BookingHistoryController::class, 'index'])->name('booking.history');
     Route::get('/pembayaran/{transaction_id}', [PembayaranController::class, 'index'])->name('pembayaran');
     Route::post('/api/bookings', [BookingController::class, 'store']);
 });

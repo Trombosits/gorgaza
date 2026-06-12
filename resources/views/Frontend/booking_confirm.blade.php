@@ -49,6 +49,7 @@
               <form action="/logout" method="POST" class="d-inline">@csrf<button type="submit" class="btn btn-danger rounded-pill px-3">Logout</button></form>
             @elseif(session('auth_user'))
               <a class="btn btn-outline-light rounded-pill px-3" href="/booking">Booking</a>
+              <a class="btn btn-warning rounded-pill px-3 fw-bold" href="/booking-history">Riwayat</a>
               <form action="/logout" method="POST" class="d-inline">@csrf<button type="submit" class="btn btn-danger rounded-pill px-3">Logout</button></form>
             @else
               <a class="btn btn-book" href="/login">Login / Daftar</a>
