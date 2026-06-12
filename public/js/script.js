@@ -597,6 +597,83 @@ function initLoginForm() {
   });
 }
 
+function initHeroImageSlider() {
+  const hero = document.querySelector(".hero-slider");
+  if (!hero) return;
+
+  const slides = Array.from(hero.querySelectorAll(".hero-slide"));
+  const indicators = Array.from(hero.querySelectorAll(".hero-indicator"));
+  if (slides.length <= 1) return;
+
+  let currentIndex = slides.findIndex((slide) => slide.classList.contains("is-active"));
+  if (currentIndex < 0) currentIndex = 0;
+
+  let timerId = null;
+  const delay = 6500;
+
+  const restartKenBurns = (slide) => {
+    slide.style.animation = "none";
+    // Force reflow so the zoom animation starts again every time the image becomes active.
+    void slide.offsetWidth;
+    slide.style.animation = "";
+  };
+
+  const setActiveSlide = (nextIndex) => {
+    const normalizedIndex = (nextIndex + slides.length) % slides.length;
+    if (normalizedIndex === currentIndex && slides[currentIndex].classList.contains("is-active")) {
+      return;
+    }
+
+    currentIndex = normalizedIndex;
+
+    slides.forEach((slide, index) => {
+      const isActive = index === currentIndex;
+      slide.classList.toggle("is-active", isActive);
+      if (isActive) restartKenBurns(slide);
+    });
+
+    indicators.forEach((indicator, index) => {
+      indicator.classList.toggle("is-active", index === currentIndex);
+    });
+  };
+
+  const startSlider = () => {
+    window.clearInterval(timerId);
+    timerId = window.setInterval(() => {
+      setActiveSlide(currentIndex + 1);
+    }, delay);
+  };
+
+  indicators.forEach((indicator, index) => {
+    indicator.addEventListener("click", () => {
+      setActiveSlide(index);
+      startSlider();
+    });
+  });
+
+  slides.forEach((slide, index) => {
+    slide.classList.toggle("is-active", index === currentIndex);
+  });
+  restartKenBurns(slides[currentIndex]);
+  indicators.forEach((indicator, index) => {
+    indicator.classList.toggle("is-active", index === currentIndex);
+  });
+
+  startSlider();
+}
+
+function initNavbarScrollState() {
+  const navbar = document.querySelector(".app-navbar");
+  if (!navbar) return;
+
+  const syncNavbar = () => {
+    navbar.classList.toggle("is-scrolled", window.scrollY > 20);
+  };
+
+  syncNavbar();
+  window.addEventListener("scroll", syncNavbar, { passive: true });
+}
+
 function initGorgazaScrollPopAnimation() {
   const isLandingPage = document.body.classList.contains("frontend-page") || document.querySelector(".hero");
   if (!isLandingPage) return;
@@ -684,7 +761,6 @@ function initGorgazaScrollPopAnimation() {
     });
   });
 }
-
 document.addEventListener("DOMContentLoaded", () => {
   initCalendar();
   initFacilitySwitcher();
@@ -695,5 +771,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initPasswordToggle();
   initRegisterForm();
   initLoginForm();
+  initHeroImageSlider();
   initGorgazaScrollPopAnimation();
+  initNavbarScrollState();
 });
