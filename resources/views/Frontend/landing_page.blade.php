@@ -8,14 +8,14 @@
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Poppins:wght@600;700;800;900&display=swap" rel="stylesheet" />
     <link href="{{ asset('css/style.css') }}" rel="stylesheet" />
   </head>
   <body class="frontend-page">
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top app-navbar">
       <div class="container">
         <a class="navbar-brand brand-mark" href="/">
-          <span class="brand-icon">GG</span>
+          <img src="{{ asset('images/logo-gorgaza.png') }}" alt="GOR GAZA" class="navbar-logo-img">
           <span>GOR GAZA</span>
         </a>
 
@@ -24,14 +24,27 @@
         </button>
 
         <div class="collapse navbar-collapse" id="menu">
-          <ul class="navbar-nav ms-auto me-3">
-            <li class="nav-item"><a class="nav-link" href="#hero">Beranda</a></li>
-            <li class="nav-item"><a class="nav-link" href="#fasilitas">Fasilitas</a></li>
-            <li class="nav-item"><a class="nav-link" href="#harga">Harga</a></li>
-            <li class="nav-item"><a class="nav-link" href="#menu-kafe">Menu Kafe</a></li>
-            <li class="nav-item"><a class="nav-link" href="#jadwal">Jadwal</a></li>
-            <li class="nav-item"><a class="nav-link" href="#lokasi">Lokasi</a></li>
-          </ul>
+  <ul class="navbar-nav ms-auto me-3">
+    <li class="nav-item">
+      <a class="nav-link" href="{{ url('/') }}#hero">Beranda</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{{ url('/') }}#fasilitas">Fasilitas</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{{ url('/') }}#harga">Harga</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{{ url('/') }}#menu-kafe">Menu Kafe</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{{ url('/') }}#jadwal">Jadwal</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{{ url('/') }}#lokasi">Lokasi</a>
+    </li>
+  </ul>
+</div>
 
           <div class="nav-auth d-flex gap-2">
             @if(session('auth_user.role') === 'admin')
@@ -42,6 +55,7 @@
               </form>
             @elseif(session('auth_user'))
               <a class="btn btn-outline-light rounded-pill px-3" href="/booking">Booking</a>
+              <a class="btn btn-warning rounded-pill px-3 fw-bold" href="/booking-history">Riwayat</a>
               <form action="/logout" method="POST" class="d-inline">
                 @csrf
                 <button type="submit" class="btn btn-danger rounded-pill px-3">Logout</button>
@@ -54,11 +68,19 @@
       </div>
     </nav>
 
-    <section class="hero" id="hero">
+    <section class="hero hero-slider" id="hero" aria-label="Beranda GOR GAZA">
+      <div class="hero-slide-layer" aria-hidden="true">
+        <div class="hero-slide is-active" style="background-image: url('{{ asset('images/Bulutangkis-9.jpeg') }}')"></div>
+        <div class="hero-slide" style="background-image: url('{{ asset('images/Billiard.jpeg') }}')"></div>
+        <div class="hero-slide" style="background-image: url('{{ asset('images/Bulutangkis-6.jpeg') }}')"></div>
+        <div class="hero-slide" style="background-image: url('{{ asset('images/Bulutangkis-2.jpeg') }}')"></div>
+        <div class="hero-slide" style="background-image: url('{{ asset('images/Billiard-2.jpeg') }}')"></div>
+        <div class="hero-slide" style="background-image: url('{{ asset('images/Kursi.jpeg') }}')"></div>
+      </div>
       <div class="hero-overlay"></div>
       <div class="container position-relative">
         <div class="row align-items-center g-5">
-          <div class="col-lg-8">
+          <div class="col-lg-8 hero-copy">
             <h1>Booking <span>Lapangan</span> & <span>Billiard</span> Jadi Lebih Mudah</h1>
             <p>
               GOR GAZA menyediakan lapangan badminton, meja billiard premium, dan area santai dalam satu tempat. Cek jadwal, pilih sesi, lalu booking tanpa antre.
@@ -77,9 +99,21 @@
                 <span>Booking online</span>
               </div>
               <div>
-                <strong>08-22</strong>
+                <strong>08.00-22.00 WIB</strong>
                 <span>Jam operasional</span>
               </div>
+              <div>
+                <strong>QRIS & Cash</strong>
+                <span>Pembayaran fleksibel</span>
+              </div>
+            </div>
+            <div class="hero-slider-indicators" aria-label="Indikator gambar hero">
+              <button class="hero-indicator is-active" type="button" aria-label="Gambar hero 1"></button>
+              <button class="hero-indicator" type="button" aria-label="Gambar hero 2"></button>
+              <button class="hero-indicator" type="button" aria-label="Gambar hero 3"></button>
+              <button class="hero-indicator" type="button" aria-label="Gambar hero 4"></button>
+              <button class="hero-indicator" type="button" aria-label="Gambar hero 5"></button>
+              <button class="hero-indicator" type="button" aria-label="Gambar hero 6"></button>
             </div>
           </div>
         </div>
@@ -236,10 +270,10 @@
           <div class="col-lg-4">
             <div class="menu-card h-100">
               <h4><i class="fa-solid fa-utensils me-2"></i>Mie & Extra</h4>
-              <div class="menu-row"><span>Mie goreng polos</span><strong>Konfirmasi</strong></div>
-              <div class="menu-row"><span>Mie goreng telor</span><strong>Konfirmasi</strong></div>
-              <div class="menu-row"><span>Mie kuah polos</span><strong>Konfirmasi</strong></div>
-              <div class="menu-row"><span>Mie kuah telor</span><strong>Konfirmasi</strong></div>
+              <div class="menu-row"><span>Mie goreng polos</span><strong>TBD</strong></div>
+              <div class="menu-row"><span>Mie goreng telor</span><strong>TBD</strong></div>
+              <div class="menu-row"><span>Mie kuah polos</span><strong>TBD</strong></div>
+              <div class="menu-row"><span>Mie kuah telor</span><strong>TBD</strong></div>
               <div class="menu-row"><span>Nasi</span><strong>Rp5.000</strong></div>
               <div class="menu-row"><span>Nasi setengah</span><strong>Rp3.000</strong></div>
               <div class="menu-row"><span>Telor dadar/ceplok/orek</span><strong>Rp5.000</strong></div>
@@ -258,14 +292,19 @@
               <div class="menu-row"><span>Teh tarik / Jahe</span><strong>Rp6.000</strong></div>
               <div class="menu-row"><span>Jus jeruk/strawberry/mangga</span><strong>Rp8.000</strong></div>
               <div class="menu-row"><span>Jus alpukat</span><strong>Rp10.000</strong></div>
-              <div class="menu-row"><span>Kopi hot/cold</span><strong>Konfirmasi</strong></div>
-              <div class="menu-row"><span>Sosis kentang</span><strong>Konfirmasi</strong></div>
+              <div class="menu-row"><span>Kopi hot/cold</span><strong>TBD</strong></div>
+              <div class="menu-row"><span>Sosis kentang</span><strong>TBD</strong></div>
             </div>
           </div>
         </div>
-        <div class="alert cafe-alert mt-4 mb-0">
-          <i class="fa-solid fa-circle-info me-2"></i>
-          Cafe sudah bisa diinformasikan di website, tetapi belum masuk ke sistem booking online.
+        <div class="cafe-coming-soon mt-4">
+          <div>
+            <h4><i class="fa-solid fa-bell-concierge me-2"></i>Pemesanan Menu Online</h4>
+            <p>Menu kafe sudah tersedia sebagai katalog. Pemesanan online akan diaktifkan pada pengembangan berikutnya setelah alur operasional kafe siap.</p>
+          </div>
+          <button type="button" class="btn btn-warning rounded-pill fw-bold" disabled>
+            <i class="fa-solid fa-clock me-2"></i>Segera Hadir
+          </button>
         </div>
       </div>
     </section>

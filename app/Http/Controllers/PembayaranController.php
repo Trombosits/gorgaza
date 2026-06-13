@@ -18,12 +18,9 @@ class PembayaranController extends Controller
             return redirect('/login')->with('error', 'Anda tidak memiliki akses ke halaman pembayaran ini.');
         }
 
-        // 3. Jika status sudah lunas, redirect ke halaman utama dengan pesan khusus
-        if ($transaction->status_pembayaran === 'Paid') {
-            return redirect('/')->with('success', 'Transaksi ini sudah lunas! Terima kasih.');
-        }
+        // 3. Jika status sudah lunas, halaman tetap ditampilkan agar user bisa mengecek bukti/status Paid.
 
-        // 4. 🌟 PERBAIKAN DI SINI: Tampilkan halaman pembayaran dari folder Frontend
+        // 4. Tampilkan halaman pembayaran/detail transaksi dari folder Frontend
         return view('Frontend.pembayaran', compact('transaction'));
     }
 }

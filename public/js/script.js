@@ -164,12 +164,27 @@ async function renderSchedule(date) {
 
     times.forEach((time) => {
       const isBooked = isTimeBooked(time);
-      const statusText = isBooked ? "Sudah dibooking" : "Kosong";
-      const statusClass = isBooked ? "text-danger fw-bold" : "text-success fw-bold";
+
+      const [startTime] = time.split(" - ");
+      const slotStart = new Date(`${formattedDateStr}T${startTime}:00`);
+      const outOfTimeLimit = new Date(slotStart.getTime() + 60 * 1000);
+      const isOutOfTime = new Date() > outOfTimeLimit;
+
+      let statusText = "Kosong";
+      let statusClass = "text-success fw-bold";
+
+      if (isBooked) {
+        statusText = "Sudah dibooking";
+        statusClass = "text-danger fw-bold";
+      } else if (isOutOfTime) {
+        statusText = "Out of Time";
+        statusClass = "text-warning fw-bold";
+      }
 
       const row = document.createElement("tr");
       row.dataset.time = time;
       row.dataset.booked = isBooked ? "1" : "0";
+      row.dataset.outOfTime = isOutOfTime ? "1" : "0";
 
       if (isLandingPage) {
         row.innerHTML = `
@@ -179,7 +194,9 @@ async function renderSchedule(date) {
       } else {
         const buttonHtml = isBooked
           ? '<span class="badge bg-secondary">Penuh</span>'
-          : `<button class="btn btn-sm btn-warning selectTimeBtn" type="button" data-time="${time}">Pilih</button>`;
+          : isOutOfTime
+            ? '<span class="badge bg-warning text-dark">Out of Time</span>'
+            : `<button class="btn btn-sm btn-warning selectTimeBtn" type="button" data-time="${time}">Pilih</button>`;
 
         row.innerHTML = `
           <td>${time}</td>
@@ -187,7 +204,7 @@ async function renderSchedule(date) {
           <td>${buttonHtml}</td>
         `;
 
-        if (!isBooked && selectedTimes.includes(time)) {
+        if (!isBooked && !isOutOfTime && selectedTimes.includes(time)) {
           row.classList.add("selected");
           const selectBtn = row.querySelector(".selectTimeBtn");
           if (selectBtn) {
@@ -197,7 +214,7 @@ async function renderSchedule(date) {
           }
         }
 
-        if (!isBooked) {
+        if (!isBooked && !isOutOfTime) {
           const selectBtn = row.querySelector(".selectTimeBtn");
           if (selectBtn) {
             selectBtn.addEventListener("click", (e) => {
@@ -597,6 +614,170 @@ function initLoginForm() {
   });
 }
 
+function initHeroImageSlider() {
+  const hero = document.querySelector(".hero-slider");
+  if (!hero) return;
+
+  const slides = Array.from(hero.querySelectorAll(".hero-slide"));
+  const indicators = Array.from(hero.querySelectorAll(".hero-indicator"));
+  if (slides.length <= 1) return;
+
+  let currentIndex = slides.findIndex((slide) => slide.classList.contains("is-active"));
+  if (currentIndex < 0) currentIndex = 0;
+
+  let timerId = null;
+  const delay = 6500;
+
+  const restartKenBurns = (slide) => {
+    slide.style.animation = "none";
+    // Force reflow so the zoom animation starts again every time the image becomes active.
+    void slide.offsetWidth;
+    slide.style.animation = "";
+  };
+
+  const setActiveSlide = (nextIndex) => {
+    const normalizedIndex = (nextIndex + slides.length) % slides.length;
+    if (normalizedIndex === currentIndex && slides[currentIndex].classList.contains("is-active")) {
+      return;
+    }
+
+    currentIndex = normalizedIndex;
+
+    slides.forEach((slide, index) => {
+      const isActive = index === currentIndex;
+      slide.classList.toggle("is-active", isActive);
+      if (isActive) restartKenBurns(slide);
+    });
+
+    indicators.forEach((indicator, index) => {
+      indicator.classList.toggle("is-active", index === currentIndex);
+    });
+  };
+
+  const startSlider = () => {
+    window.clearInterval(timerId);
+    timerId = window.setInterval(() => {
+      setActiveSlide(currentIndex + 1);
+    }, delay);
+  };
+
+  indicators.forEach((indicator, index) => {
+    indicator.addEventListener("click", () => {
+      setActiveSlide(index);
+      startSlider();
+    });
+  });
+
+  slides.forEach((slide, index) => {
+    slide.classList.toggle("is-active", index === currentIndex);
+  });
+  restartKenBurns(slides[currentIndex]);
+  indicators.forEach((indicator, index) => {
+    indicator.classList.toggle("is-active", index === currentIndex);
+  });
+
+  startSlider();
+}
+
+function initNavbarScrollState() {
+  const navbar = document.querySelector(".app-navbar");
+  if (!navbar) return;
+
+  const syncNavbar = () => {
+    navbar.classList.toggle("is-scrolled", window.scrollY > 20);
+  };
+
+  syncNavbar();
+  window.addEventListener("scroll", syncNavbar, { passive: true });
+}
+
+function initGorgazaScrollPopAnimation() {
+  const isLandingPage = document.body.classList.contains("frontend-page") || document.querySelector(".hero");
+  if (!isLandingPage) return;
+
+  const selectors = [
+    ".section-title",
+    ".section-kicker",
+    ".facility-detail .col-lg-6",
+    ".gallery-grid img",
+    ".feature-box",
+    ".stat-box",
+    ".price-section .col-md-6",
+    ".price-card",
+    ".menu-card",
+    ".cafe-coming-soon",
+    ".schedule-section .col-lg-5",
+    ".schedule-section .col-lg-7",
+    ".schedule-card",
+    ".map-iframe",
+    "footer p"
+  ];
+
+  const items = [];
+  selectors.forEach((selector) => {
+    document.querySelectorAll(selector).forEach((element) => {
+      if (
+        !items.includes(element) &&
+        !element.closest(".hero") &&
+        !element.closest(".navbar") &&
+        !element.closest(".modal")
+      ) {
+        items.push(element);
+      }
+    });
+  });
+
+  if (!items.length) return;
+
+  items.forEach((element, index) => {
+    element.classList.remove(
+      "reveal-on-scroll",
+      "is-visible",
+      "smooth-reveal",
+      "smooth-reveal-fast",
+      "reveal-show",
+      "scroll-pop",
+      "pop-show"
+    );
+
+    element.classList.add("gg-scroll-pop");
+    element.classList.remove("gg-pop-show");
+
+    const parent = element.parentElement;
+    const siblingItems = parent ? Array.from(parent.children).filter((child) => items.includes(child)) : [];
+    const siblingIndex = siblingItems.length ? siblingItems.indexOf(element) : index;
+    const delay = Math.min((siblingIndex % 4) * 120, 360);
+
+    element.style.setProperty("--gg-pop-delay", `${delay}ms`);
+  });
+
+  const showElement = (element) => {
+    element.classList.add("gg-pop-show");
+  };
+
+  const revealByPosition = () => {
+    const trigger = window.innerHeight - 90;
+
+    items.forEach((element) => {
+      if (element.classList.contains("gg-pop-show")) return;
+
+      const rect = element.getBoundingClientRect();
+      if (rect.top < trigger) {
+        showElement(element);
+      }
+    });
+  };
+
+  // Browser perlu 1 frame untuk menerapkan posisi awal sebelum animasi show.
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      revealByPosition();
+
+      window.addEventListener("scroll", revealByPosition, { passive: true });
+      window.addEventListener("resize", revealByPosition);
+    });
+  });
+}
 document.addEventListener("DOMContentLoaded", () => {
   initCalendar();
   initFacilitySwitcher();
@@ -607,4 +788,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initPasswordToggle();
   initRegisterForm();
   initLoginForm();
+  initHeroImageSlider();
+  initGorgazaScrollPopAnimation();
+  initNavbarScrollState();
 });

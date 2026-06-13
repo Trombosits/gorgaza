@@ -76,10 +76,10 @@
                     <div class="col-md-6">
                         <div class="p-3 rounded-4 border h-100">
                             <div class="fw-bold mb-3">Status Booking</div>
-                            @foreach(['Booking','Completed','Cancelled'] as $status)
+                            @foreach(['Booking','Confirmed','Completed','Cancelled','Out of Time'] as $status)
                                 @php($total = $statusSummary[$status] ?? 0)
                                 <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <span class="badge-soft badge-{{ strtolower($status) }}">{{ $status }}</span>
+                                    <span class="badge-soft badge-{{ strtolower(str_replace(' ', '-', $status)) }}">{{ $status }}</span>
                                     <strong>{{ $total }}</strong>
                                 </div>
                             @endforeach
@@ -133,6 +133,7 @@
                 <tbody>
                 @forelse($latestReservations as $reservation)
                     @php($payment = $reservation->transaction->status_pembayaran ?? '-')
+                    @php($statusClass = strtolower(str_replace(' ', '-', $reservation->status_main)))
                     <tr>
                         <td>
                             <div class="fw-bold">{{ $reservation->transaction->user->nama ?? $reservation->transaction->user->name ?? '-' }}</div>
@@ -140,7 +141,7 @@
                         </td>
                         <td>{{ $reservation->facility->nama_fasilitas ?? '-' }}</td>
                         <td>{{ $reservation->waktu_mulai->format('d M Y H:i') }} - {{ $reservation->waktu_selesai->format('H:i') }}</td>
-                        <td><span class="badge-soft badge-{{ strtolower($reservation->status_main) }}">{{ $reservation->status_main }}</span></td>
+                        <td><span class="badge-soft badge-{{ $statusClass }}">{{ $reservation->status_main }}</span></td>
                         <td><span class="badge-soft {{ $payment === 'Paid' ? 'badge-completed' : ($payment === 'Pending' ? 'badge-booking' : 'badge-cancelled') }}">{{ $payment }}</span></td>
                         <td class="fw-bold">Rp {{ number_format($reservation->subtotal, 0, ',', '.') }}</td>
                     </tr>

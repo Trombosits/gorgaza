@@ -16,7 +16,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top app-navbar">
       <div class="container">
         <a class="navbar-brand brand-mark" href="/">
-          <span class="brand-icon">GG</span>
+          <img src="{{ asset('images/logo-gorgaza.png') }}" alt="GOR GAZA" class="navbar-logo-img">
           <span>GOR GAZA</span>
         </a>
 
@@ -25,12 +25,27 @@
         </button>
 
         <div class="collapse navbar-collapse" id="menu">
-          <ul class="navbar-nav ms-auto me-3">
-            <li class="nav-item"><a class="nav-link" href="/#hero">Beranda</a></li>
-            <li class="nav-item"><a class="nav-link" href="/#fasilitas">Fasilitas</a></li>
-            <li class="nav-item"><a class="nav-link" href="/#jadwal">Jadwal</a></li>
-            <li class="nav-item"><a class="nav-link" href="/#lokasi">Lokasi</a></li>
-          </ul>
+  <ul class="navbar-nav ms-auto me-3">
+    <li class="nav-item">
+      <a class="nav-link" href="{{ url('/') }}#hero">Beranda</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{{ url('/') }}#fasilitas">Fasilitas</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{{ url('/') }}#harga">Harga</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{{ url('/') }}#menu-kafe">Menu Kafe</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{{ url('/') }}#jadwal">Jadwal</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{{ url('/') }}#lokasi">Lokasi</a>
+    </li>
+  </ul>
+</div>
           <div class="nav-auth d-flex gap-2">
             @if(session('auth_user.role') === 'admin')
               <a class="btn btn-outline-light rounded-pill px-3" href="/admin/dashboard">Admin</a>
@@ -98,8 +113,7 @@
                   <div class="input-icon-wrap">
                     <i class="fa-solid fa-lock"></i>
                     <input id="regPassword" type="password" class="form-control" placeholder="Minimal 6 karakter" autocomplete="new-password" required />
-                    <button class="password-toggle" type="button" data-target="regPassword" aria-label="Tampilkan password"><i class="fa-regular fa-eye"></i></button>
-                  </div>
+                    </div>
                 </div>
 
                 <div class="mb-4">
@@ -107,8 +121,7 @@
                   <div class="input-icon-wrap">
                     <i class="fa-solid fa-shield-halved"></i>
                     <input id="regPasswordConfirm" type="password" class="form-control" placeholder="Ulangi password" autocomplete="new-password" required />
-                    <button class="password-toggle" type="button" data-target="regPasswordConfirm" aria-label="Tampilkan password"><i class="fa-regular fa-eye"></i></button>
-                  </div>
+                    </div>
                 </div>
 
                 <div class="d-flex justify-content-between align-items-center mb-4 auth-footer">

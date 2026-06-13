@@ -4,12 +4,15 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Reservation;
+use App\Services\ReservationStatusService;
 use Illuminate\Http\Request;
 
 class ReservationController extends Controller
 {
     public function index(Request $request)
     {
+        ReservationStatusService::markOutOfTime();
+
         $query = Reservation::with(['facility', 'transaction.user'])->latest();
 
         if ($request->filled('status')) {
@@ -27,6 +30,8 @@ class ReservationController extends Controller
 
     public function show(Reservation $reservation)
     {
+        ReservationStatusService::markOutOfTime();
+        $reservation->refresh();
         $reservation->load(['facility', 'transaction.user']);
         return view('Admin.reservations.show', compact('reservation'));
     }
@@ -34,7 +39,7 @@ class ReservationController extends Controller
     public function updateStatus(Request $request, Reservation $reservation)
     {
         $data = $request->validate([
-            'status_main' => 'required|in:Booking,Confirmed,Cancelled,Completed',
+            'status_main' => 'required|in:Booking,Confirmed,Cancelled,Completed,Out of Time',
             'status_pembayaran' => 'required|in:Pending,Paid,Cancelled',
         ]);
 
