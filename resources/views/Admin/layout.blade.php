@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'Admin Panel') - GOR GAZA</title>
+    <title>@yield('title', 'Panel Admin') - GOR GAZA</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -21,15 +21,30 @@
             --gaza-info: #2563eb;
         }
         * { font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif; }
-        body { background: var(--gaza-bg); color: var(--gaza-dark); }
-        .admin-shell { min-height: 100vh; }
+        body { background: var(--gaza-bg); color: var(--gaza-dark); overflow-x: hidden; }
+        .admin-shell { min-height: 100vh; padding-left: 272px; }
         .sidebar {
             min-height: 100vh;
+            height: 100vh;
+            width: 272px;
             background: linear-gradient(180deg, #111827 0%, #0f172a 55%, #020617 100%);
-            position: sticky;
+            position: fixed;
             top: 0;
+            left: 0;
+            z-index: 1030;
+            overflow-y: auto;
             box-shadow: 18px 0 40px rgba(15, 23, 42, .12);
         }
+        .admin-shell > .row { min-height: 100vh; display: block; }
+        .main-content {
+            min-height: 100vh;
+            width: 100%;
+            max-width: 100%;
+            flex: 0 0 100% !important;
+            margin-left: 0;
+        }
+        .sidebar::-webkit-scrollbar { width: 7px; }
+        .sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,.18); border-radius: 999px; }
         .brand-box {
             background: rgba(255,255,255,.07);
             border: 1px solid rgba(255,255,255,.1);
@@ -70,7 +85,6 @@
             color: #111827;
             transform: translateX(3px);
         }
-        .main-content { min-height: 100vh; }
         .topbar {
             background: rgba(255,255,255,.82);
             backdrop-filter: blur(18px);
@@ -130,10 +144,97 @@
         .section-subtitle { color: var(--gaza-muted); font-size: 14px; }
         .empty-state { padding: 52px 16px; text-align: center; color: var(--gaza-muted); }
         .empty-state i { font-size: 34px; color: #cbd5e1; margin-bottom: 12px; }
+
+        /* Pagination admin dibuat khusus agar rapi dan tidak memakai tampilan bawaan Laravel. */
+        .admin-pagination-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+            padding: 16px 18px;
+            margin-top: 18px;
+            border: 1px solid rgba(226, 232, 240, .9);
+            border-radius: 20px;
+            background: linear-gradient(135deg, #ffffff 0%, #fffbeb 100%);
+            box-shadow: 0 14px 32px rgba(15, 23, 42, .06);
+        }
+        .admin-pagination-info {
+            color: #64748b;
+            font-size: 14px;
+            font-weight: 700;
+        }
+        .admin-pagination-info strong {
+            color: #0f172a;
+            font-weight: 900;
+        }
+        .admin-pagination-list {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0;
+            margin: 0;
+            list-style: none;
+        }
+        .admin-page-link {
+            min-width: 40px;
+            height: 40px;
+            padding: 0 13px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 14px;
+            border: 1px solid #e2e8f0;
+            background: #ffffff;
+            color: #334155;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 900;
+            line-height: 1;
+            transition: .2s ease;
+        }
+        .admin-page-link i {
+            font-size: 13px;
+            line-height: 1;
+        }
+        .admin-page-item:not(.disabled):not(.active) .admin-page-link:hover {
+            color: #111827;
+            border-color: #f59e0b;
+            background: #fef3c7;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 22px rgba(245, 158, 11, .16);
+        }
+        .admin-page-item.active .admin-page-link {
+            color: #111827;
+            border-color: transparent;
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+            box-shadow: 0 12px 26px rgba(245, 158, 11, .24);
+        }
+        .admin-page-item.disabled .admin-page-link {
+            color: #cbd5e1;
+            background: #f8fafc;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        .admin-page-link.dots {
+            min-width: 32px;
+            border-color: transparent;
+            background: transparent;
+            color: #94a3b8;
+        }
+        .main-content nav[role="navigation"] svg {
+            width: 16px !important;
+            height: 16px !important;
+        }
+
         @media (max-width: 767.98px) {
-            .sidebar { min-height: auto; position: relative; }
+            .admin-shell { padding-left: 0; }
+            .admin-shell > .row { display: flex; }
+            .sidebar { min-height: auto; height: auto; width: 100%; position: relative; overflow-y: visible; }
             .sidebar a.nav-link-admin { display: inline-flex; margin-right: 6px; }
             .main-content { padding: 18px !important; }
+            .admin-pagination-wrap { align-items: flex-start; flex-direction: column; }
+            .admin-pagination-list { width: 100%; justify-content: flex-start; flex-wrap: wrap; }
         }
     </style>
 </head>
@@ -146,17 +247,17 @@
                     <img src="{{ asset('images/logo-gorgaza.png') }}" alt="GOR GAZA" class="admin-brand-logo-img">
                     <div>
                         <div class="text-warning fw-black fw-bold">GOR GAZA</div>
-                        <small class="text-light opacity-75">Admin Panel</small>
+                        <small class="text-light opacity-75">Panel Admin</small>
                     </div>
                 </div>
             </div>
 
             <div class="sidebar-section">Menu Utama</div>
             <a href="{{ route('admin.dashboard') }}" class="nav-link-admin {{ request()->is('admin/dashboard') ? 'active' : '' }}">
-                <i class="fa-solid fa-gauge-high"></i> Dashboard
+                <i class="fa-solid fa-gauge-high"></i> Beranda
             </a>
             <a href="{{ route('admin.reservations.index') }}" class="nav-link-admin {{ request()->is('admin/reservations*') ? 'active' : '' }}">
-                <i class="fa-solid fa-calendar-check"></i> Booking
+                <i class="fa-solid fa-calendar-check"></i> Pemesanan
             </a>
             <a href="{{ route('admin.facilities.index') }}" class="nav-link-admin {{ request()->is('admin/facilities*') ? 'active' : '' }}">
                 <i class="fa-solid fa-table-tennis-paddle-ball"></i> Fasilitas
@@ -173,7 +274,7 @@
             <form action="/logout" method="POST" class="mt-3">
                 @csrf
                 <button class="btn btn-outline-warning w-100 rounded-4 fw-bold" type="submit">
-                    <i class="fa-solid fa-right-from-bracket me-2"></i> Logout
+                    <i class="fa-solid fa-right-from-bracket me-2"></i> Keluar
                 </button>
             </form>
         </aside>
@@ -182,12 +283,12 @@
             <div class="topbar p-4 mb-4 d-flex flex-wrap gap-3 justify-content-between align-items-center">
                 <div>
                     <h2 class="fw-bold mb-1">@yield('title')</h2>
-                    <div class="section-subtitle">Kelola data booking, fasilitas, dan laporan GOR GAZA.</div>
+                    <div class="section-subtitle">Kelola data pemesanan, fasilitas, dan laporan GOR GAZA.</div>
                 </div>
                 <div class="d-flex align-items-center gap-3">
                     <div class="text-end d-none d-sm-block">
                         <div class="fw-bold">{{ session('auth_user.name') ?? session('auth_user.nama') ?? 'Admin' }}</div>
-                        <small class="text-muted">Administrator</small>
+                        <small class="text-muted">Admin</small>
                     </div>
                     <div class="stat-icon" style="--stat-color:#fef3c7;--stat-text:#92400e;">
                         <i class="fa-solid fa-user-shield"></i>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Riwayat Booking - GOR GAZA</title>
+    <title>Riwayat Pemesanan - GOR GAZA</title>
     <meta name="csrf-token" content="{{ csrf_token() }}" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet" />
@@ -31,11 +31,11 @@
         </div>
 
         <div class="nav-auth d-flex gap-2">
-          <a class="btn btn-outline-light rounded-pill px-3" href="/booking">Booking</a>
+          <a class="btn btn-outline-light rounded-pill px-3" href="/booking">Pemesanan</a>
           <a class="btn btn-warning rounded-pill px-3 fw-bold" href="/booking-history">Riwayat</a>
           <form action="/logout" method="POST" class="d-inline">
             @csrf
-            <button type="submit" class="btn btn-danger rounded-pill px-3">Logout</button>
+            <button type="submit" class="btn btn-danger rounded-pill px-3">Keluar</button>
           </form>
         </div>
       </div>
@@ -45,16 +45,16 @@
       <div class="container">
         <div class="booking-history-header text-center">
           <span class="section-kicker">Cek Status</span>
-          <h1>Riwayat Booking Saya</h1>
-          <p>Gunakan halaman ini untuk mengecek apakah pembayaran sudah diubah admin menjadi <strong>Paid</strong> atau masih <strong>Pending</strong>.</p>
+          <h1>Riwayat Pemesanan Saya</h1>
+          <p>Gunakan halaman ini untuk mengecek apakah pembayaran sudah dikonfirmasi admin menjadi <strong>Lunas</strong> atau masih <strong>Menunggu</strong>.</p>
         </div>
 
         @if($transactions->isEmpty())
           <div class="empty-history-card text-center">
             <div class="empty-history-icon"><i class="fa-regular fa-calendar-xmark"></i></div>
-            <h3>Belum ada booking</h3>
-            <p>Kamu belum memiliki transaksi booking. Pilih fasilitas dan jadwal terlebih dahulu.</p>
-            <a href="/booking" class="btn btn-warning rounded-pill px-4 fw-bold">Booking Sekarang</a>
+            <h3>Belum ada pemesanan</h3>
+            <p>Kamu belum memiliki transaksi pemesanan. Pilih fasilitas dan jadwal terlebih dahulu.</p>
+            <a href="/booking" class="btn btn-warning rounded-pill px-4 fw-bold">Pesan Sekarang</a>
           </div>
         @else
           <div class="booking-history-list">
@@ -62,7 +62,24 @@
               @php
                 $paymentStatus = $transaction->status_pembayaran ?? 'Pending';
                 $paymentClass = strtolower($paymentStatus) === 'paid' ? 'paid' : (strtolower($paymentStatus) === 'cancelled' ? 'cancelled' : 'pending');
+                $paymentLabels = [
+                    'Paid' => 'Lunas',
+                    'Pending' => 'Menunggu',
+                    'Cancelled' => 'Dibatalkan',
+                ];
+                $reservationLabels = [
+                    'Booking' => 'Menunggu',
+                    'Confirmed' => 'Disetujui',
+                    'Completed' => 'Selesai',
+                    'Cancelled' => 'Dibatalkan',
+                    'Out of Time' => 'Waktu Habis',
+                ];
+                $methodLabels = [
+                    'Cash / Bayar di Tempat' => 'Tunai / Bayar di Tempat',
+                    'Pay On Place' => 'Tunai / Bayar di Tempat',
+                ];
                 $method = preg_replace(['/QRIS\s*\/\s*Go\s*Pay/i', '/QRIS\/Go\s*Pay/i', '/Go\s*Pay/i'], 'QRIS', $transaction->metode_pembayaran ?? 'Cash / Bayar di Tempat');
+                $method = $methodLabels[$method] ?? $method;
               @endphp
 
               <article class="history-card">
@@ -88,8 +105,8 @@
                           </strong>
                         </div>
                         <div>
-                          <span class="history-label">Status Booking</span>
-                          <span class="history-status booking">{{ $reservation->status_main }}</span>
+                          <span class="history-label">Status Pemesanan</span>
+                          <span class="history-status booking">{{ $reservationLabels[$reservation->status_main] ?? $reservation->status_main }}</span>
                         </div>
                       </div>
                     @empty
@@ -103,7 +120,7 @@
                 <div class="history-payment-block">
                   <div>
                     <span class="history-label">Status Pembayaran</span>
-                    <span class="history-status {{ $paymentClass }}">{{ $paymentStatus }}</span>
+                    <span class="history-status {{ $paymentClass }}">{{ $paymentLabels[$paymentStatus] ?? $paymentStatus }}</span>
                   </div>
                   <div>
                     <span class="history-label">Metode</span>

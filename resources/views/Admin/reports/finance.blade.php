@@ -3,6 +3,23 @@
 @section('title', 'Laporan Keuangan')
 
 @section('content')
+@php
+    $paymentLabels = [
+        'Paid' => 'Lunas',
+        'Pending' => 'Menunggu',
+        'Cancelled' => 'Dibatalkan',
+    ];
+    $methodLabels = [
+        'QRIS' => 'QRIS',
+        'Cash / Bayar di Tempat' => 'Tunai / Bayar di Tempat',
+        'Pay On Place' => 'Tunai / Bayar di Tempat',
+        '' => 'Bayar di Tempat',
+    ];
+    $cleanMethod = function ($method) use ($methodLabels) {
+        $method = preg_replace(['/QRIS\s*\/\s*Go\s*Pay/i', '/QRIS\/Go\s*Pay/i', '/Go\s*Pay/i'], 'QRIS', $method ?? '');
+        return $methodLabels[$method] ?? ($method ?: 'Bayar di Tempat');
+    };
+@endphp
 <div class="card content-card mb-4">
     <div class="card-body p-4">
         <form class="row g-3 align-items-end" method="GET" action="{{ route('admin.reports.finance') }}">
@@ -19,7 +36,7 @@
                 <select name="status_pembayaran" class="form-select">
                     <option value="">Semua Status</option>
                     @foreach(['Paid','Pending','Cancelled'] as $item)
-                        <option value="{{ $item }}" {{ $status === $item ? 'selected' : '' }}>{{ $item }}</option>
+                        <option value="{{ $item }}" {{ $status === $item ? 'selected' : '' }}>{{ $paymentLabels[$item] ?? $item }}</option>
                     @endforeach
                 </select>
             </div>
@@ -27,8 +44,8 @@
                 <label class="form-label fw-bold">Metode</label>
                 <select name="metode_pembayaran" class="form-select">
                     <option value="">Semua Metode</option>
-                    @foreach(['QRIS','Cash / Bayar di Tempat','Pay On Place'] as $item)
-                        <option value="{{ $item }}" {{ ($method ?? '') === $item ? 'selected' : '' }}>{{ $item }}</option>
+                    @foreach(['QRIS','Tunai / Bayar di Tempat','Bayar di Tempat'] as $item)
+                        <option value="{{ $item }}" {{ ($method ?? '') === $item ? 'selected' : '' }}>{{ $methodLabels[$item] ?? $item }}</option>
                     @endforeach
                 </select>
             </div>
@@ -46,7 +63,7 @@
     <div class="col-md-6 col-xl-3">
         <div class="card card-stat p-4" style="--stat-color:#dcfce7;--stat-text:#166534;">
             <div class="d-flex justify-content-between align-items-start">
-                <div><div class="stat-label">Pendapatan Paid</div><div class="stat-value fs-4">Rp {{ number_format($paidRevenue, 0, ',', '.') }}</div></div>
+                <div><div class="stat-label">Pendapatan Lunas</div><div class="stat-value fs-4">Rp {{ number_format($paidRevenue, 0, ',', '.') }}</div></div>
                 <div class="stat-icon"><i class="fa-solid fa-sack-dollar"></i></div>
             </div>
         </div>
@@ -54,7 +71,7 @@
     <div class="col-md-6 col-xl-3">
         <div class="card card-stat p-4" style="--stat-color:#fef3c7;--stat-text:#92400e;">
             <div class="d-flex justify-content-between align-items-start">
-                <div><div class="stat-label">Tagihan Pending</div><div class="stat-value fs-4">Rp {{ number_format($pendingRevenue, 0, ',', '.') }}</div></div>
+                <div><div class="stat-label">Tagihan Menunggu</div><div class="stat-value fs-4">Rp {{ number_format($pendingRevenue, 0, ',', '.') }}</div></div>
                 <div class="stat-icon"><i class="fa-solid fa-hourglass-half"></i></div>
             </div>
         </div>
@@ -62,7 +79,7 @@
     <div class="col-md-6 col-xl-3">
         <div class="card card-stat p-4" style="--stat-color:#fee2e2;--stat-text:#991b1b;">
             <div class="d-flex justify-content-between align-items-start">
-                <div><div class="stat-label">Cancelled</div><div class="stat-value fs-4">Rp {{ number_format($cancelledRevenue, 0, ',', '.') }}</div></div>
+                <div><div class="stat-label">Dibatalkan</div><div class="stat-value fs-4">Rp {{ number_format($cancelledRevenue, 0, ',', '.') }}</div></div>
                 <div class="stat-icon"><i class="fa-solid fa-ban"></i></div>
             </div>
         </div>
@@ -89,7 +106,7 @@
                         <tbody>
                             @forelse($paymentStatusSummary as $row)
                                 <tr>
-                                    <td><span class="badge-soft {{ $row->status_pembayaran === 'Paid' ? 'badge-completed' : ($row->status_pembayaran === 'Pending' ? 'badge-booking' : 'badge-cancelled') }}">{{ $row->status_pembayaran }}</span></td>
+                                    <td><span class="badge-soft {{ $row->status_pembayaran === 'Paid' ? 'badge-completed' : ($row->status_pembayaran === 'Pending' ? 'badge-booking' : 'badge-cancelled') }}">{{ $paymentLabels[$row->status_pembayaran] ?? $row->status_pembayaran }}</span></td>
                                     <td class="fw-bold">{{ $row->total }}</td>
                                     <td class="fw-bold">Rp {{ number_format($row->nominal, 0, ',', '.') }}</td>
                                 </tr>
@@ -113,7 +130,7 @@
                         <tbody>
                             @forelse($paymentMethodSummary as $row)
                                 <tr>
-                                    <td><span class="badge-soft badge-booking">{{ preg_replace(['/QRIS\s*\/\s*Go\s*Pay/i', '/QRIS\/Go\s*Pay/i', '/Go\s*Pay/i'], 'QRIS', $row->metode_pembayaran ?? 'Pay On Place') }}</span></td>
+                                    <td><span class="badge-soft badge-booking">{{ $cleanMethod($row->metode_pembayaran ?? 'Bayar di Tempat') }}</span></td>
                                     <td class="fw-bold">{{ $row->total }}</td>
                                     <td class="fw-bold">Rp {{ number_format($row->nominal, 0, ',', '.') }}</td>
                                 </tr>
@@ -130,10 +147,10 @@
         <div class="card content-card h-100">
             <div class="card-body p-4">
                 <h5 class="section-title">Pendapatan per Fasilitas</h5>
-                <div class="section-subtitle mb-3">Dihitung dari transaksi dengan pembayaran Paid.</div>
+                <div class="section-subtitle mb-3">Dihitung dari transaksi dengan pembayaran lunas.</div>
                 <div class="table-responsive">
                     <table class="table align-middle mb-0">
-                        <thead><tr><th>Fasilitas</th><th>Total Booking</th><th>Pendapatan</th></tr></thead>
+                        <thead><tr><th>Fasilitas</th><th>Total Pemesanan</th><th>Pendapatan</th></tr></thead>
                         <tbody>
                             @forelse($facilityRevenue as $row)
                                 <tr>
@@ -142,7 +159,7 @@
                                     <td class="fw-bold">Rp {{ number_format($row->total_revenue, 0, ',', '.') }}</td>
                                 </tr>
                             @empty
-                                <tr><td colspan="3" class="text-center text-muted py-4">Belum ada pendapatan paid.</td></tr>
+                                <tr><td colspan="3" class="text-center text-muted py-4">Belum ada pendapatan lunas.</td></tr>
                             @endforelse
                         </tbody>
                     </table>
@@ -157,12 +174,12 @@
         <div class="d-flex flex-wrap gap-3 justify-content-between align-items-center mb-3">
             <div>
                 <h5 class="section-title">Pendapatan Harian</h5>
-                <div class="section-subtitle">Ringkasan revenue paid per hari pada rentang filter.</div>
+                <div class="section-subtitle">Ringkasan pendapatan lunas per hari pada rentang filter.</div>
             </div>
         </div>
         <div class="table-responsive">
             <table class="table align-middle mb-0">
-                <thead><tr><th>Tanggal</th><th>Total Pendapatan Paid</th></tr></thead>
+                <thead><tr><th>Tanggal</th><th>Total Pendapatan Lunas</th></tr></thead>
                 <tbody>
                     @forelse($dailyRevenue as $row)
                         <tr>
@@ -186,12 +203,12 @@
                 <div class="section-subtitle">Daftar transaksi berdasarkan filter laporan keuangan.</div>
             </div>
             <a href="{{ route('admin.reports.finance.export', request()->query()) }}" class="btn btn-gaza rounded-4">
-                <i class="fa-solid fa-file-csv me-2"></i>Export CSV
+                <i class="fa-solid fa-file-csv me-2"></i>Ekspor CSV
             </a>
         </div>
         <div class="table-responsive">
             <table class="table align-middle mb-0">
-                <thead><tr><th>ID</th><th>Tanggal</th><th>Customer</th><th>Booking</th><th>Metode</th><th>Status</th><th>Total</th></tr></thead>
+                <thead><tr><th>ID</th><th>Tanggal</th><th>Pelanggan</th><th>Pemesanan</th><th>Metode</th><th>Status</th><th>Total</th></tr></thead>
                 <tbody>
                     @forelse($transactions as $transaction)
                         <tr>
@@ -208,8 +225,8 @@
                                     <span class="text-muted">-</span>
                                 @endforelse
                             </td>
-                            <td><span class="badge-soft badge-booking">{{ $transaction->metode_pembayaran ?? 'Pay On Place' }}</span></td>
-                            <td><span class="badge-soft {{ $transaction->status_pembayaran === 'Paid' ? 'badge-completed' : ($transaction->status_pembayaran === 'Pending' ? 'badge-booking' : 'badge-cancelled') }}">{{ $transaction->status_pembayaran }}</span></td>
+                            <td><span class="badge-soft badge-booking">{{ $cleanMethod($transaction->metode_pembayaran ?? 'Bayar di Tempat') }}</span></td>
+                            <td><span class="badge-soft {{ $transaction->status_pembayaran === 'Paid' ? 'badge-completed' : ($transaction->status_pembayaran === 'Pending' ? 'badge-booking' : 'badge-cancelled') }}">{{ $paymentLabels[$transaction->status_pembayaran] ?? $transaction->status_pembayaran }}</span></td>
                             <td class="fw-bold">Rp {{ number_format($transaction->total_tagihan, 0, ',', '.') }}</td>
                         </tr>
                     @empty
@@ -218,7 +235,7 @@
                 </tbody>
             </table>
         </div>
-        <div class="mt-3">{{ $transactions->links() }}</div>
+        <div class="mt-3">{{ $transactions->links('Admin.components.pagination') }}</div>
     </div>
 </div>
 @endsection

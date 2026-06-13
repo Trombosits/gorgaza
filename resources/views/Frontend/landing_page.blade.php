@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="csrf-token" content="{{ csrf_token() }}" />
-    <title>GOR GAZA - Booking Lapangan & Billiard</title>
+    <title>GOR GAZA - Pemesanan Lapangan & Billiard</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet" />
@@ -51,17 +51,17 @@
               <a class="btn btn-outline-light rounded-pill px-3" href="/admin/dashboard">Admin</a>
               <form action="/logout" method="POST" class="d-inline">
                 @csrf
-                <button type="submit" class="btn btn-danger rounded-pill px-3">Logout</button>
+                <button type="submit" class="btn btn-danger rounded-pill px-3">Keluar</button>
               </form>
             @elseif(session('auth_user'))
-              <a class="btn btn-outline-light rounded-pill px-3" href="/booking">Booking</a>
+              <a class="btn btn-outline-light rounded-pill px-3" href="/booking">Pemesanan</a>
               <a class="btn btn-warning rounded-pill px-3 fw-bold" href="/booking-history">Riwayat</a>
               <form action="/logout" method="POST" class="d-inline">
                 @csrf
-                <button type="submit" class="btn btn-danger rounded-pill px-3">Logout</button>
+                <button type="submit" class="btn btn-danger rounded-pill px-3">Keluar</button>
               </form>
             @else
-              <a class="btn btn-book" href="/login">Login / Daftar</a>
+              <a class="btn btn-book" href="/login">Masuk / Daftar</a>
             @endif
           </div>
         </div>
@@ -81,13 +81,13 @@
       <div class="container position-relative">
         <div class="row align-items-center g-5">
           <div class="col-lg-8 hero-copy">
-            <h1>Booking <span>Lapangan</span> & <span>Billiard</span> Jadi Lebih Mudah</h1>
+            <h1>Pemesanan <span>Lapangan</span> & <span>Billiard</span> Jadi Lebih Mudah</h1>
             <p>
               GOR GAZA menyediakan lapangan badminton, meja billiard premium, dan area santai dalam satu tempat. Cek jadwal, pilih sesi, lalu booking tanpa antre.
             </p>
             <div class="d-flex flex-wrap gap-3 mt-4">
               <a href="/booking" class="btn btn-warning btn-lg hero-cta">
-                <i class="fas fa-calendar-check me-2"></i>Booking Sekarang
+                <i class="fas fa-calendar-check me-2"></i>Pesan Sekarang
               </a>
               <a href="#harga" class="btn btn-outline-light btn-lg hero-cta-outline">
                 <i class="fa-solid fa-tags me-2"></i>Lihat Harga
@@ -96,14 +96,14 @@
             <div class="hero-stats mt-5">
               <div>
                 <strong>Badminton & Billiard</strong>
-                <span>Booking online</span>
+                <span>Pemesanan online</span>
               </div>
               <div>
                 <strong>08.00-22.00 WIB</strong>
                 <span>Jam operasional</span>
               </div>
               <div>
-                <strong>QRIS & Cash</strong>
+                <strong>QRIS & Tunai</strong>
                 <span>Pembayaran fleksibel</span>
               </div>
             </div>
@@ -335,7 +335,7 @@
                 </div>
                 <div id="calendarDays" class="calendar-days"></div>
               </div>
-              <div class="booking-note"><b>Ketentuan booking:</b><br />Mohon lengkapi data sebelum konfirmasi.</div>
+              <div class="booking-note"><b>Ketentuan pemesanan:</b><br />Mohon lengkapi data sebelum konfirmasi.</div>
             </div>
           </div>
 
@@ -376,7 +376,7 @@
 
     <footer>
       <div class="container text-center">
-        <p>© 2026 GOR GAZA. All Rights Reserved.</p>
+        <p>© 2026 GOR GAZA. Seluruh hak cipta dilindungi.</p>
       </div>
     </footer>
 

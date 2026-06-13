@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="csrf-token" content="{{ csrf_token() }}" />
-    <title>Login - GOR GAZA</title>
+    <title>Masuk - GOR GAZA</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet" />
@@ -51,9 +51,9 @@
             @if(session('auth_user.role') === 'admin')
               <a class="btn btn-outline-light rounded-pill px-3" href="/admin/dashboard">Admin</a>
             @elseif(session('auth_user'))
-              <a class="btn btn-outline-light rounded-pill px-3" href="/booking">Booking</a>
+              <a class="btn btn-outline-light rounded-pill px-3" href="/booking">Pemesanan</a>
             @else
-              <a class="btn btn-book" href="/login">Login / Daftar</a>
+              <a class="btn btn-book" href="/login">Masuk / Daftar</a>
             @endif
           </div>
         </div>
@@ -67,7 +67,7 @@
         <div class="row align-items-center justify-content-center g-5">
           <div class="col-lg-5 d-none d-lg-block">
             <div class="auth-side-card glass-card">
-              <h1>Masuk dan lanjutkan booking kamu.</h1>
+              <h1>Masuk dan lanjutkan pemesanan kamu.</h1>
               <p>Cek jadwal, pilih sesi, dan pantau konfirmasi booking dengan akun GOR GAZA.</p>
             </div>
           </div>
@@ -96,10 +96,10 @@
                 </div>
 
                 <div class="mb-3">
-                  <label class="form-label" for="loginPassword">Password</label>
+                  <label class="form-label" for="loginPassword">Kata Sandi</label>
                   <div class="input-icon-wrap">
                     <i class="fa-solid fa-lock"></i>
-                    <input id="loginPassword" type="password" class="form-control" placeholder="Masukkan password" autocomplete="current-password" required />
+                    <input id="loginPassword" type="password" class="form-control" placeholder="Masukkan kata sandi" autocomplete="current-password" required />
                     </div>
                 </div>
 

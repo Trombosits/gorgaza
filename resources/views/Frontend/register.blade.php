@@ -50,9 +50,9 @@
             @if(session('auth_user.role') === 'admin')
               <a class="btn btn-outline-light rounded-pill px-3" href="/admin/dashboard">Admin</a>
             @elseif(session('auth_user'))
-              <a class="btn btn-outline-light rounded-pill px-3" href="/booking">Booking</a>
+              <a class="btn btn-outline-light rounded-pill px-3" href="/booking">Pemesanan</a>
             @else
-              <a class="btn btn-book" href="/login">Login / Daftar</a>
+              <a class="btn btn-book" href="/login">Masuk / Daftar</a>
             @endif
           </div>
         </div>
@@ -109,7 +109,7 @@
                 </div>
 
                 <div class="mb-3">
-                  <label class="form-label" for="regPassword">Password</label>
+                  <label class="form-label" for="regPassword">Kata Sandi</label>
                   <div class="input-icon-wrap">
                     <i class="fa-solid fa-lock"></i>
                     <input id="regPassword" type="password" class="form-control" placeholder="Minimal 6 karakter" autocomplete="new-password" required />
@@ -117,10 +117,10 @@
                 </div>
 
                 <div class="mb-4">
-                  <label class="form-label" for="regPasswordConfirm">Konfirmasi Password</label>
+                  <label class="form-label" for="regPasswordConfirm">Konfirmasi Kata Sandi</label>
                   <div class="input-icon-wrap">
                     <i class="fa-solid fa-shield-halved"></i>
-                    <input id="regPasswordConfirm" type="password" class="form-control" placeholder="Ulangi password" autocomplete="new-password" required />
+                    <input id="regPasswordConfirm" type="password" class="form-control" placeholder="Ulangi kata sandi" autocomplete="new-password" required />
                     </div>
                 </div>
 

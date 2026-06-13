@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Konfirmasi Booking - GOR GAZA</title>
+    <title>Konfirmasi Pemesanan - GOR GAZA</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
@@ -46,13 +46,13 @@
           <div class="nav-auth d-flex gap-2">
             @if(session('auth_user.role') === 'admin')
               <a class="btn btn-outline-light rounded-pill px-3" href="/admin/dashboard">Admin</a>
-              <form action="/logout" method="POST" class="d-inline">@csrf<button type="submit" class="btn btn-danger rounded-pill px-3">Logout</button></form>
+              <form action="/logout" method="POST" class="d-inline">@csrf<button type="submit" class="btn btn-danger rounded-pill px-3">Keluar</button></form>
             @elseif(session('auth_user'))
-              <a class="btn btn-outline-light rounded-pill px-3" href="/booking">Booking</a>
+              <a class="btn btn-outline-light rounded-pill px-3" href="/booking">Pemesanan</a>
               <a class="btn btn-warning rounded-pill px-3 fw-bold" href="/booking-history">Riwayat</a>
-              <form action="/logout" method="POST" class="d-inline">@csrf<button type="submit" class="btn btn-danger rounded-pill px-3">Logout</button></form>
+              <form action="/logout" method="POST" class="d-inline">@csrf<button type="submit" class="btn btn-danger rounded-pill px-3">Keluar</button></form>
             @else
-              <a class="btn btn-book" href="/login">Login / Daftar</a>
+              <a class="btn btn-book" href="/login">Masuk / Daftar</a>
             @endif
           </div>
         </div>
@@ -62,8 +62,8 @@
     <section class="booking-confirm-section booking-polish-page">
       <div class="container">
         <div class="confirm-header text-center">
-          <span class="section-eyebrow"><i class="fa-solid fa-clipboard-check me-2"></i>Final Step</span>
-          <h1 class="confirm-title">Konfirmasi Booking</h1>
+          <span class="section-eyebrow"><i class="fa-solid fa-clipboard-check me-2"></i>Langkah Terakhir</span>
+          <h1 class="confirm-title">Konfirmasi Pemesanan</h1>
           <p class="confirm-subtitle">Periksa detail booking, pilih metode pembayaran, lalu konfirmasi agar jadwal kamu tercatat di sistem.</p>
         </div>
 
@@ -74,7 +74,7 @@
                 <div class="confirm-section-heading">
                   <div class="confirm-heading-icon"><i class="fa-solid fa-calendar-days"></i></div>
                   <div>
-                    <h4>Detail Booking</h4>
+                    <h4>Detail Pemesanan</h4>
                     <p>Pastikan kategori, tanggal, dan jam yang dipilih sudah benar.</p>
                   </div>
                 </div>
@@ -86,7 +86,7 @@
                   <div class="confirm-heading-icon"><i class="fa-solid fa-user-check"></i></div>
                   <div>
                     <h4>Data Pengguna</h4>
-                    <p>Data customer diambil dari akun yang sedang login.</p>
+                    <p>Data pelanggan diambil dari akun yang sedang login.</p>
                   </div>
                 </div>
                 <ul id="userSummary" class="confirm-summary-list list-group"></ul>
@@ -106,8 +106,8 @@
                     <input class="form-check-input payment-method-option" type="radio" name="metode_pembayaran" id="paymentQris" value="QRIS" checked>
                     <div class="payment-choice-icon"><i class="fa-solid fa-qrcode"></i></div>
                     <div>
-                      <div class="payment-choice-title">Bayar Online QRIS</div>
-                      <p>Scan QRIS resmi GOR GAZA. Status pembayaran tetap Pending sampai admin mengonfirmasi.</p>
+                      <div class="payment-choice-title">Bayar QRIS</div>
+                      <p>Scan QRIS resmi GOR GAZA. Status pembayaran tetap Menunggu sampai admin mengonfirmasi.</p>
                     </div>
                   </label>
 
@@ -115,7 +115,7 @@
                     <input class="form-check-input payment-method-option" type="radio" name="metode_pembayaran" id="paymentCash" value="Cash / Bayar di Tempat">
                     <div class="payment-choice-icon"><i class="fa-solid fa-money-bill-wave"></i></div>
                     <div>
-                      <div class="payment-choice-title">Cash / Bayar di Tempat</div>
+                      <div class="payment-choice-title">Tunai / Bayar di Tempat</div>
                       <p>Bayar langsung di lokasi kepada admin/kasir GOR GAZA sesuai total tagihan.</p>
                     </div>
                   </label>
@@ -124,13 +124,13 @@
 
               <div class="confirm-info-box mb-4">
                 <i class="fa-solid fa-circle-info"></i>
-                <span>Admin akan mengubah status pembayaran menjadi <strong>Paid</strong> setelah pembayaran diterima.</span>
+                <span>Admin akan mengubah status pembayaran menjadi <strong>Lunas</strong> setelah pembayaran diterima.</span>
               </div>
 
               <div class="confirm-action-row">
                 <a href="/booking-schedule" class="btn-back-booking"><i class="fa-solid fa-arrow-left me-2"></i>Kembali</a>
                 <button id="confirmBooking" class="btn-confirm-booking" type="button">
-                  <span class="btn-text"><i class="fa-solid fa-circle-check me-2"></i>Konfirmasi Booking</span>
+                  <span class="btn-text"><i class="fa-solid fa-circle-check me-2"></i>Konfirmasi Pemesanan</span>
                   <span class="btn-loading d-none"><i class="fa-solid fa-spinner fa-spin me-2"></i>Memproses...</span>
                 </button>
               </div>
@@ -147,7 +147,7 @@
     </section>
     <footer>
       <div class="container text-center">
-        <p>© 2026 GOR GAZA. All Rights Reserved.</p>
+        <p>© 2026 GOR GAZA. Seluruh hak cipta dilindungi.</p>
       </div>
     </footer>
 

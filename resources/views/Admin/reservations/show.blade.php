@@ -1,8 +1,31 @@
 @extends('Admin.layout')
 
-@section('title', 'Detail Booking')
+@section('title', 'Detail Pemesanan')
 
 @section('content')
+@php
+    $statusLabels = [
+        'Booking' => 'Menunggu',
+        'Confirmed' => 'Disetujui',
+        'Completed' => 'Selesai',
+        'Cancelled' => 'Dibatalkan',
+        'Out of Time' => 'Waktu Habis',
+    ];
+    $paymentLabels = [
+        'Paid' => 'Lunas',
+        'Pending' => 'Menunggu',
+        'Cancelled' => 'Dibatalkan',
+    ];
+    $methodLabels = [
+        'QRIS' => 'QRIS',
+        'Cash / Bayar di Tempat' => 'Tunai / Bayar di Tempat',
+        'Pay On Place' => 'Tunai / Bayar di Tempat',
+    ];
+    $cleanMethod = function ($method) use ($methodLabels) {
+        $method = preg_replace(['/QRIS\s*\/\s*Go\s*Pay/i', '/QRIS\/Go\s*Pay/i', '/Go\s*Pay/i'], 'QRIS', $method ?? 'Bayar di Tempat');
+        return $methodLabels[$method] ?? $method;
+    };
+@endphp
 <div class="row g-3">
     <div class="col-lg-7">
         <div class="card content-card h-100">
@@ -10,13 +33,13 @@
                 <div class="d-flex align-items-center gap-3 mb-4">
                     <div class="stat-icon" style="--stat-color:#fef3c7;--stat-text:#92400e;"><i class="fa-solid fa-calendar-check"></i></div>
                     <div>
-                        <h5 class="section-title">Informasi Booking #{{ $reservation->id }}</h5>
-                        <div class="section-subtitle">Detail customer, fasilitas, dan waktu main.</div>
+                        <h5 class="section-title">Informasi Pemesanan #{{ $reservation->id }}</h5>
+                        <div class="section-subtitle">Detail pelanggan, fasilitas, dan waktu main.</div>
                     </div>
                 </div>
                 <div class="table-responsive">
                     <table class="table">
-                        <tr><th width="180">Customer</th><td>{{ $reservation->transaction->user->nama ?? $reservation->transaction->user->name }}</td></tr>
+                        <tr><th width="180">Pelanggan</th><td>{{ $reservation->transaction->user->nama ?? $reservation->transaction->user->name }}</td></tr>
                         <tr><th>Email</th><td>{{ $reservation->transaction->user->email }}</td></tr>
                         <tr><th>No HP</th><td>{{ $reservation->transaction->user->no_hp ?? '-' }}</td></tr>
                         <tr><th>Fasilitas</th><td>{{ $reservation->facility->nama_fasilitas }}</td></tr>
@@ -26,7 +49,7 @@
                         @php
     $statusClass = strtolower(str_replace(' ', '-', $reservation->status_main));
     $paymentStatus = $reservation->transaction->status_pembayaran ?? 'Pending';
-    $paymentMethod = preg_replace(['/QRIS\s*\/\s*Go\s*Pay/i', '/QRIS\/Go\s*Pay/i', '/Go\s*Pay/i'], 'QRIS', $reservation->transaction->metode_pembayaran ?? 'Pay On Place');
+    $paymentMethod = $cleanMethod($reservation->transaction->metode_pembayaran ?? 'Bayar di Tempat');
 
     $paymentClass = $paymentStatus === 'Paid'
         ? 'badge-completed'
@@ -34,10 +57,10 @@
 @endphp
 
 <tr>
-    <th>Status Booking</th>
+    <th>Status Pemesanan</th>
     <td>
         <span class="badge-soft badge-{{ $statusClass }}">
-            {{ $reservation->status_main }}
+            {{ $statusLabels[$reservation->status_main] ?? $reservation->status_main }}
         </span>
     </td>
 </tr>
@@ -55,7 +78,7 @@
     <th>Status Pembayaran</th>
     <td>
         <span class="badge-soft {{ $paymentClass }}">
-            {{ $paymentStatus }}
+            {{ $paymentLabels[$paymentStatus] ?? $paymentStatus }}
         </span>
     </td>
 </tr>
@@ -67,35 +90,35 @@
     <div class="col-lg-5">
         <div class="card content-card">
             <div class="card-body p-4">
-                <h5 class="section-title">Update Status</h5>
-                <div class="section-subtitle mb-3">Ubah status booking dan pembayaran customer.</div>
+                <h5 class="section-title">Ubah Status</h5>
+                <div class="section-subtitle mb-3">Ubah status pemesanan dan pembayaran pelanggan.</div>
                 <form action="{{ route('admin.reservations.updateStatus', $reservation) }}" method="POST">
                     @csrf @method('PATCH')
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Status Booking</label>
+                        <label class="form-label fw-bold">Status Pemesanan</label>
                         <select name="status_main" class="form-select">
                             @foreach(['Booking','Confirmed','Cancelled','Completed','Out of Time'] as $status)
-                                <option value="{{ $status }}" {{ $reservation->status_main === $status ? 'selected' : '' }}>{{ $status }}</option>
+                                <option value="{{ $status }}" {{ $reservation->status_main === $status ? 'selected' : '' }}>{{ $statusLabels[$status] ?? $status }}</option>
                             @endforeach
                         </select>
                     </div>
                     <div class="alert alert-warning rounded-4">
                         <i class="fa-solid fa-money-bill-wave me-2"></i>
-                        Metode pembayaran: <strong>{{ preg_replace(['/QRIS\s*\/\s*Go\s*Pay/i', '/QRIS\/Go\s*Pay/i', '/Go\s*Pay/i'], 'QRIS', $reservation->transaction->metode_pembayaran ?? 'Pay On Place') }}</strong>.
+                        Metode pembayaran: <strong>{{ $cleanMethod($reservation->transaction->metode_pembayaran ?? 'Bayar di Tempat') }}</strong>.
                         @php
                             $metodePembayaran = strtolower($reservation->transaction->metode_pembayaran ?? 'pay on place');
                         @endphp
                         @if(str_contains($metodePembayaran, 'qris'))
-                            Jika pembayaran online sudah masuk, ubah status pembayaran menjadi <strong>Paid</strong>.
+                            Jika pembayaran QRIS sudah masuk, ubah status pembayaran menjadi <strong>Lunas</strong>.
                         @else
-                            Jika customer sudah bayar cash setelah bermain, ubah status pembayaran menjadi <strong>Paid</strong>.
+                            Jika pelanggan sudah bayar di tempat setelah bermain, ubah status pembayaran menjadi <strong>Lunas</strong>.
                         @endif
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-bold">Status Pembayaran</label>
                         <select name="status_pembayaran" class="form-select">
                             @foreach(['Pending','Paid','Cancelled'] as $status)
-                                <option value="{{ $status }}" {{ $reservation->transaction->status_pembayaran === $status ? 'selected' : '' }}>{{ $status }}</option>
+                                <option value="{{ $status }}" {{ $reservation->transaction->status_pembayaran === $status ? 'selected' : '' }}>{{ $paymentLabels[$status] ?? $status }}</option>
                             @endforeach
                         </select>
                     </div>
