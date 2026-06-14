@@ -45,7 +45,7 @@
                         </td>
                     </tr>
                 @empty
-                    <tr><td colspan="5"><div class="empty-state"><i class="fa-solid fa-table-tennis-paddle-ball"></i><div>Belum ada fasilitas.</div></div></td></tr>
+                    <tr><td colspan="5"><div class="empty-state"><i class="fa-solid fa-building"></i><div>Belum ada fasilitas.</div></div></td></tr>
                 @endforelse
                 </tbody>
             </table>

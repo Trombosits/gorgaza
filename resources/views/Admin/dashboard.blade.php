@@ -9,7 +9,7 @@
         'Confirmed' => 'Disetujui',
         'Completed' => 'Selesai',
         'Cancelled' => 'Dibatalkan',
-        'Out of Time' => 'Waktu Habis',
+        'Out of Time' => 'Selesai',
     ];
     $paymentLabels = [
         'Paid' => 'Lunas',
@@ -30,7 +30,7 @@
         <div class="card card-stat p-4" style="--stat-color:#dcfce7;--stat-text:#166534;">
             <div class="d-flex justify-content-between align-items-start">
                 <div><div class="stat-label">Fasilitas Aktif</div><div class="stat-value">{{ $totalFacilities }}</div></div>
-                <div class="stat-icon"><i class="fa-solid fa-table-tennis-paddle-ball"></i></div>
+                <div class="stat-icon"><i class="fa-solid fa-building"></i></div>
             </div>
         </div>
     </div>
@@ -90,7 +90,7 @@
                     <div class="col-md-6">
                         <div class="p-3 rounded-4 border h-100">
                             <div class="fw-bold mb-3">Status Pemesanan</div>
-                            @foreach(['Booking','Confirmed','Completed','Cancelled','Out of Time'] as $status)
+                            @foreach(['Booking','Confirmed','Completed','Cancelled'] as $status)
                                 @php($total = $statusSummary[$status] ?? 0)
                                 <div class="d-flex justify-content-between align-items-center mb-2">
                                     <span class="badge-soft badge-{{ strtolower(str_replace(' ', '-', $status)) }}">{{ $statusLabels[$status] ?? $status }}</span>

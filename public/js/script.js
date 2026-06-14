@@ -68,7 +68,7 @@ function getPaymentMethodLabel(value) {
 }
 
 function getSelectedPaymentMethod() {
-  return normalizePaymentMethod(document.querySelector("input[name='metode_pembayaran']:checked")?.value || "QRIS");
+  return "QRIS";
 }
 
 function initPaymentMethodChoice() {
@@ -96,7 +96,7 @@ function initPaymentMethodChoice() {
   });
 
   const draft = JSON.parse(sessionStorage.getItem("bookingDraft") || "{}");
-  const savedMethod = normalizePaymentMethod(draft.metode_pembayaran || getSelectedPaymentMethod());
+  const savedMethod = "QRIS";
   const savedOption = [...options].find((option) => normalizePaymentMethod(option.value) === savedMethod);
   if (savedOption) savedOption.checked = true;
 
@@ -136,6 +136,7 @@ const times = [
   "19:00 - 20:00",
   "20:00 - 21:00",
   "21:00 - 22:00",
+  "22:00 - 23:00",
 ];
 
 function formatDate(date) {
@@ -439,8 +440,9 @@ function initBookingSummary() {
     bookingSummary.innerHTML += `<li class="list-group-item">Jam: -</li>`;
   }
 
-  const selectedPaymentMethod = normalizePaymentMethod(draft.metode_pembayaran || getSelectedPaymentMethod());
-  bookingSummary.innerHTML += `<li class="list-group-item confirm-method-row"><span>Metode Pembayaran:</span> <strong id="bookingPaymentMethodText">${getPaymentMethodLabel(selectedPaymentMethod)}</strong></li>`;
+  draft.metode_pembayaran = "QRIS";
+  sessionStorage.setItem("bookingDraft", JSON.stringify(draft));
+  bookingSummary.innerHTML += `<li class="list-group-item confirm-method-row"><span>Metode Pembayaran:</span> <strong id="bookingPaymentMethodText">QRIS</strong></li>`;
 
   const user = getLoggedUser();
   const userSummary = document.getElementById("userSummary");

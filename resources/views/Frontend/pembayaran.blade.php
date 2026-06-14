@@ -10,16 +10,15 @@
 </head>
 <body class="payment-page payment-polish-page">
     @php
-        $rawMetode = $transaction->metode_pembayaran ?? 'Pay On Place';
-        $metode = preg_replace(['/QRIS\s*\/\s*Go\s*Pay/i', '/QRIS\/Go\s*Pay/i', '/Go\s*Pay/i'], 'QRIS', $rawMetode);
-        $isOnline = str_contains(strtolower($metode), 'qris') || str_contains(strtolower($metode), 'online');
+        $rawMetode = $transaction->metode_pembayaran ?? 'QRIS';
+        $metode = 'QRIS';
+        $isOnline = true;
         $paymentLabels = [
             'Paid' => 'Lunas',
             'Pending' => 'Menunggu',
             'Cancelled' => 'Dibatalkan',
         ];
         $statusPembayaran = $paymentLabels[$transaction->status_pembayaran] ?? $transaction->status_pembayaran;
-        $metode = $metode === 'Cash / Bayar di Tempat' || $metode === 'Pay On Place' ? 'Tunai / Bayar di Tempat' : $metode;
         $whatsappText = rawurlencode('Halo Admin GOR GAZA, saya ingin konfirmasi booking dengan ID Transaksi #' . $transaction->id . ' sebesar Rp ' . number_format($transaction->total_tagihan, 0, ',', '.') . ' menggunakan metode ' . $metode . '.');
     @endphp
 
@@ -30,6 +29,7 @@
           <span>GOR GAZA</span>
         </a>
             <div class="d-flex gap-2">
+                <a class="btn btn-outline-light rounded-pill px-3" href="{{ url('/') }}#kritik-saran">Kritik & Saran</a>
                 <a class="btn btn-outline-light rounded-pill px-3" href="/booking-history">Riwayat</a>
                 <a class="btn btn-warning rounded-pill px-3 fw-bold" href="/booking">Pemesanan</a>
             </div>
@@ -82,8 +82,7 @@
                     <h2>Rp {{ number_format($transaction->total_tagihan, 0, ',', '.') }}</h2>
                 </div>
 
-                @if($isOnline)
-                    <div class="qris-payment-box polished-qris-box mb-4">
+                <div class="qris-payment-box polished-qris-box mb-4">
                         <div class="row g-4 align-items-center">
                             <div class="col-lg-5 text-center">
                                 <div class="qris-frame">
@@ -108,27 +107,6 @@
                             </div>
                         </div>
                     </div>
-                @else
-                    <div class="cash-payment-box polished-cash-box mb-4">
-                        <div class="cash-icon"><i class="fas fa-store"></i></div>
-                        <div>
-                            <span class="payment-mini-label">Metode pembayaran</span>
-                            <h5>Tunai / Bayar di Tempat</h5>
-                            <p>Pemesanan kamu sudah tercatat dengan status pembayaran <strong>Menunggu</strong>. Silakan bayar langsung ke admin/kasir GOR GAZA sesuai total tagihan.</p>
-                            @if(strtolower($transaction->status_pembayaran) === 'paid')
-                              <div class="alert alert-success mb-0 rounded-4">
-                                <i class="fas fa-check-circle me-2"></i>
-                                Pembayaran tunai sudah dikonfirmasi admin dan status transaksi kamu sudah <strong>Lunas</strong>.
-                              </div>
-                            @else
-                              <div class="alert alert-warning mb-0 rounded-4">
-                                <i class="fas fa-circle-info me-2"></i>
-                                Admin akan mengubah status pembayaran menjadi <strong>Lunas</strong> setelah pembayaran diterima.
-                              </div>
-                            @endif
-                        </div>
-                    </div>
-                @endif
 
                 <div class="payment-action-grid">
                     <a href="https://wa.me/6282215309779?text={{ $whatsappText }}" target="_blank" rel="noopener" class="btn-payment-whatsapp">

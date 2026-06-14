@@ -41,6 +41,9 @@
     <li class="nav-item">
       <a class="nav-link" href="{{ url('/') }}#lokasi">Lokasi</a>
     </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{{ url('/') }}#kritik-saran">Kritik & Saran</a>
+    </li>
   </ul>
 </div>
           <div class="nav-auth d-flex gap-2">
@@ -64,7 +67,7 @@
         <div class="confirm-header text-center">
           <span class="section-eyebrow"><i class="fa-solid fa-clipboard-check me-2"></i>Langkah Terakhir</span>
           <h1 class="confirm-title">Konfirmasi Pemesanan</h1>
-          <p class="confirm-subtitle">Periksa detail booking, pilih metode pembayaran, lalu konfirmasi agar jadwal kamu tercatat di sistem.</p>
+          <p class="confirm-subtitle">Periksa detail booking, lalu konfirmasi. Pembayaran pelanggan saat ini menggunakan QRIS saja agar nominal lebih aman dan mudah diverifikasi.</p>
         </div>
 
         <div class="row justify-content-center">
@@ -97,11 +100,11 @@
                   <div class="confirm-heading-icon"><i class="fa-solid fa-credit-card"></i></div>
                   <div>
                     <h4>Metode Pembayaran</h4>
-                    <p>Metode yang dipilih akan otomatis masuk ke detail booking.</p>
+                    <p>GOR GAZA saat ini menggunakan pembayaran QRIS saja.</p>
                   </div>
                 </div>
 
-                <div class="payment-choice-grid polished-payment-grid">
+                <div class="payment-choice-grid polished-payment-grid payment-choice-grid-qris-only">
                   <label class="payment-choice polished-payment-choice active" for="paymentQris">
                     <input class="form-check-input payment-method-option" type="radio" name="metode_pembayaran" id="paymentQris" value="QRIS" checked>
                     <div class="payment-choice-icon"><i class="fa-solid fa-qrcode"></i></div>
@@ -110,21 +113,12 @@
                       <p>Scan QRIS resmi GOR GAZA. Status pembayaran tetap Menunggu sampai admin mengonfirmasi.</p>
                     </div>
                   </label>
-
-                  <label class="payment-choice polished-payment-choice" for="paymentCash">
-                    <input class="form-check-input payment-method-option" type="radio" name="metode_pembayaran" id="paymentCash" value="Cash / Bayar di Tempat">
-                    <div class="payment-choice-icon"><i class="fa-solid fa-money-bill-wave"></i></div>
-                    <div>
-                      <div class="payment-choice-title">Tunai / Bayar di Tempat</div>
-                      <p>Bayar langsung di lokasi kepada admin/kasir GOR GAZA sesuai total tagihan.</p>
-                    </div>
-                  </label>
                 </div>
               </div>
 
               <div class="confirm-info-box mb-4">
                 <i class="fa-solid fa-circle-info"></i>
-                <span>Admin akan mengubah status pembayaran menjadi <strong>Lunas</strong> setelah pembayaran diterima.</span>
+                <span>Setelah melakukan pembayaran QRIS, admin akan mengubah status menjadi <strong>Lunas</strong> setelah dana diterima.</span>
               </div>
 
               <div class="confirm-action-row">

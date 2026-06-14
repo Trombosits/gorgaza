@@ -8,23 +8,24 @@ use Carbon\Carbon;
 class ReservationStatusService
 {
     /**
-     * Ubah booking yang sudah melewati jam mulai lebih dari satu menit menjadi Out of Time.
-     * Status Completed dan Cancelled tidak disentuh agar riwayat tetap aman.
+     * Booking yang sudah melewati jam selesai otomatis dianggap Selesai.
+     * Status Cancelled tidak disentuh agar riwayat pembatalan tetap aman.
+     * Nama method dibiarkan sama supaya pemanggil lama tetap aman.
      */
     public static function markOutOfTime(): int
     {
-        return Reservation::whereIn('status_main', ['Booking', 'Confirmed'])
-            ->where('waktu_mulai', '<', Carbon::now()->subMinute())
-            ->update(['status_main' => 'Out of Time']);
+        return Reservation::whereIn('status_main', ['Booking', 'Confirmed', 'Out of Time'])
+            ->where('waktu_selesai', '<=', Carbon::now())
+            ->update(['status_main' => 'Completed']);
     }
 
     public static function statusOptions(): array
     {
-        return ['Booking', 'Confirmed', 'Cancelled', 'Completed', 'Out of Time'];
+        return ['Booking', 'Confirmed', 'Cancelled', 'Completed'];
     }
 
     public static function activeScheduleStatuses(): array
     {
-        return ['Booking', 'Confirmed', 'Completed', 'Out of Time'];
+        return ['Booking', 'Confirmed', 'Completed'];
     }
 }

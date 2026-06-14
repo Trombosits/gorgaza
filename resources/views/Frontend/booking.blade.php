@@ -54,6 +54,9 @@
     <li class="nav-item">
       <a class="nav-link" href="{{ url('/') }}#lokasi">Lokasi</a>
     </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{{ url('/') }}#kritik-saran">Kritik & Saran</a>
+    </li>
   </ul>
 </div>
 
@@ -97,7 +100,7 @@
           <div class="booking-category-grid">
             <button id="chooseBadminton" class="booking-category-card booking-category-card--yellow" type="button">
               <div class="booking-card-topline">
-                <div class="booking-category-icon"><i class="fa-solid fa-table-tennis-paddle-ball"></i></div>
+                <div class="booking-category-icon"><i class="fa-solid fa-building"></i></div>
                 <span class="booking-category-badge">Populer</span>
               </div>
               <h3>Lapangan Badminton</h3>

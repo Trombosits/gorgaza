@@ -54,6 +54,9 @@
     <li class="nav-item">
       <a class="nav-link" href="{{ url('/') }}#lokasi">Lokasi</a>
     </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{{ url('/') }}#kritik-saran">Kritik & Saran</a>
+    </li>
   </ul>
 </div>
 

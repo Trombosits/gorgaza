@@ -12,6 +12,35 @@
     <link href="{{ asset('css/style.css') }}" rel="stylesheet" />
   </head>
   <body class="frontend-page">
+    @php
+      $cafeMenus = $cafeMenus ?? collect();
+      $siteImages = $siteImages ?? collect();
+
+      $fallbackImages = function (array $items) {
+          return collect($items)->map(fn ($item) => (object) $item);
+      };
+
+      $heroImages = ($siteImages->get('Hero Slider') ?? collect());
+      if ($heroImages->isEmpty()) {
+          $heroImages = $fallbackImages([
+              ['path_gambar' => 'images/Bulutangkis-9.jpeg', 'alt_text' => 'Lapangan badminton GOR GAZA'],
+              ['path_gambar' => 'images/Billiard.jpeg', 'alt_text' => 'Meja billiard GOR GAZA'],
+              ['path_gambar' => 'images/Bulutangkis-6.jpeg', 'alt_text' => 'Suasana badminton GOR GAZA'],
+              ['path_gambar' => 'images/Bulutangkis-2.jpeg', 'alt_text' => 'Lapangan badminton indoor'],
+              ['path_gambar' => 'images/Billiard-2.jpeg', 'alt_text' => 'Area billiard GOR GAZA'],
+              ['path_gambar' => 'images/Kursi.jpeg', 'alt_text' => 'Area duduk GOR GAZA'],
+          ]);
+      }
+
+      $galleryImages = function (string $category, array $fallback) use ($siteImages, $fallbackImages) {
+          $items = $siteImages->get($category) ?? collect();
+          return $items->isNotEmpty() ? $items : $fallbackImages($fallback);
+      };
+
+      $formatMenuPrice = function ($harga) {
+          return is_null($harga) ? 'TBD' : 'Rp' . number_format($harga, 0, ',', '.');
+      };
+    @endphp
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top app-navbar">
       <div class="container">
         <a class="navbar-brand brand-mark" href="/">
@@ -43,6 +72,9 @@
     <li class="nav-item">
       <a class="nav-link" href="{{ url('/') }}#lokasi">Lokasi</a>
     </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{{ url('/') }}#kritik-saran">Kritik & Saran</a>
+    </li>
   </ul>
 </div>
 
@@ -70,12 +102,9 @@
 
     <section class="hero hero-slider" id="hero" aria-label="Beranda GOR GAZA">
       <div class="hero-slide-layer" aria-hidden="true">
-        <div class="hero-slide is-active" style="background-image: url('{{ asset('images/Bulutangkis-9.jpeg') }}')"></div>
-        <div class="hero-slide" style="background-image: url('{{ asset('images/Billiard.jpeg') }}')"></div>
-        <div class="hero-slide" style="background-image: url('{{ asset('images/Bulutangkis-6.jpeg') }}')"></div>
-        <div class="hero-slide" style="background-image: url('{{ asset('images/Bulutangkis-2.jpeg') }}')"></div>
-        <div class="hero-slide" style="background-image: url('{{ asset('images/Billiard-2.jpeg') }}')"></div>
-        <div class="hero-slide" style="background-image: url('{{ asset('images/Kursi.jpeg') }}')"></div>
+        @foreach($heroImages as $index => $image)
+          <div class="hero-slide {{ $index === 0 ? 'is-active' : '' }}" style="background-image: url('{{ asset($image->path_gambar) }}')"></div>
+        @endforeach
       </div>
       <div class="hero-overlay"></div>
       <div class="container position-relative">
@@ -99,21 +128,18 @@
                 <span>Pemesanan online</span>
               </div>
               <div>
-                <strong>08.00-22.00 WIB</strong>
+                <strong>08.00-23.00 WIB</strong>
                 <span>Jam operasional</span>
               </div>
               <div>
-                <strong>QRIS & Tunai</strong>
-                <span>Pembayaran fleksibel</span>
+                <strong>Khusus QRIS</strong>
+                <span>Pembayaran lebih aman</span>
               </div>
             </div>
             <div class="hero-slider-indicators" aria-label="Indikator gambar hero">
-              <button class="hero-indicator is-active" type="button" aria-label="Gambar hero 1"></button>
-              <button class="hero-indicator" type="button" aria-label="Gambar hero 2"></button>
-              <button class="hero-indicator" type="button" aria-label="Gambar hero 3"></button>
-              <button class="hero-indicator" type="button" aria-label="Gambar hero 4"></button>
-              <button class="hero-indicator" type="button" aria-label="Gambar hero 5"></button>
-              <button class="hero-indicator" type="button" aria-label="Gambar hero 6"></button>
+              @foreach($heroImages as $index => $image)
+                <button class="hero-indicator {{ $index === 0 ? 'is-active' : '' }}" type="button" aria-label="Gambar hero {{ $index + 1 }}"></button>
+              @endforeach
             </div>
           </div>
         </div>
@@ -140,10 +166,14 @@
           </div>
           <div class="col-lg-6">
             <div class="gallery-grid">
-              <img src="/images/Bulutangkis-2.jpeg" alt="Lapangan badminton" />
-              <img src="/images/Bulutangkis-3.jpeg" alt="Badminton indoor" />
-              <img src="/images/Bulutangkis-4.jpeg" alt="Permainan badminton" />
-              <img src="/images/Bulutangkis-5.jpeg" alt="Olahraga indoor" />
+              @foreach($galleryImages('Badminton', [
+                ['path_gambar' => 'images/Bulutangkis-2.jpeg', 'alt_text' => 'Lapangan badminton'],
+                ['path_gambar' => 'images/Bulutangkis-3.jpeg', 'alt_text' => 'Badminton indoor'],
+                ['path_gambar' => 'images/Bulutangkis-4.jpeg', 'alt_text' => 'Permainan badminton'],
+                ['path_gambar' => 'images/Bulutangkis-5.jpeg', 'alt_text' => 'Olahraga indoor'],
+              ]) as $image)
+                <img src="{{ asset($image->path_gambar) }}" alt="{{ $image->alt_text ?? 'Galeri badminton' }}" />
+              @endforeach
             </div>
           </div>
         </div>
@@ -165,10 +195,14 @@
           </div>
           <div class="col-lg-6 order-lg-1">
             <div class="gallery-grid">
-              <img src="/images/Billiard-1.jpeg" alt="Billiard premium" />
-              <img src="/images/Billiard-2.jpeg" alt="Meja billiard" />
-              <img src="/images/Billiard-3.jpeg" alt="Billiard room" />
-              <img src="/images/Billiard-4.jpeg" alt="Billiard lounge" />
+              @foreach($galleryImages('Billiard', [
+                ['path_gambar' => 'images/Billiard-1.jpeg', 'alt_text' => 'Billiard premium'],
+                ['path_gambar' => 'images/Billiard-2.jpeg', 'alt_text' => 'Meja billiard'],
+                ['path_gambar' => 'images/Billiard-3.jpeg', 'alt_text' => 'Ruang billiard'],
+                ['path_gambar' => 'images/Billiard-4.jpeg', 'alt_text' => 'Billiard lounge'],
+              ]) as $image)
+                <img src="{{ asset($image->path_gambar) }}" alt="{{ $image->alt_text ?? 'Galeri billiard' }}" />
+              @endforeach
             </div>
           </div>
         </div>
@@ -191,12 +225,16 @@
           </div>
           <div class="col-lg-6">
             <div class="gallery-grid">
-              <img src="/images/Mushola-1.jpeg" alt="Mushola" />
-              <img src="/images/Kursi.jpeg" alt="Area duduk" />
-              <img src="/images/Toko.jpeg" alt="Toko" />
-              <img src="/images/Toilet.jpeg" alt="Toilet" />
-              <img src="/images/Parkiran.jpeg" alt="Parkiran" />
-              <img src="/images/ParkiranAll.jpeg" alt="Area parkir" />
+              @foreach($galleryImages('Pendukung', [
+                ['path_gambar' => 'images/Mushola-1.jpeg', 'alt_text' => 'Mushola'],
+                ['path_gambar' => 'images/Kursi.jpeg', 'alt_text' => 'Area duduk'],
+                ['path_gambar' => 'images/Toko.jpeg', 'alt_text' => 'Toko'],
+                ['path_gambar' => 'images/Toilet.jpeg', 'alt_text' => 'Toilet'],
+                ['path_gambar' => 'images/Parkiran.jpeg', 'alt_text' => 'Parkiran'],
+                ['path_gambar' => 'images/ParkiranAll.jpeg', 'alt_text' => 'Area parkir'],
+              ]) as $image)
+                <img src="{{ asset($image->path_gambar) }}" alt="{{ $image->alt_text ?? 'Galeri fasilitas pendukung' }}" />
+              @endforeach
             </div>
           </div>
         </div>
@@ -213,7 +251,7 @@
         <div class="row g-4">
           <div class="col-md-6 col-xl-3">
             <div class="price-card h-100">
-              <div class="price-icon"><i class="fa-solid fa-table-tennis-paddle-ball"></i></div>
+              <div class="price-icon"><i class="fa-solid fa-building"></i></div>
               <h4>Sewa Lapang GOR</h4>
               <div class="price-value">Rp25.000<span>/jam</span></div>
               <p>Untuk booking lapangan badminton sesuai jadwal yang tersedia.</p>
@@ -229,7 +267,7 @@
           </div>
           <div class="col-md-6 col-xl-3">
             <div class="price-card h-100 muted">
-              <div class="price-icon"><i class="fa-solid fa-baseball-bat-ball"></i></div>
+              <div class="price-icon"><i class="fa-solid fa-toolbox"></i></div>
               <h4>Sewa Raket</h4>
               <div class="price-value">Rp10.000</div>
               <p>Tambahan opsional, dibayar dan dikonfirmasi langsung di lokasi.</p>
@@ -255,47 +293,47 @@
           <p>Menu kafe ditampilkan sebagai informasi. Untuk saat ini pemesanan menu belum tersedia melalui sistem booking online.</p>
         </div>
         <div class="row g-4">
-          <div class="col-lg-4">
-            <div class="menu-card h-100">
-              <h4><i class="fa-solid fa-bowl-food me-2"></i>Main Course</h4>
-              <div class="menu-note">Dadar / ceplok / orek telor</div>
-              <div class="menu-row"><span>Original</span><strong>Rp8.000</strong></div>
-              <div class="menu-row"><span>Cumi</span><strong>Rp13.000</strong></div>
-              <div class="menu-row"><span>Tongkol</span><strong>Rp13.000</strong></div>
-              <div class="menu-row"><span>Teri</span><strong>Rp13.000</strong></div>
-              <div class="menu-row"><span>Paru</span><strong>Rp13.000</strong></div>
-              <div class="menu-row"><span>Daging</span><strong>Rp13.000</strong></div>
+          @forelse($cafeMenus as $kategori => $menus)
+            <div class="col-lg-4">
+              <div class="menu-card h-100">
+                <h4><i class="fa-solid fa-utensils me-2"></i>{{ $kategori }}</h4>
+                @foreach($menus as $menu)
+                  @if($menu->gambar)
+                    <button class="menu-row menu-row-with-image menu-row-clickable cafe-image-open" type="button" data-image-src="{{ asset($menu->gambar) }}" data-image-title="{{ $menu->nama_menu }}" title="Lihat gambar {{ $menu->nama_menu }}">
+                      <img class="menu-row-image" src="{{ asset($menu->gambar) }}" alt="{{ $menu->nama_menu }}">
+                      <div class="menu-row-content">
+                        <span class="menu-row-name">{{ $menu->nama_menu }}</span>
+                        @if($menu->deskripsi)
+                          <small class="menu-row-description">{{ $menu->deskripsi }}</small>
+                        @endif
+                      </div>
+                      <strong>{{ $formatMenuPrice($menu->harga) }}</strong>
+                    </button>
+                  @else
+                    <div class="menu-row menu-row-with-image">
+                      <div class="menu-row-image menu-row-image-placeholder" aria-hidden="true">
+                        <i class="fa-solid fa-utensils"></i>
+                      </div>
+                      <div class="menu-row-content">
+                        <span class="menu-row-name">{{ $menu->nama_menu }}</span>
+                        @if($menu->deskripsi)
+                          <small class="menu-row-description">{{ $menu->deskripsi }}</small>
+                        @endif
+                      </div>
+                      <strong>{{ $formatMenuPrice($menu->harga) }}</strong>
+                    </div>
+                  @endif
+                @endforeach
+              </div>
             </div>
-          </div>
-          <div class="col-lg-4">
-            <div class="menu-card h-100">
-              <h4><i class="fa-solid fa-utensils me-2"></i>Mie & Extra</h4>
-              <div class="menu-row"><span>Mie goreng polos</span><strong>TBD</strong></div>
-              <div class="menu-row"><span>Mie goreng telor</span><strong>TBD</strong></div>
-              <div class="menu-row"><span>Mie kuah polos</span><strong>TBD</strong></div>
-              <div class="menu-row"><span>Mie kuah telor</span><strong>TBD</strong></div>
-              <div class="menu-row"><span>Nasi</span><strong>Rp5.000</strong></div>
-              <div class="menu-row"><span>Nasi setengah</span><strong>Rp3.000</strong></div>
-              <div class="menu-row"><span>Telor dadar/ceplok/orek</span><strong>Rp5.000</strong></div>
-              <div class="menu-row"><span>Oseng sambal</span><strong>Rp5.000</strong></div>
-              <div class="menu-row"><span>Tahu / Tempe</span><strong>Rp2.000</strong></div>
-              <div class="menu-row"><span>Sambal bawang / Kerupuk</span><strong>Rp2.000</strong></div>
+          @empty
+            <div class="col-12">
+              <div class="menu-card text-center">
+                <h4>Menu kafe belum tersedia</h4>
+                <p class="menu-note mb-0">Admin dapat menambahkan menu melalui panel admin.</p>
+              </div>
             </div>
-          </div>
-          <div class="col-lg-4">
-            <div class="menu-card h-100">
-              <h4><i class="fa-solid fa-mug-saucer me-2"></i>Minuman & Snack</h4>
-              <div class="menu-row"><span>Air mineral</span><strong>Rp3.000</strong></div>
-              <div class="menu-row"><span>Isoplus / Floridina / Teh Pucuk</span><strong>Rp4.000</strong></div>
-              <div class="menu-row"><span>Teh manis</span><strong>Rp4.000</strong></div>
-              <div class="menu-row"><span>Lemon tea / Lemongrass tea</span><strong>Rp6.000</strong></div>
-              <div class="menu-row"><span>Teh tarik / Jahe</span><strong>Rp6.000</strong></div>
-              <div class="menu-row"><span>Jus jeruk/strawberry/mangga</span><strong>Rp8.000</strong></div>
-              <div class="menu-row"><span>Jus alpukat</span><strong>Rp10.000</strong></div>
-              <div class="menu-row"><span>Kopi hot/cold</span><strong>TBD</strong></div>
-              <div class="menu-row"><span>Sosis kentang</span><strong>TBD</strong></div>
-            </div>
-          </div>
+          @endforelse
         </div>
         <div class="cafe-coming-soon mt-4">
           <div>
@@ -371,6 +409,42 @@
           <p>Datang langsung ke lokasi kami untuk bermain atau melakukan konfirmasi.</p>
         </div>
         <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3960.6659845305962!2d107.72897677430898!3d-6.930467667837023!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e68c32beb089127%3A0x99c535f8f29188a6!2sGor%20Gaza!5e0!3m2!1sid!2sid!4v1780551031421!5m2!1sid!2sid" width="600" height="450" style="border:0" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" class="map-iframe"></iframe>
+
+        <div id="kritik-saran" class="feedback-private-card mt-5">
+          <div class="row g-4 align-items-center">
+            <div class="col-lg-5">
+              <span class="section-kicker">Kritik & Saran</span>
+              <h3>Bantu kami meningkatkan layanan GOR GAZA</h3>
+              <p>Pesan yang dikirim bersifat privat dan hanya dapat dibaca oleh admin GOR GAZA.</p>
+            </div>
+            <div class="col-lg-7">
+              @if(session('success'))
+                <div class="alert alert-success rounded-4 border-0">{{ session('success') }}</div>
+              @endif
+
+              @if(session('auth_user'))
+                <form action="{{ route('feedback.store') }}" method="POST">
+                  @csrf
+                  <label class="form-label fw-bold text-light">Tulis kritik atau saran</label>
+                  <textarea name="pesan" class="form-control feedback-textarea" rows="4" maxlength="1000" placeholder="Contoh: jadwal, pelayanan, fasilitas, atau saran untuk GOR GAZA..." required>{{ old('pesan') }}</textarea>
+                  @error('pesan')
+                    <div class="text-warning small mt-2">{{ $message }}</div>
+                  @enderror
+                  <button type="submit" class="btn btn-warning rounded-pill fw-bold px-4 mt-3">
+                    <i class="fa-solid fa-paper-plane me-2"></i>Kirim ke Admin
+                  </button>
+                </form>
+              @else
+                <div class="feedback-login-box">
+                  <i class="fa-solid fa-lock me-2"></i>Silakan masuk terlebih dahulu untuk mengirim kritik dan saran.
+                  <div class="mt-3">
+                    <a href="/login" class="btn btn-warning rounded-pill fw-bold px-4">Masuk Sekarang</a>
+                  </div>
+                </div>
+              @endif
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -384,7 +458,61 @@
       <i class="fab fa-whatsapp"></i>
     </a>
 
+    <div class="cafe-image-lightbox" id="cafeImageLightbox" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Pratinjau gambar menu kafe">
+      <div class="cafe-image-lightbox-backdrop" data-cafe-image-close></div>
+      <div class="cafe-image-lightbox-panel">
+        <button type="button" class="cafe-image-lightbox-close" data-cafe-image-close aria-label="Tutup gambar">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+        <img id="cafeLightboxImage" src="" alt="Gambar menu kafe">
+        <div class="cafe-image-lightbox-title" id="cafeLightboxTitle"></div>
+      </div>
+    </div>
+
     <script src="{{ asset('js/script.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        const lightbox = document.getElementById('cafeImageLightbox');
+        const lightboxImage = document.getElementById('cafeLightboxImage');
+        const lightboxTitle = document.getElementById('cafeLightboxTitle');
+        const openButtons = document.querySelectorAll('.cafe-image-open');
+        const closeButtons = document.querySelectorAll('[data-cafe-image-close]');
+
+        if (!lightbox || !lightboxImage || !openButtons.length) return;
+
+        const closeLightbox = () => {
+          lightbox.classList.remove('is-open');
+          lightbox.setAttribute('aria-hidden', 'true');
+          document.body.classList.remove('cafe-lightbox-open');
+          lightboxImage.removeAttribute('src');
+        };
+
+        openButtons.forEach((button) => {
+          button.addEventListener('click', () => {
+            const imageSrc = button.dataset.imageSrc;
+            const imageTitle = button.dataset.imageTitle || 'Gambar menu kafe';
+
+            if (!imageSrc) return;
+
+            lightboxImage.src = imageSrc;
+            lightboxImage.alt = imageTitle;
+            if (lightboxTitle) lightboxTitle.textContent = imageTitle;
+
+            lightbox.classList.add('is-open');
+            lightbox.setAttribute('aria-hidden', 'false');
+            document.body.classList.add('cafe-lightbox-open');
+          });
+        });
+
+        closeButtons.forEach((button) => button.addEventListener('click', closeLightbox));
+
+        document.addEventListener('keydown', (event) => {
+          if (event.key === 'Escape' && lightbox.classList.contains('is-open')) {
+            closeLightbox();
+          }
+        });
+      });
+    </script>
   </body>
 </html>

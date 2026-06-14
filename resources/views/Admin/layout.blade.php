@@ -227,6 +227,18 @@
             height: 16px !important;
         }
 
+
+        .badminton-racket-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 1.25em;
+            height: 1.25em;
+            font-size: 1.05em;
+            line-height: 1;
+        }
+        .nav-racket-icon { margin-right: 0; }
+
         @media (max-width: 767.98px) {
             .admin-shell { padding-left: 0; }
             .admin-shell > .row { display: flex; }
@@ -260,7 +272,16 @@
                 <i class="fa-solid fa-calendar-check"></i> Pemesanan
             </a>
             <a href="{{ route('admin.facilities.index') }}" class="nav-link-admin {{ request()->is('admin/facilities*') ? 'active' : '' }}">
-                <i class="fa-solid fa-table-tennis-paddle-ball"></i> Fasilitas
+                <i class="fa-solid fa-building"></i> Fasilitas
+            </a>
+            <a href="{{ route('admin.cafe-menus.index') }}" class="nav-link-admin {{ request()->is('admin/cafe-menus*') ? 'active' : '' }}">
+                <i class="fa-solid fa-mug-saucer"></i> Menu Kafe
+            </a>
+            <a href="{{ route('admin.site-images.index') }}" class="nav-link-admin {{ request()->is('admin/site-images*') ? 'active' : '' }}">
+                <i class="fa-solid fa-images"></i> Gambar Landing
+            </a>
+            <a href="{{ route('admin.feedbacks.index') }}" class="nav-link-admin {{ request()->is('admin/feedbacks*') ? 'active' : '' }}">
+                <i class="fa-regular fa-comment-dots"></i> Kritik & Saran
             </a>
             <a href="{{ route('admin.reports.finance') }}" class="nav-link-admin {{ request()->is('admin/reports/finance*') ? 'active' : '' }}">
                 <i class="fa-solid fa-chart-line"></i> Laporan Keuangan

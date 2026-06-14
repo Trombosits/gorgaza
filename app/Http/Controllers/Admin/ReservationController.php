@@ -39,7 +39,7 @@ class ReservationController extends Controller
     public function updateStatus(Request $request, Reservation $reservation)
     {
         $data = $request->validate([
-            'status_main' => 'required|in:Booking,Confirmed,Cancelled,Completed,Out of Time',
+            'status_main' => 'required|in:Booking,Confirmed,Cancelled,Completed',
             'status_pembayaran' => 'required|in:Pending,Paid,Cancelled',
         ]);
 
