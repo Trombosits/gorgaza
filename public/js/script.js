@@ -47,8 +47,28 @@ function setButtonLoading(button, isLoading) {
   if (loading) loading.classList.toggle("d-none", !isLoading);
 }
 
+function normalizePaymentMethod(value) {
+  const method = (value || "QRIS").trim();
+  const lowerMethod = method.toLowerCase();
+
+  if (lowerMethod.includes("qris") || lowerMethod.includes("gopay") || lowerMethod.includes("go pay")) {
+    return "QRIS";
+  }
+
+  if (lowerMethod.includes("cash") || lowerMethod.includes("tunai") || lowerMethod.includes("bayar") || lowerMethod.includes("pay on place")) {
+    return "Cash / Bayar di Tempat";
+  }
+
+  return method || "QRIS";
+}
+
+function getPaymentMethodLabel(value) {
+  const method = normalizePaymentMethod(value);
+  return method === "Cash / Bayar di Tempat" ? "Tunai / Bayar di Tempat" : "QRIS";
+}
+
 function getSelectedPaymentMethod() {
-  return document.querySelector("input[name='metode_pembayaran']:checked")?.value || "QRIS / GoPay";
+  return normalizePaymentMethod(document.querySelector("input[name='metode_pembayaran']:checked")?.value || "QRIS");
 }
 
 function initPaymentMethodChoice() {
@@ -59,6 +79,11 @@ function initPaymentMethodChoice() {
     document.querySelectorAll(".payment-choice").forEach((label) => label.classList.remove("active"));
     const checked = document.querySelector("input[name='metode_pembayaran']:checked");
     checked?.closest(".payment-choice")?.classList.add("active");
+
+    const methodText = document.getElementById("bookingPaymentMethodText");
+    if (methodText) {
+      methodText.textContent = getPaymentMethodLabel(checked?.value || "QRIS");
+    }
   };
 
   options.forEach((option) => {
@@ -71,9 +96,12 @@ function initPaymentMethodChoice() {
   });
 
   const draft = JSON.parse(sessionStorage.getItem("bookingDraft") || "{}");
-  const savedMethod = draft.metode_pembayaran || "QRIS / GoPay";
-  const savedOption = [...options].find((option) => option.value === savedMethod);
+  const savedMethod = normalizePaymentMethod(draft.metode_pembayaran || getSelectedPaymentMethod());
+  const savedOption = [...options].find((option) => normalizePaymentMethod(option.value) === savedMethod);
   if (savedOption) savedOption.checked = true;
+
+  draft.metode_pembayaran = savedMethod;
+  sessionStorage.setItem("bookingDraft", JSON.stringify(draft));
   syncActiveChoice();
 }
 
@@ -411,8 +439,8 @@ function initBookingSummary() {
     bookingSummary.innerHTML += `<li class="list-group-item">Jam: -</li>`;
   }
 
-  const selectedPaymentMethod = draft.metode_pembayaran || getSelectedPaymentMethod();
-  bookingSummary.innerHTML += `<li class="list-group-item">Metode Pembayaran: <strong>${selectedPaymentMethod}</strong></li>`;
+  const selectedPaymentMethod = normalizePaymentMethod(draft.metode_pembayaran || getSelectedPaymentMethod());
+  bookingSummary.innerHTML += `<li class="list-group-item confirm-method-row"><span>Metode Pembayaran:</span> <strong id="bookingPaymentMethodText">${getPaymentMethodLabel(selectedPaymentMethod)}</strong></li>`;
 
   const user = getLoggedUser();
   const userSummary = document.getElementById("userSummary");

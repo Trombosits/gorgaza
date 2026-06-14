@@ -11,7 +11,7 @@
             <option value="Billiard" {{ $jenis === 'Billiard' ? 'selected' : '' }}>Billiard</option>
             <option value="Cafe" {{ $jenis === 'Cafe' ? 'selected' : '' }}>Cafe</option>
         </select>
-        <small class="text-muted">Catatan: Cafe bisa disimpan di admin, tetapi belum ditampilkan di landing page dan booking customer.</small>
+        <small class="text-muted">Catatan: Cafe bisa disimpan di admin, tetapi belum ditampilkan di landing page dan booking pelanggan.</small>
     </div>
     <div class="col-md-6">
         <label class="form-label fw-bold">Harga per Jam</label>

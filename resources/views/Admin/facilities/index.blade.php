@@ -8,7 +8,7 @@
         <div class="d-flex flex-wrap gap-3 justify-content-between align-items-center mb-3">
             <div>
                 <h5 class="section-title">Data Fasilitas</h5>
-                <div class="section-subtitle">Kelola fasilitas yang bisa dipesan customer.</div>
+                <div class="section-subtitle">Kelola fasilitas yang bisa dipesan pelanggan.</div>
             </div>
             <a href="{{ route('admin.facilities.create') }}" class="btn btn-gaza rounded-4"><i class="fa-solid fa-plus me-2"></i>Tambah Fasilitas</a>
         </div>
@@ -25,7 +25,7 @@
                         <td>
                             {{ $facility->jenis }}
                             @if($facility->jenis === 'Cafe')
-                                <div><small class="text-muted">Belum tampil di customer</small></div>
+                                <div><small class="text-muted">Belum tampil di halaman pelanggan</small></div>
                             @endif
                         </td>
                         <td class="fw-bold">Rp {{ number_format($facility->harga_per_jam, 0, ',', '.') }}</td>

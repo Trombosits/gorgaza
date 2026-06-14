@@ -63,20 +63,20 @@
     
     <form action="/logout" method="POST" class="d-inline">
       @csrf
-      <button type="submit" class="btn btn-danger rounded-pill px-3">Logout</button>
+      <button type="submit" class="btn btn-danger rounded-pill px-3">Keluar</button>
     </form>
 
   @elseif(session('auth_user'))
-    <a class="btn btn-outline-light rounded-pill px-3" href="/booking">Booking</a>
+    <a class="btn btn-outline-light rounded-pill px-3" href="/booking">Pemesanan</a>
     <a class="btn btn-warning rounded-pill px-3 fw-bold" href="/booking-history">Riwayat</a>
     
     <form action="/logout" method="POST" class="d-inline">
       @csrf
-      <button type="submit" class="btn btn-danger rounded-pill px-3">Logout</button>
+      <button type="submit" class="btn btn-danger rounded-pill px-3">Keluar</button>
     </form>
 
   @else
-    <a class="btn btn-book" href="/login">Login / Daftar</a>
+    <a class="btn btn-book" href="/login">Masuk / Daftar</a>
   @endif
 </div>
         </div>
@@ -88,7 +88,7 @@
         <div class="section-title mb-5">
           <h2>Pilih Jadwal</h2>
           <p>
-            Pilih tanggal dan jam yang tersedia untuk tipe booking Anda. Anda
+            Pilih tanggal dan jam yang tersedia untuk jenis pemesanan Anda. Anda
             dapat memilih lebih dari satu jam.
           </p>
         </div>
@@ -121,7 +121,7 @@
                 <div id="calendarDays" class="calendar-days"></div>
               </div>
               <div class="booking-note">
-                Ketentuan booking: mohon lengkapi data sebelum konfirmasi. Anda
+                Ketentuan pemesanan: mohon lengkapi data sebelum konfirmasi. Anda
                 dapat memilih lebih dari satu jam pada tanggal yang sama.
               </div>
             </div>
@@ -160,7 +160,7 @@
 
     <footer>
       <div class="container text-center">
-        <p>© 2026 GOR GAZA. All Rights Reserved.</p>
+        <p>© 2026 GOR GAZA. Seluruh hak cipta dilindungi.</p>
       </div>
     </footer>
 

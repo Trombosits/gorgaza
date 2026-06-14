@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Booking - GOR GAZA</title>
+    <title>Pemesanan - GOR GAZA</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <link
@@ -63,20 +63,20 @@
     
     <form action="/logout" method="POST" class="d-inline">
       @csrf
-      <button type="submit" class="btn btn-danger rounded-pill px-3">Logout</button>
+      <button type="submit" class="btn btn-danger rounded-pill px-3">Keluar</button>
     </form>
 
   @elseif(session('auth_user'))
-    <a class="btn btn-outline-light rounded-pill px-3" href="/booking">Booking</a>
+    <a class="btn btn-outline-light rounded-pill px-3" href="/booking">Pemesanan</a>
     <a class="btn btn-warning rounded-pill px-3 fw-bold" href="/booking-history">Riwayat</a>
     
     <form action="/logout" method="POST" class="d-inline">
       @csrf
-      <button type="submit" class="btn btn-danger rounded-pill px-3">Logout</button>
+      <button type="submit" class="btn btn-danger rounded-pill px-3">Keluar</button>
     </form>
 
   @else
-    <a class="btn btn-book" href="/login">Login / Daftar</a>
+    <a class="btn btn-book" href="/login">Masuk / Daftar</a>
   @endif
 </div>
         </div>
@@ -87,8 +87,8 @@
       <div class="container">
         <div class="booking-category-shell">
           <div class="booking-category-header text-center">
-            <span class="section-eyebrow"><i class="fa-solid fa-calendar-check me-2"></i>GOR GAZA Booking</span>
-            <h1 class="booking-category-title">Pilih Kategori Booking</h1>
+            <span class="section-eyebrow"><i class="fa-solid fa-calendar-check me-2"></i>Pemesanan GOR GAZA</span>
+            <h1 class="booking-category-title">Pilih Kategori Pemesanan</h1>
             <p class="booking-category-subtitle">
               Pilih fasilitas yang ingin kamu gunakan. Setelah itu, lanjutkan ke pemilihan tanggal dan jam yang tersedia.
             </p>
@@ -101,7 +101,7 @@
                 <span class="booking-category-badge">Populer</span>
               </div>
               <h3>Lapangan Badminton</h3>
-              <p>Booking lapangan badminton indoor dengan jadwal yang tersedia secara real-time.</p>
+              <p>Pemesanan lapangan badminton indoor dengan jadwal yang tersedia secara langsung.</p>
               <div class="booking-category-action">
                 <span>Pilih Badminton</span>
                 <i class="fa-solid fa-arrow-right"></i>
@@ -126,7 +126,7 @@
     </section>
     <footer>
       <div class="container text-center">
-        <p>© 2026 GOR GAZA. All Rights Reserved.</p>
+        <p>© 2026 GOR GAZA. Seluruh hak cipta dilindungi.</p>
       </div>
     </footer>
 
