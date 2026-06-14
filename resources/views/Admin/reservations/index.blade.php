@@ -9,7 +9,7 @@
         'Confirmed' => 'Disetujui',
         'Completed' => 'Selesai',
         'Cancelled' => 'Dibatalkan',
-        'Out of Time' => 'Waktu Habis',
+        'Out of Time' => 'Selesai',
     ];
     $paymentLabels = [
         'Paid' => 'Lunas',
@@ -37,7 +37,7 @@
                 <label class="form-label fw-bold">Status Pemesanan</label>
                 <select name="status" class="form-select">
                     <option value="">Semua Status</option>
-                    @foreach(['Booking','Confirmed','Cancelled','Completed','Out of Time'] as $status)
+                    @foreach(['Booking','Confirmed','Cancelled','Completed'] as $status)
                         <option value="{{ $status }}" {{ request('status') === $status ? 'selected' : '' }}>{{ $statusLabels[$status] ?? $status }}</option>
                     @endforeach
                 </select>
@@ -64,7 +64,8 @@
                 <tbody>
                 @forelse($reservations as $reservation)
                     @php($payment = $reservation->transaction->status_pembayaran ?? '-')
-                    @php($statusClass = strtolower(str_replace(' ', '-', $reservation->status_main)))
+                    @php($displayStatus = $reservation->status_main === 'Out of Time' ? 'Completed' : $reservation->status_main)
+                    @php($statusClass = strtolower(str_replace(' ', '-', $displayStatus)))
                     <tr>
                         <td class="fw-bold">#{{ $reservation->id }}</td>
                         <td>
@@ -73,7 +74,7 @@
                         </td>
                         <td>{{ $reservation->facility->nama_fasilitas ?? '-' }}</td>
                         <td>{{ $reservation->waktu_mulai->format('d M Y H:i') }} - {{ $reservation->waktu_selesai->format('H:i') }}</td>
-                        <td><span class="badge-soft badge-{{ $statusClass }}">{{ $statusLabels[$reservation->status_main] ?? $reservation->status_main }}</span></td>
+                        <td><span class="badge-soft badge-{{ $statusClass }}">{{ $statusLabels[$displayStatus] ?? $displayStatus }}</span></td>
                         <td><span class="badge-soft badge-booking">{{ $cleanMethod($reservation->transaction->metode_pembayaran ?? 'Bayar di Tempat') }}</span></td>
                         <td><span class="badge-soft {{ $payment === 'Paid' ? 'badge-completed' : ($payment === 'Pending' ? 'badge-booking' : 'badge-cancelled') }}">{{ $paymentLabels[$payment] ?? $payment }}</span></td>
                         <td class="fw-bold">Rp {{ number_format($reservation->subtotal, 0, ',', '.') }}</td>

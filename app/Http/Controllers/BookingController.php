@@ -83,7 +83,7 @@ class BookingController extends Controller
                 'user_id' => $user->id,
                 'total_tagihan' => $subtotal,
                 'status_pembayaran' => 'Pending',
-                'metode_pembayaran' => preg_replace(['/QRIS\s*\/\s*Go\s*Pay/i', '/QRIS\/Go\s*Pay/i', '/Go\s*Pay/i'], 'QRIS', $draft['metode_pembayaran'] ?? 'Pay On Place'),
+                'metode_pembayaran' => 'QRIS',
                 'waktu_transaksi' => now(),
             ]);
 

@@ -1,17 +1,42 @@
 <?php
 
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\CafeMenuController;
 use App\Http\Controllers\Admin\FacilityController;
+use App\Http\Controllers\Admin\FeedbackController as AdminFeedbackController;
 use App\Http\Controllers\Admin\FinanceReportController;
 use App\Http\Controllers\Admin\ReservationController;
+use App\Http\Controllers\Admin\SiteImageController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\BookingHistoryController;
+use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\PembayaranController;
+use App\Models\CafeMenu;
+use App\Models\SiteImage;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('Frontend.landing_page');
+    try {
+        $cafeMenus = CafeMenu::where('is_active', true)
+            ->orderBy('kategori')
+            ->orderBy('urutan')
+            ->orderBy('nama_menu')
+            ->get()
+            ->groupBy('kategori');
+
+        $siteImages = SiteImage::where('is_active', true)
+            ->orderBy('kategori')
+            ->orderBy('urutan')
+            ->orderBy('judul')
+            ->get()
+            ->groupBy('kategori');
+    } catch (\Throwable $e) {
+        $cafeMenus = collect();
+        $siteImages = collect();
+    }
+
+    return view('Frontend.landing_page', compact('cafeMenus', 'siteImages'));
 })->name('landing');
 
 Route::get('/landing_page', function () {
@@ -48,6 +73,7 @@ Route::middleware('customer.auth')->group(function () {
     })->name('booking.confirm');
 
     Route::get('/booking-history', [BookingHistoryController::class, 'index'])->name('booking.history');
+    Route::post('/feedback', [FeedbackController::class, 'store'])->name('feedback.store');
     Route::get('/pembayaran/{transaction_id}', [PembayaranController::class, 'index'])->name('pembayaran');
     Route::post('/api/bookings', [BookingController::class, 'store']);
 });
@@ -58,6 +84,18 @@ Route::prefix('admin')->middleware('admin')->group(function () {
     Route::resource('/facilities', FacilityController::class)
         ->names('admin.facilities')
         ->except(['show']);
+
+    Route::resource('/cafe-menus', CafeMenuController::class)
+        ->names('admin.cafe-menus')
+        ->except(['show']);
+
+    Route::resource('/site-images', SiteImageController::class)
+        ->names('admin.site-images')
+        ->except(['show']);
+
+    Route::get('/feedbacks', [AdminFeedbackController::class, 'index'])->name('admin.feedbacks.index');
+    Route::get('/feedbacks/{feedback}', [AdminFeedbackController::class, 'show'])->name('admin.feedbacks.show');
+    Route::delete('/feedbacks/{feedback}', [AdminFeedbackController::class, 'destroy'])->name('admin.feedbacks.destroy');
 
     Route::get('/reservations', [ReservationController::class, 'index'])->name('admin.reservations.index');
     Route::get('/reservations/{reservation}', [ReservationController::class, 'show'])->name('admin.reservations.show');

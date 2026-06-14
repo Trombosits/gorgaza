@@ -27,6 +27,7 @@
             <li class="nav-item"><a class="nav-link" href="{{ url('/') }}#fasilitas">Fasilitas</a></li>
             <li class="nav-item"><a class="nav-link" href="{{ url('/') }}#harga">Harga</a></li>
             <li class="nav-item"><a class="nav-link" href="{{ url('/') }}#jadwal">Jadwal</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url('/') }}#kritik-saran">Kritik & Saran</a></li>
           </ul>
         </div>
 

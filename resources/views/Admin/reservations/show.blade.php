@@ -9,7 +9,7 @@
         'Confirmed' => 'Disetujui',
         'Completed' => 'Selesai',
         'Cancelled' => 'Dibatalkan',
-        'Out of Time' => 'Waktu Habis',
+        'Out of Time' => 'Selesai',
     ];
     $paymentLabels = [
         'Paid' => 'Lunas',
@@ -47,7 +47,8 @@
                         <tr><th>Waktu</th><td>{{ $reservation->waktu_mulai->format('d M Y H:i') }} - {{ $reservation->waktu_selesai->format('H:i') }}</td></tr>
                         <tr><th>Subtotal</th><td class="fw-bold">Rp {{ number_format($reservation->subtotal, 0, ',', '.') }}</td></tr>
                         @php
-    $statusClass = strtolower(str_replace(' ', '-', $reservation->status_main));
+    $displayStatus = $reservation->status_main === 'Out of Time' ? 'Completed' : $reservation->status_main;
+    $statusClass = strtolower(str_replace(' ', '-', $displayStatus));
     $paymentStatus = $reservation->transaction->status_pembayaran ?? 'Pending';
     $paymentMethod = $cleanMethod($reservation->transaction->metode_pembayaran ?? 'Bayar di Tempat');
 
@@ -60,7 +61,7 @@
     <th>Status Pemesanan</th>
     <td>
         <span class="badge-soft badge-{{ $statusClass }}">
-            {{ $statusLabels[$reservation->status_main] ?? $reservation->status_main }}
+            {{ $statusLabels[$displayStatus] ?? $displayStatus }}
         </span>
     </td>
 </tr>
@@ -97,7 +98,7 @@
                     <div class="mb-3">
                         <label class="form-label fw-bold">Status Pemesanan</label>
                         <select name="status_main" class="form-select">
-                            @foreach(['Booking','Confirmed','Cancelled','Completed','Out of Time'] as $status)
+                            @foreach(['Booking','Confirmed','Cancelled','Completed'] as $status)
                                 <option value="{{ $status }}" {{ $reservation->status_main === $status ? 'selected' : '' }}>{{ $statusLabels[$status] ?? $status }}</option>
                             @endforeach
                         </select>
