@@ -128,7 +128,9 @@
                 <span>Pemesanan online</span>
               </div>
               <div>
-                <strong>08.00-23.00 WIB</strong>
+                <strong>{{ \Carbon\Carbon::parse($setting->jam_buka)->format('H:i') }}
+                      -
+                      {{ \Carbon\Carbon::parse($setting->jam_tutup)->format('H:i') }}</strong>
                 <span>Jam operasional</span>
               </div>
               <div>
@@ -250,20 +252,113 @@
         </div>
         <div class="row g-4">
           <div class="col-md-6 col-xl-3">
-            <div class="price-card h-100">
-              <div class="price-icon"><i class="fa-solid fa-building"></i></div>
-              <h4>Sewa Lapang GOR</h4>
-              <div class="price-value">Rp25.000<span>/jam</span></div>
-              <p>Untuk booking lapangan badminton sesuai jadwal yang tersedia.</p>
-            </div>
+            @php($badminton = $facilities['Badminton'] ?? null)
+
+<div class="price-card h-100">
+    <div class="price-icon">
+        <i class="fa-solid fa-building"></i>
+    </div>
+
+    <h4>Sewa Lapang GOR</h4>
+
+    <div class="price-value">
+
+        @if($badminton)
+
+            @if(
+                $badminton->harga_promo &&
+                $badminton->promo_mulai &&
+                $badminton->promo_selesai
+            )
+
+                <div style="font-size:18px;color:#999;text-decoration:line-through">
+                    Rp{{ number_format($badminton->harga_per_jam,0,',','.') }}
+                </div>
+
+                Rp{{ number_format($badminton->harga_promo,0,',','.') }}
+                <span>/jam</span>
+
+                <div class="mt-2 text-success fw-bold">
+                    🔥 Promo
+                </div>
+
+                <small>
+                    {{ \Carbon\Carbon::parse($badminton->promo_mulai)->format('H:i') }}
+                    -
+                    {{ \Carbon\Carbon::parse($badminton->promo_selesai)->format('H:i') }}
+                </small>
+
+            @else
+
+                Rp{{ number_format($badminton->harga_per_jam,0,',','.') }}
+                <span>/jam</span>
+
+            @endif
+
+        @endif
+
+    </div>
+
+    <p>
+        Untuk booking lapangan badminton sesuai jadwal yang tersedia.
+    </p>
+
+</div>
           </div>
           <div class="col-md-6 col-xl-3">
-            <div class="price-card h-100">
-              <div class="price-icon"><i class="fa-solid fa-circle-dot"></i></div>
-              <h4>Sewa Meja Billiard</h4>
-              <div class="price-value">Rp30.000<span>/jam</span></div>
-              <p>Untuk booking meja billiard sesuai jadwal yang tersedia.</p>
-            </div>
+            @php($billiard = $facilities['Billiard'] ?? null)
+
+<div class="price-card h-100">
+
+    <div class="price-icon">
+        <i class="fa-solid fa-circle-dot"></i>
+    </div>
+
+    <h4>Sewa Meja Billiard</h4>
+
+    <div class="price-value">
+
+        @if($billiard)
+
+            @if(
+                $billiard->harga_promo &&
+                $billiard->promo_mulai &&
+                $billiard->promo_selesai
+            )
+
+                <div style="font-size:18px;color:#999;text-decoration:line-through">
+                    Rp{{ number_format($billiard->harga_per_jam,0,',','.') }}
+                </div>
+
+                Rp{{ number_format($billiard->harga_promo,0,',','.') }}
+                <span>/jam</span>
+
+                <div class="mt-2 text-success fw-bold">
+                    🔥 Promo
+                </div>
+
+                <small>
+                    {{ \Carbon\Carbon::parse($billiard->promo_mulai)->format('H:i') }}
+                    -
+                    {{ \Carbon\Carbon::parse($billiard->promo_selesai)->format('H:i') }}
+                </small>
+
+            @else
+
+                Rp{{ number_format($billiard->harga_per_jam,0,',','.') }}
+                <span>/jam</span>
+
+            @endif
+
+        @endif
+
+    </div>
+
+    <p>
+        Untuk booking meja billiard sesuai jadwal yang tersedia.
+    </p>
+
+</div>
           </div>
           <div class="col-md-6 col-xl-3">
             <div class="price-card h-100 muted">

@@ -28,14 +28,48 @@
                                 <div><small class="text-muted">Belum tampil di halaman pelanggan</small></div>
                             @endif
                         </td>
-                        <td class="fw-bold">Rp {{ number_format($facility->harga_per_jam, 0, ',', '.') }}</td>
-                        <td>
-                            @if($facility->is_active)
-                                <span class="badge-soft badge-completed">Aktif</span>
-                            @else
-                                <span class="badge-soft badge-cancelled">Nonaktif</span>
+                       <td>
+
+                            Rp {{ number_format($facility->harga_per_jam,0,',','.') }}
+
+                            @if($facility->harga_promo)
+
+                                <br>
+
+                                <span class="badge bg-success mt-1">
+
+                                    Promo
+                                    Rp {{ number_format($facility->harga_promo,0,',','.') }}
+
+                                </span>
+                                @if($facility->promo_mulai)
+
+                            <div class="small text-muted">
+
+                            {{ \Carbon\Carbon::parse($facility->promo_mulai)->format('H:i') }}
+
+                            -
+
+                            {{ \Carbon\Carbon::parse($facility->promo_selesai)->format('H:i') }}
+
+                            </div>
+
                             @endif
+                             @endif
+
                         </td>
+                        <td>
+    @if($facility->is_active)
+        <span class="badge bg-success">
+            Aktif
+        </span>
+    @else
+        <span class="badge bg-secondary">
+            Nonaktif
+        </span>
+    @endif
+</td>
+
                         <td>
                             <a href="{{ route('admin.facilities.edit', $facility) }}" class="btn btn-sm btn-soft rounded-3"><i class="fa-solid fa-pen"></i></a>
                             <form action="{{ route('admin.facilities.destroy', $facility) }}" method="POST" class="d-inline" onsubmit="return confirm('Hapus fasilitas ini?')">

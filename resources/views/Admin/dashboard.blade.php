@@ -17,6 +17,29 @@
         'Cancelled' => 'Dibatalkan',
     ];
 @endphp
+
+<div class="card content-card mb-4">
+    <div class="card-body d-flex justify-content-between align-items-center">
+        <div>
+            <h3 class="fw-bold">
+                Halo Admin 👋
+            </h3>
+            <div class="text-muted">
+                {{ now()->translatedFormat('l, d F Y') }}
+            </div>
+        </div>
+        <div class="text-end">
+            <span class="badge bg-success fs-6">
+                Website Online
+            </span>
+            <br>
+            <span class="badge bg-primary mt-2">
+                Booking Aktif
+            </span>
+        </div>
+    </div>
+</div>
+
 <div class="row g-3 mb-4">
     <div class="col-sm-6 col-xl-3">
         <div class="card card-stat p-4" style="--stat-color:#dbeafe;--stat-text:#1d4ed8;">
@@ -127,6 +150,185 @@
                     <a href="{{ route('admin.reports.finance') }}" class="btn btn-soft rounded-4 text-start py-3"><i class="fa-solid fa-file-invoice-dollar me-2 text-primary"></i> Laporan Keuangan</a>
                     <a href="/" target="_blank" class="btn btn-soft rounded-4 text-start py-3"><i class="fa-solid fa-globe me-2 text-info"></i> Buka Website</a>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    {{-- Badminton --}}
+    <div class="col-lg-4">
+        <div class="card content-card h-100 shadow-sm">
+            <div class="card-body text-center">
+                <div class="display-5 text-success mb-3">
+                    <i class="fa-solid fa-table-tennis-paddle-ball"></i>
+                </div>
+                <h5 class="fw-bold">
+                    Badminton
+                </h5>
+                <h3 class="text-success fw-bold mt-3">
+                    Rp {{ number_format($badminton->harga_per_jam,0,',','.') }}
+                </h3>
+                <small class="text-muted">
+                    per jam
+                </small>
+                <hr>
+                <span class="badge bg-success">
+                    Aktif
+                </span>
+            </div>
+        </div>
+    </div>
+
+    {{-- Billiard --}}
+    <div class="col-lg-4">
+        <div class="card content-card h-100 shadow-sm">
+            <div class="card-body text-center">
+                <div class="display-5 text-danger mb-3">
+                    <i class="fa-solid fa-circle-dot"></i>
+                </div>
+                <h5 class="fw-bold">
+                    Billiard
+                </h5>
+                @if($billiard->harga_promo)
+                    <h3 class="text-danger fw-bold mt-3">
+                        Rp {{ number_format($billiard->harga_promo,0,',','.') }}
+                    </h3>
+                    <small class="text-decoration-line-through text-secondary">
+                        Rp {{ number_format($billiard->harga_per_jam,0,',','.') }}
+                    </small>
+                    <div class="mt-3">
+                        <span class="badge bg-warning text-dark">
+                            🔥 Promo
+                        </span>
+                    </div>
+                    <small class="text-muted d-block mt-2">
+                        {{ \Carbon\Carbon::parse($billiard->promo_mulai)->format('H:i') }}
+                        -
+                        {{ \Carbon\Carbon::parse($billiard->promo_selesai)->format('H:i') }}
+                    </small>
+                @else
+                    <h3 class="text-danger fw-bold mt-3">
+                        Rp {{ number_format($billiard->harga_per_jam,0,',','.') }}
+                    </h3>
+                    <small class="text-muted">
+                        per jam
+                    </small>
+                @endif
+            </div>
+        </div>
+    </div>
+    {{-- Booking Selanjutnya --}}
+    <div class="col-lg-4">
+        <div class="card content-card h-100 shadow-sm">
+            <div class="card-body">
+                <h5 class="fw-bold mb-4">
+                    <i class="fa-solid fa-calendar-days me-2"></i>
+                    Booking Selanjutnya
+                </h5>
+                @if($nextBooking)
+                    <div class="display-6 fw-bold text-primary">
+                        {{ $nextBooking->waktu_mulai->format('H:i') }}
+                    </div>
+                    <div class="mt-3">
+                        <strong>
+                            {{ $nextBooking->facility->nama_fasilitas }}
+                        </strong>
+                    </div>
+                    <div class="text-muted">
+                        {{ $nextBooking->transaction->user->nama }}
+                    </div>
+                    <span class="badge bg-success mt-3">
+                        {{ $nextBooking->status_main }}
+                    </span>
+                @else
+                    <div class="text-center py-4">
+                        <i class="fa-regular fa-calendar-xmark display-5 text-secondary mb-3"></i>
+                        <p class="mb-0">
+                            Belum ada booking berikutnya
+                        </p>
+                    </div>
+                @endif
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-lg-6">
+        <div class="card content-card h-100">
+            <div class="card-body p-4">
+                <h5 class="section-title">
+                    <i class="fa-solid fa-sliders me-2"></i>
+                    Konfigurasi Sistem
+                </h5>
+                <div class="section-subtitle mb-3">
+                    Pengaturan yang sedang digunakan sistem booking.
+                </div>
+                <table class="table align-middle">
+                    <tr>
+                        <td width="45%">
+                            Nominal DP
+                        </td>
+                        <td>
+                            <strong>
+                                Rp {{ number_format($setting->nominal_dp,0,',','.') }}
+                            </strong>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Jam Operasional</td>
+                        <td>
+                            {{ \Carbon\Carbon::parse($setting->jam_buka)->format('H:i') }}
+                            -
+                            {{ \Carbon\Carbon::parse($setting->jam_tutup)->format('H:i') }}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="card content-card h-100">
+            <div class="card-body p-4">
+                <h5 class="section-title">
+                    <i class="fa-solid fa-tags me-2"></i>
+                    Harga Fasilitas
+                </h5>
+                <div class="section-subtitle mb-3">
+                    Harga yang sedang digunakan saat ini.
+                </div>
+                <table class="table align-middle">
+                    <tr>
+                        <td>Badminton</td>
+                        <td>
+                            Rp {{ number_format($badminton->harga_per_jam,0,',','.') }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Billiard</td>
+                        <td>
+                            @if($billiard->harga_promo)
+                                <div class="text-decoration-line-through text-secondary">
+                                    Rp {{ number_format($billiard->harga_per_jam,0,',','.') }}
+                                </div>
+                                <strong class="text-success">
+                                    Rp {{ number_format($billiard->harga_promo,0,',','.') }}
+                                </strong>
+                                <br>
+                                <small class="text-muted">
+                                    Promo
+                                    {{ \Carbon\Carbon::parse($billiard->promo_mulai)->format('H:i') }}
+                                    -
+                                    {{ \Carbon\Carbon::parse($billiard->promo_selesai)->format('H:i') }}
+                                </small>
+                            @else
+                                Rp {{ number_format($billiard->harga_per_jam,0,',','.') }}
+                            @endif
+                        </td>
+                    </tr>
+                </table>
             </div>
         </div>
     </div>

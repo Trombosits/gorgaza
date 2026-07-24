@@ -12,6 +12,9 @@ class Facility extends Model
         'harga_per_jam',
         'deskripsi',
         'is_active',
+        'harga_promo',
+        'promo_mulai',
+        'promo_selesai',
     ];
 
     public function reservations()
