@@ -37,17 +37,52 @@ class ReservationController extends Controller
     }
 
     public function updateStatus(Request $request, Reservation $reservation)
-    {
-        $data = $request->validate([
-            'status_main' => 'required|in:Booking,Confirmed,Cancelled,Completed',
-            'status_pembayaran' => 'required|in:Pending,Partial,Paid,Cancelled',
-        ]);
+{
+    $data = $request->validate([
+        'status_main' => 'required|in:Booking,Confirmed,Cancelled,Completed',
+        'status_pembayaran' => 'required|in:Pending,Partial,Paid,Cancelled',
+    ]);
 
-        $reservation->update(['status_main' => $data['status_main']]);
-        $reservation->transaction->update(['status_pembayaran' => $data['status_pembayaran']]);
+    // update status booking
+    $reservation->update([
+        'status_main' => $data['status_main']
+    ]);
 
-        return back()->with('success', 'Status booking berhasil diperbarui.');
+    $transaction = $reservation->transaction;
+
+    $updateData = [
+        'status_pembayaran' => $data['status_pembayaran'],
+    ];
+
+    switch ($data['status_pembayaran']) {
+
+        case 'Paid':
+
+            $updateData['nominal_dp'] = $transaction->total_tagihan;
+            $updateData['sisa_pembayaran'] = 0;
+
+        break;
+
+        case 'Pending':
+
+            $updateData['nominal_dp'] = 0;
+            $updateData['sisa_pembayaran'] = $transaction->total_tagihan;
+
+        break;
+
+        case 'Cancelled':
+
+            $updateData['nominal_dp'] = 0;
+            $updateData['sisa_pembayaran'] = $transaction->total_tagihan;
+
+        break;
+
     }
+
+    $transaction->update($updateData);
+
+    return back()->with('success','Status berhasil diperbarui.');
+}
 
     public function destroy(Reservation $reservation)
     {

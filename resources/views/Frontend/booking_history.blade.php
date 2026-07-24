@@ -66,9 +66,10 @@
                 $paymentStatus = $transaction->status_pembayaran ?? 'Pending';
                 $paymentClass = strtolower($paymentStatus) === 'paid' ? 'paid' : (strtolower($paymentStatus) === 'cancelled' ? 'cancelled' : 'pending');
                 $paymentLabels = [
-                    'Paid' => 'DP Lunas',
-                    'Pending' => 'Menunggu DP',
-                    'Cancelled' => 'Dibatalkan',
+                'Pending'=>'Menunggu DP',
+                'Partial'=>'DP Diterima',
+                'Paid'=>'Lunas',
+                'Cancelled'=>'Dibatalkan'
                 ];
                 $reservationLabels = [
                     'Booking' => 'Menunggu',
