@@ -10,6 +10,7 @@ use App\Services\ReservationStatusService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\Setting;
 
 class BookingController extends Controller
 {
@@ -77,14 +78,47 @@ class BookingController extends Controller
             }
 
             $durasiJam = max(1, $waktuMulai->diffInHours($waktuSelesai));
-            $subtotal = $facility->harga_per_jam * $durasiJam;
+
+            $subtotal = 0;
+
+            $current = $waktuMulai->copy();
+
+            for ($i = 0; $i < $durasiJam; $i++) {
+
+             $hargaPerJam = $facility->harga_per_jam;
+
+           if (
+                !is_null($facility->harga_promo) &&
+                !is_null($facility->promo_mulai) &&
+                !is_null($facility->promo_selesai)
+            ) {
+
+                $jamSekarang = $current->format('H:i:s');
+
+                if (
+                    $jamSekarang >= $facility->promo_mulai &&
+                    $jamSekarang < $facility->promo_selesai
+                ) {
+                    $hargaPerJam = $facility->harga_promo;
+                }
+
+            }
+
+        $subtotal += $hargaPerJam;
+
+        $current->addHour();
+}
+
+            $nominalDP = Setting::first()->nominal_dp;
 
             $transaction = Transaction::create([
-                'user_id' => $user->id,
-                'total_tagihan' => $subtotal,
-                'status_pembayaran' => 'Pending',
-                'metode_pembayaran' => 'QRIS',
-                'waktu_transaksi' => now(),
+            'user_id' => $user->id,
+            'total_tagihan' => $subtotal,
+            'nominal_dp' => $nominalDP,
+            'sisa_pembayaran' => max(0, $subtotal - $nominalDP),
+            'status_pembayaran' => 'Pending',
+            'metode_pembayaran' => 'QRIS',
+            'waktu_transaksi' => now(),
             ]);
 
             Reservation::create([

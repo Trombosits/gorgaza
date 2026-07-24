@@ -122,6 +122,24 @@ body.auth-page {
   padding: 140px 0 90px;
 }
 
+.content-card{
+    transition:.25s;
+}
+
+.content-card:hover{
+
+    transform:translateY(-6px);
+
+    box-shadow:0 20px 45px rgba(0,0,0,.12);
+
+}
+
+.display-5{
+
+    font-size:58px;
+
+}
+
 .hero-overlay {
   position: absolute;
   inset: 0;

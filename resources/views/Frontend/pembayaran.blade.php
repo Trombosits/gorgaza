@@ -9,18 +9,26 @@
     <link href="{{ asset('css/style.css') }}" rel="stylesheet" />
 </head>
 <body class="payment-page payment-polish-page">
+    
     @php
         $rawMetode = $transaction->metode_pembayaran ?? 'QRIS';
         $metode = 'QRIS';
         $isOnline = true;
         $paymentLabels = [
-            'Paid' => 'Lunas',
-            'Pending' => 'Menunggu',
+            'Paid' => 'DP Lunas',
+            'Pending' => 'Menunggu DP',
             'Cancelled' => 'Dibatalkan',
         ];
         $statusPembayaran = $paymentLabels[$transaction->status_pembayaran] ?? $transaction->status_pembayaran;
-        $whatsappText = rawurlencode('Halo Admin GOR GAZA, saya ingin konfirmasi booking dengan ID Transaksi #' . $transaction->id . ' sebesar Rp ' . number_format($transaction->total_tagihan, 0, ',', '.') . ' menggunakan metode ' . $metode . '.');
+        $whatsappText = rawurlencode(
+        'Halo Admin GOR GAZA, saya telah melakukan pembayaran DP booking sebesar Rp '
+        . number_format($transaction->nominal_dp,0,',','.')
+        . ' untuk ID Transaksi #'
+        . $transaction->id
+        . '. Mohon dilakukan verifikasi. Terima kasih.'
+        );
     @endphp
+    
 
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark mb-5">
         <div class="container">
@@ -78,8 +86,47 @@
                 </div>
 
                 <div class="payment-total-box text-center mb-4">
-                    <p>Total yang Harus Dibayar</p>
-                    <h2>Rp {{ number_format($transaction->total_tagihan, 0, ',', '.') }}</h2>
+                    <div class="payment-total-box text-center mb-4">
+
+    <div class="row">
+
+        <div class="col-md-4">
+
+            <p>Total Booking</p>
+
+            <h4>
+                Rp {{ number_format($transaction->total_tagihan,0,',','.') }}
+            </h4>
+
+        </div>
+
+        <div class="col-md-4">
+
+            <p>DP Dibayar Sekarang</p>
+
+            <h2 class="text-success">
+
+                Rp {{ number_format($transaction->nominal_dp,0,',','.') }}
+
+            </h2>
+
+        </div>
+
+        <div class="col-md-4">
+
+            <p>Sisa Pembayaran</p>
+
+            <h4>
+
+                Rp {{ number_format($transaction->sisa_pembayaran,0,',','.') }}
+
+            </h4>
+
+        </div>
+
+    </div>
+
+</div>
                 </div>
 
                 <div class="qris-payment-box polished-qris-box mb-4">
@@ -91,17 +138,30 @@
                             </div>
                             <div class="col-lg-7">
                                 <span class="payment-mini-label">Metode pembayaran</span>
-                                <h5><i class="fa-solid fa-qrcode me-2"></i>Bayar QRIS</h5>
-                                <p>Silakan scan QRIS resmi GOR GAZA menggunakan aplikasi pembayaran yang mendukung QRIS.</p>
+                                <h5><i class="fa-solid fa-qrcode me-2"></i>Bayar DP via QRIS</h5>
+                                <p>Silakan lakukan pembayaran DP sebesar
+                                    <strong>
+
+                                    Rp {{ number_format($transaction->nominal_dp,0,',','.') }}
+
+                                    </strong>
+
+                                    menggunakan QRIS resmi GOR GAZA.
+
+                                    Sisa pembayaran dilunasi di lokasi saat jadwal bermain.</p>
                                 @if(strtolower($transaction->status_pembayaran) === 'paid')
                                   <div class="alert alert-success mb-0 rounded-4">
                                     <i class="fas fa-check-circle me-2"></i>
-                                    Pembayaran sudah dikonfirmasi admin dan status transaksi kamu sudah <strong>Lunas</strong>.
-                                  </div>
+                                    DP telah berhasil diverifikasi.
+
+                                    Silakan datang sesuai jadwal.
+
+                                    Sisa pembayaran dibayarkan langsung di lokasi sebelum/setelah bermain.
+                                                                    </div>
                                 @else
                                   <div class="alert alert-warning mb-0 rounded-4">
                                     <i class="fas fa-circle-info me-2"></i>
-                                    Setelah melakukan pembayaran, hubungi admin untuk konfirmasi. Admin akan mengubah status pembayaran menjadi <strong>Lunas</strong> setelah dana diterima.
+                                    Setelah DP berhasil ditransfer, hubungi admin untuk konfirmasi. Admin akan mengubah status pembayaran menjadi <strong>DP Lunas</strong>. Sisa pembayaran dilakukan di lokasi.
                                   </div>
                                 @endif
                             </div>

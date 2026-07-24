@@ -47,7 +47,9 @@
         <div class="booking-history-header text-center">
           <span class="section-kicker">Cek Status</span>
           <h1>Riwayat Pemesanan Saya</h1>
-          <p>Gunakan halaman ini untuk mengecek apakah pembayaran sudah dikonfirmasi admin menjadi <strong>Lunas</strong> atau masih <strong>Menunggu</strong>.</p>
+          <p>
+          Gunakan halaman ini untuk memantau status pembayaran DP, sisa pembayaran, serta status pemesanan Anda.
+          </p>
         </div>
 
         @if($transactions->isEmpty())
@@ -64,8 +66,8 @@
                 $paymentStatus = $transaction->status_pembayaran ?? 'Pending';
                 $paymentClass = strtolower($paymentStatus) === 'paid' ? 'paid' : (strtolower($paymentStatus) === 'cancelled' ? 'cancelled' : 'pending');
                 $paymentLabels = [
-                    'Paid' => 'Lunas',
-                    'Pending' => 'Menunggu',
+                    'Paid' => 'DP Lunas',
+                    'Pending' => 'Menunggu DP',
                     'Cancelled' => 'Dibatalkan',
                 ];
                 $reservationLabels = [
@@ -119,23 +121,58 @@
                 </div>
 
                 <div class="history-payment-block">
-                  <div>
+
+                <div>
                     <span class="history-label">Status Pembayaran</span>
-                    <span class="history-status {{ $paymentClass }}">{{ $paymentLabels[$paymentStatus] ?? $paymentStatus }}</span>
-                  </div>
-                  <div>
-                    <span class="history-label">Metode</span>
-                    <strong>{{ $method }}</strong>
-                  </div>
-                  <div>
-                    <span class="history-label">Total</span>
-                    <h4>Rp {{ number_format($transaction->total_tagihan, 0, ',', '.') }}</h4>
-                  </div>
-                  <a href="{{ route('pembayaran', $transaction->id) }}" class="btn-history-detail">
-                    <i class="fa-solid fa-receipt"></i>
-                    {{ strtolower($paymentStatus) === 'paid' ? 'Lihat Detail' : 'Cek / Bayar' }}
-                  </a>
+
+                    <span class="history-status {{ $paymentClass }}">
+                        {{ $paymentLabels[$paymentStatus] ?? $paymentStatus }}
+                    </span>
                 </div>
+
+                <div>
+                    <span class="history-label">Metode</span>
+
+                    <strong>{{ $method }}</strong>
+                </div>
+
+                <div>
+                    <span class="history-label">Total Booking</span>
+
+                    <h5>
+                        Rp {{ number_format($transaction->total_tagihan,0,',','.') }}
+                    </h5>
+                </div>
+
+                <div>
+                    <span class="history-label">DP Dibayar</span>
+
+                    <strong class="text-success">
+                        Rp {{ number_format($transaction->nominal_dp,0,',','.') }}
+                    </strong>
+                </div>
+
+                <div>
+                    <span class="history-label">Sisa Pembayaran</span>
+
+                    <strong class="{{ $transaction->sisa_pembayaran > 0 ? 'text-danger' : 'text-success' }}">
+                        Rp {{ number_format($transaction->sisa_pembayaran,0,',','.') }}
+                    </strong>
+                </div>
+
+                <a href="{{ route('pembayaran', $transaction->id) }}"
+                  class="btn-history-detail">
+
+                    <i class="fa-solid fa-receipt"></i>
+
+                    {{ strtolower($paymentStatus) === 'paid'
+                        ? 'Lihat Detail'
+                        : 'Bayar DP'
+                    }}
+
+                </a>
+
+            </div>
               </article>
             @endforeach
           </div>

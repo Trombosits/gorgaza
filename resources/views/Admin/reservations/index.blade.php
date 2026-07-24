@@ -12,8 +12,8 @@
         'Out of Time' => 'Selesai',
     ];
     $paymentLabels = [
-        'Paid' => 'Lunas',
-        'Pending' => 'Menunggu',
+        'Paid' => 'DP Lunas',
+        'Pending' => 'Menunggu DP',
         'Cancelled' => 'Dibatalkan',
     ];
     $methodLabels = [
@@ -60,7 +60,7 @@
         </div>
         <div class="table-responsive">
             <table class="table align-middle mb-0">
-                <thead><tr><th>ID</th><th>Pelanggan</th><th>Fasilitas</th><th>Waktu</th><th>Status</th><th>Metode</th><th>Pembayaran</th><th>Total</th><th width="190">Aksi</th></tr></thead>
+                <thead><tr><th>ID</th><th>Pelanggan</th><th>Fasilitas</th><th>Waktu</th><th>Status</th><th>Metode</th><th>Pembayaran</th><th>Total</th><th>DP</th><th>Sisa</th><th width="190">Aksi</th></tr></thead>
                 <tbody>
                 @forelse($reservations as $reservation)
                     @php($payment = $reservation->transaction->status_pembayaran ?? '-')
@@ -77,7 +77,21 @@
                         <td><span class="badge-soft badge-{{ $statusClass }}">{{ $statusLabels[$displayStatus] ?? $displayStatus }}</span></td>
                         <td><span class="badge-soft badge-booking">{{ $cleanMethod($reservation->transaction->metode_pembayaran ?? 'Bayar di Tempat') }}</span></td>
                         <td><span class="badge-soft {{ $payment === 'Paid' ? 'badge-completed' : ($payment === 'Pending' ? 'badge-booking' : 'badge-cancelled') }}">{{ $paymentLabels[$payment] ?? $payment }}</span></td>
-                        <td class="fw-bold">Rp {{ number_format($reservation->subtotal, 0, ',', '.') }}</td>
+                        <td class="fw-bold">
+                            Rp {{ number_format($reservation->transaction->total_tagihan,0,',','.') }}
+                        </td>
+
+                        <td>
+                            <span class="text-success fw-semibold">
+                                Rp {{ number_format($reservation->transaction->nominal_dp,0,',','.') }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="{{ $reservation->transaction->sisa_pembayaran > 0 ? 'text-danger' : 'text-success' }} fw-semibold">
+                                Rp {{ number_format($reservation->transaction->sisa_pembayaran,0,',','.') }}
+                            </span>
+                        </td>
                         <td>
                             <a href="{{ route('admin.reservations.show', $reservation) }}" class="btn btn-sm btn-soft rounded-3"><i class="fa-solid fa-eye"></i></a>
                             <form action="{{ route('admin.reservations.destroy', $reservation) }}" method="POST" class="d-inline" onsubmit="return confirm('Hapus pemesanan ini?')">
@@ -87,7 +101,7 @@
                         </td>
                     </tr>
                 @empty
-                    <tr><td colspan="9"><div class="empty-state"><i class="fa-regular fa-calendar-xmark"></i><div>Belum ada pemesanan.</div></div></td></tr>
+                    <tr><td colspan="11"><div class="empty-state"><i class="fa-regular fa-calendar-xmark"></i><div>Belum ada pemesanan.</div></div></td></tr>
                 @endforelse
                 </tbody>
             </table>

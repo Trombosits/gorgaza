@@ -14,7 +14,10 @@ use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\PembayaranController;
 use App\Models\CafeMenu;
 use App\Models\SiteImage;
+use App\Models\Setting;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\SettingController;
+use App\Models\Facility;
 
 Route::get('/', function () {
     try {
@@ -36,7 +39,23 @@ Route::get('/', function () {
         $siteImages = collect();
     }
 
-    return view('Frontend.landing_page', compact('cafeMenus', 'siteImages'));
+    $setting = Setting::firstOrCreate([], [
+    'nominal_dp' => 5000,
+    'jam_buka' => '08:00:00',
+    'jam_tutup' => '23:00:00',
+    ]);
+
+    $facilities = Facility::all()->keyBy('jenis');
+
+    return view(
+        'Frontend.landing_page',
+        compact(
+            'cafeMenus',
+            'siteImages',
+            'setting',
+            'facilities'
+        )
+);
 })->name('landing');
 
 Route::get('/landing_page', function () {
@@ -65,7 +84,8 @@ Route::middleware('customer.auth')->group(function () {
     })->name('booking');
 
     Route::get('/booking-schedule', function () {
-        return view('Frontend.booking_schedule');
+    $setting = \App\Models\Setting::firstOrFail();
+    return view('Frontend.booking_schedule', compact('setting'));
     })->name('booking.schedule');
 
     Route::get('/booking-confirm', function () {
@@ -84,6 +104,12 @@ Route::prefix('admin')->middleware('admin')->group(function () {
     Route::resource('/facilities', FacilityController::class)
         ->names('admin.facilities')
         ->except(['show']);
+
+    Route::get('/settings', [SettingController::class, 'edit'])
+        ->name('admin.settings.edit');
+
+    Route::put('/settings', [SettingController::class, 'update'])
+        ->name('admin.settings.update');
 
     Route::resource('/cafe-menus', CafeMenuController::class)
         ->names('admin.cafe-menus')

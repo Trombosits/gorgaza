@@ -286,6 +286,10 @@
             <a href="{{ route('admin.reports.finance') }}" class="nav-link-admin {{ request()->is('admin/reports/finance*') ? 'active' : '' }}">
                 <i class="fa-solid fa-chart-line"></i> Laporan Keuangan
             </a>
+            <a href="{{ route('admin.settings.edit') }}"
+                class="nav-link-admin {{ request()->is('admin/settings*') ? 'active' : '' }}">
+                    <i class="fa-solid fa-gears"></i> Pengaturan Sistem
+            </a>
 
             <div class="sidebar-section">Akses</div>
             <a href="/" target="_blank" class="nav-link-admin">

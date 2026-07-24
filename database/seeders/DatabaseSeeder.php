@@ -22,12 +22,16 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
+        $this->call([
+            SettingSeeder::class,
+        ]);
+
         Facility::updateOrCreate(
             ['id' => 1],
             [
                 'nama_fasilitas' => 'Lapangan Badminton',
                 'jenis' => 'Badminton',
-                'harga_per_jam' => 50000,
+                'harga_per_jam' => 30000,
                 'deskripsi' => 'Lapangan badminton indoor GOR GAZA.',
                 'is_active' => true,
             ]
@@ -38,7 +42,7 @@ class DatabaseSeeder extends Seeder
             [
                 'nama_fasilitas' => 'Meja Billiard',
                 'jenis' => 'Billiard',
-                'harga_per_jam' => 40000,
+                'harga_per_jam' => 30000,
                 'deskripsi' => 'Fasilitas billiard GOR GAZA.',
                 'is_active' => true,
             ]

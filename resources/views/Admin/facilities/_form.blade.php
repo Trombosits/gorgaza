@@ -15,7 +15,34 @@
     </div>
     <div class="col-md-6">
         <label class="form-label fw-bold">Harga per Jam</label>
-        <input type="number" name="harga_per_jam" class="form-control" value="{{ old('harga_per_jam', $facility->harga_per_jam ?? '') }}" placeholder="50000" required>
+        <input type="number" name="harga_per_jam" class="form-control" value="{{ old('harga_per_jam', $facility->harga_per_jam ?? '') }}" placeholder="30000" required>
+    </div>
+    <div class="col-md-6">
+    <label class="form-label fw-bold">Harga Promo <small class="text-muted">(Opsional)</small></label>
+    <input
+        type="number"
+        name="harga_promo"
+        class="form-control"
+        value="{{ old('harga_promo', $facility->harga_promo ?? '') }}"
+        placeholder="25000">
+    </div>
+
+    <div class="col-md-6">
+        <label class="form-label fw-bold">Jam Promo Mulai</label>
+        <input
+            type="time"
+            name="promo_mulai"
+            class="form-control"
+            value="{{ old('promo_mulai', isset($facility) && $facility->promo_mulai ? \Carbon\Carbon::parse($facility->promo_mulai)->format('H:i') : '') }}">
+    </div>
+
+    <div class="col-md-6">
+        <label class="form-label fw-bold">Jam Promo Selesai</label>
+        <input
+            type="time"
+            name="promo_selesai"
+            class="form-control"
+            value="{{ old('promo_selesai', isset($facility) && $facility->promo_selesai ? \Carbon\Carbon::parse($facility->promo_selesai)->format('H:i') : '') }}">
     </div>
     <div class="col-md-6 d-flex align-items-end">
         <div class="form-check form-switch mb-2">

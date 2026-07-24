@@ -5,6 +5,7 @@ const scheduleBody = document.getElementById("scheduleBody");
 const prevMonth = document.getElementById("prevMonth");
 const nextMonth = document.getElementById("nextMonth");
 const IS_BOOKING_PAGE = !!document.getElementById("continueToConfirm");
+const DP_AMOUNT = 5000;
 
 let selectedFacility = "Badminton";
 let currentDate = new Date();
@@ -122,22 +123,22 @@ async function parseJsonResponse(response) {
   return data;
 }
 
-const times = [
-  "08:00 - 09:00",
-  "09:00 - 10:00",
-  "10:00 - 11:00",
-  "11:00 - 12:00",
-  "13:00 - 14:00",
-  "14:00 - 15:00",
-  "15:00 - 16:00",
-  "16:00 - 17:00",
-  "17:00 - 18:00",
-  "18:00 - 19:00",
-  "19:00 - 20:00",
-  "20:00 - 21:00",
-  "21:00 - 22:00",
-  "22:00 - 23:00",
-];
+const times = [];
+
+const jamBuka = window.bookingSetting?.jam_buka ?? "08:00";
+const jamTutup = window.bookingSetting?.jam_tutup ?? "23:00";
+
+let mulai = parseInt(jamBuka.split(":")[0]);
+let selesai = parseInt(jamTutup.split(":")[0]);
+
+for (let i = mulai; i < selesai; i++) {
+
+    const awal = String(i).padStart(2, "0") + ":00";
+    const akhir = String(i + 1).padStart(2, "0") + ":00";
+
+    times.push(`${awal} - ${akhir}`);
+
+}
 
 function formatDate(date) {
   return date.toLocaleDateString("id-ID", {
@@ -329,7 +330,7 @@ function renderCalendar(date) {
 function initCalendar() {
   if (!prevMonth || !nextMonth || !monthYear || !calendarDays) return;
 
-  // 🌟 PERBAIKAN DI SINI: Ambil draft dari sessionStorage jika ada
+  // PERBAIKAN DI SINI: Ambil draft dari sessionStorage jika ada
   const draft = JSON.parse(sessionStorage.getItem("bookingDraft") || "{}");
   if (draft.type) {
     selectedFacility = draft.type; // Set variabel global sesuai fasilitas terpilih (Badminton / Billiard)
@@ -498,7 +499,11 @@ function initConfirmBooking() {
         "X-CSRF-TOKEN": getCsrfToken(),
         Accept: "application/json",
       },
-      body: JSON.stringify({ draft: payloadDraft, user: user }),
+      body: JSON.stringify({
+        draft: payloadDraft,
+        user: user,
+        nominal_dp: 5000
+      }),
     })
       .then(parseJsonResponse)
       .then((data) => {
@@ -508,10 +513,10 @@ function initConfirmBooking() {
             confirmMessage.innerHTML = '<div class="alert alert-success"><i class="fas fa-check-circle me-2"></i> Booking berhasil! Mengalihkan ke halaman pembayaran...</div>';
           }
 
-          // 🌟 HAPUS DRAFT AGAR TIDAK DOUBLE BOOKING
+          // HAPUS DRAFT AGAR TIDAK DOUBLE BOOKING
           sessionStorage.removeItem("bookingDraft");
 
-          // 🌟 ALUR BARU: Pindah ke halaman pembayaran dengan membawa ID Transaksi
+          // ALUR BARU: Pindah ke halaman pembayaran dengan membawa ID Transaksi
           setTimeout(() => {
             window.location.href = `/pembayaran/${data.transaction_id}`;
           }, 1500); // Memberikan jeda 1.5 detik agar user sempat membaca pesan sukses

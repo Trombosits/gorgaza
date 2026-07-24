@@ -175,6 +175,13 @@
       <i class="fab fa-whatsapp"></i>
     </a>
 
+    <script>
+    window.bookingSetting = {
+        jam_buka: "{{ \Carbon\Carbon::parse($setting->jam_buka)->format('H:i') }}",
+        jam_tutup: "{{ \Carbon\Carbon::parse($setting->jam_tutup)->format('H:i') }}"
+    };
+    </script>
+
     <script src="{{ asset('js/script.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   </body>

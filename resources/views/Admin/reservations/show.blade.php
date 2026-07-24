@@ -13,7 +13,8 @@
     ];
     $paymentLabels = [
         'Paid' => 'Lunas',
-        'Pending' => 'Menunggu',
+        'Partial' => 'DP Diterima',
+        'Pending' => 'Menunggu DP',
         'Cancelled' => 'Dibatalkan',
     ];
     $methodLabels = [
@@ -118,7 +119,7 @@
                     <div class="mb-3">
                         <label class="form-label fw-bold">Status Pembayaran</label>
                         <select name="status_pembayaran" class="form-select">
-                            @foreach(['Pending','Paid','Cancelled'] as $status)
+                            @foreach(['Pending','Partial','Paid','Cancelled'] as $status)
                                 <option value="{{ $status }}" {{ $reservation->transaction->status_pembayaran === $status ? 'selected' : '' }}>{{ $paymentLabels[$status] ?? $status }}</option>
                             @endforeach
                         </select>

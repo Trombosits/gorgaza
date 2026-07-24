@@ -67,8 +67,9 @@
         <div class="confirm-header text-center">
           <span class="section-eyebrow"><i class="fa-solid fa-clipboard-check me-2"></i>Langkah Terakhir</span>
           <h1 class="confirm-title">Konfirmasi Pemesanan</h1>
-          <p class="confirm-subtitle">Periksa detail booking, lalu konfirmasi. Pembayaran pelanggan saat ini menggunakan QRIS saja agar nominal lebih aman dan mudah diverifikasi.</p>
-        </div>
+          <p class="confirm-subtitle">
+          Periksa kembali detail pemesanan Anda. Untuk mengurangi pembatalan sepihak, pelanggan hanya perlu membayar DP sebesar <strong>Rp5.000</strong> melalui QRIS. Sisa pembayaran dilunasi saat datang ke GOR GAZA.
+          </p>
 
         <div class="row justify-content-center">
           <div class="col-xl-10">
@@ -109,17 +110,69 @@
                     <input class="form-check-input payment-method-option" type="radio" name="metode_pembayaran" id="paymentQris" value="QRIS" checked>
                     <div class="payment-choice-icon"><i class="fa-solid fa-qrcode"></i></div>
                     <div>
-                      <div class="payment-choice-title">Bayar QRIS</div>
-                      <p>Scan QRIS resmi GOR GAZA. Status pembayaran tetap Menunggu sampai admin mengonfirmasi.</p>
+                      <div class="payment-choice-title">
+                        DP QRIS Rp5.000
+                      </div>
+
+                      <p>
+                      Bayar uang muka (DP) sebesar Rp5.000 melalui QRIS. Sisa pembayaran dibayarkan langsung di lokasi saat jadwal booking.
+                      </p>
                     </div>
                   </label>
                 </div>
               </div>
+              <div class="confirm-section-card mb-4">
+
+            <div class="confirm-section-heading">
+                <div class="confirm-heading-icon">
+                    <i class="fa-solid fa-wallet"></i>
+                </div>
+
+                <div>
+                    <h4>Ringkasan Pembayaran</h4>
+                    <p>Nominal DP dan sisa pembayaran.</p>
+                </div>
+            </div>
+
+            <ul class="list-group">
+
+                <li class="list-group-item d-flex justify-content-between">
+                    <span>Total Booking</span>
+                    <strong id="summaryTotal">Rp0</strong>
+                </li>
+
+                <li class="list-group-item d-flex justify-content-between">
+                    <span>DP Dibayar Sekarang</span>
+                    <strong class="text-success">
+                        Rp5.000
+                    </strong>
+                </li>
+
+                <li class="list-group-item d-flex justify-content-between">
+                    <span>Sisa Pembayaran</span>
+                    <strong id="summaryRemaining">
+                        Rp0
+                    </strong>
+                </li>
+
+            </ul>
+
+        </div>
 
               <div class="confirm-info-box mb-4">
-                <i class="fa-solid fa-circle-info"></i>
-                <span>Setelah melakukan pembayaran QRIS, admin akan mengubah status menjadi <strong>Lunas</strong> setelah dana diterima.</span>
-              </div>
+
+                    <i class="fa-solid fa-circle-info"></i>
+
+                    <span>
+
+                    Setelah DP berhasil dibayar, admin akan mengubah status menjadi
+                    <strong>DP Lunas</strong>.
+
+                    Sisa pembayaran dilunasi langsung di lokasi sebelum bermain.
+
+                    </span>
+
+                    </div>
 
               <div class="confirm-action-row">
                 <a href="/booking-schedule" class="btn-back-booking"><i class="fa-solid fa-arrow-left me-2"></i>Kembali</a>

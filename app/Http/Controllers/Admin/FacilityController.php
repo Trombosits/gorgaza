@@ -25,8 +25,17 @@ class FacilityController extends Controller
         $data = $request->validate([
             'nama_fasilitas' => 'required|string|max:100',
             'jenis' => 'required|string|max:50',
+
             'harga_per_jam' => 'required|integer|min:0',
+
+            'harga_promo' => 'nullable|integer|min:0',
+
+            'promo_mulai' => 'nullable',
+
+            'promo_selesai' => 'nullable',
+
             'deskripsi' => 'nullable|string',
+
             'is_active' => 'nullable|boolean',
         ]);
 
@@ -46,8 +55,17 @@ class FacilityController extends Controller
         $data = $request->validate([
             'nama_fasilitas' => 'required|string|max:100',
             'jenis' => 'required|string|max:50',
+
             'harga_per_jam' => 'required|integer|min:0',
+
+            'harga_promo' => 'nullable|integer|min:0',
+
+            'promo_mulai' => 'nullable',
+
+            'promo_selesai' => 'nullable',
+
             'deskripsi' => 'nullable|string',
+
             'is_active' => 'nullable|boolean',
         ]);
 
